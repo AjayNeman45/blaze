@@ -1,7 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import styles from "./SurveyInfo.module.css";
 import { GoPrimitiveDot } from "react-icons/go";
-import { MenuItem, Modal, Select, Typography } from "@mui/material";
+import {
+  FormControl,
+  MenuItem,
+  Modal,
+  Select,
+  Typography,
+} from "@mui/material";
 import { Box } from "@mui/system";
 import { useParams } from "react-router-dom";
 import { getSurvey, updateSurvey } from "../../utils/firebaseQueries";
@@ -73,6 +79,8 @@ function SurveyInfo() {
       .catch((err) => console.log(err.message));
   };
 
+  console.log(survey.status);
+
   return (
     <>
       <div className={styles.survey_info_container}>
@@ -99,20 +107,24 @@ function SurveyInfo() {
         </div>
 
         <div className={styles.survey_info_right}>
-          <Select
-            // value={status}
-            onChange={(e) => console.log(e.target.value)}
-            displayEmpty
-            inputProps={{ "aria-label": "Without label" }}
-            className={styles.status_select_field}
-          >
-            {options.map((option) => (
-              <MenuItem key={option} value={option}>
-                {option}
-              </MenuItem>
-            ))}
-          </Select>
+          <FormControl sx={{ m: 1, minWidth: 120 }}>
+            <Select
+              onChange={(e) => console.log(e.target.value)}
+              displayEmpty
+              inputProps={{ "aria-label": "Without label" }}
+              value={survey?.status}
+              className={styles.status_select_field}
+            >
+              {options?.map((option) => (
+                <MenuItem value={option}>{option}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
           <select className={styles.action_select_field}>
+            <option value="" disabled selected hidden>
+              Action
+            </option>
             <option>Test Survey</option>
             <option>Clone Survey</option>
             <option>Set External Name</option>

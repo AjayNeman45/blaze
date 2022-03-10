@@ -73,7 +73,7 @@
   display: flex;
   align-items: center;
 }
-.status_select_field {
+.survey_info_right .status_select_field {
   width: 13rem !important;
   height: 2.5rem !important;
   outline: none !important;

@@ -66,7 +66,7 @@ const BlazeContextProvider = ({ children }) => {
 
   const history = useHistory();
 
-  const supplier_account_id = hashids.decode(srcID)[0];
+  const supplier_account_id = parseInt(hashids.decode(srcID)[0]);
   const surveyID = decryptText(
     encryptedID?.split("-")[0] ? encryptedID?.split("-")[0] : ""
   );
@@ -518,6 +518,11 @@ const BlazeContextProvider = ({ children }) => {
   // when finalVerification is true, add all the bakcground verified details in database
   useEffect(() => {
     if (!errCode && !errMsg && finalVerification) {
+      let ref_id = hashids.encode([
+        parseInt(surveyID),
+        supplier_account_id,
+        parseInt(rID),
+      ]);
       console.log(
         "all the background verification is done and session is inserted in database"
       );
@@ -532,7 +537,7 @@ const BlazeContextProvider = ({ children }) => {
         fingerprint: fingerPrint,
         mirats_status: 0,
         client_status: -1,
-        ref_id: 12345678,
+        ref_id: ref_id,
         supplier_account_id: supplier_account_id,
       };
 

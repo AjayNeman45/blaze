@@ -8,9 +8,6 @@ export const ProjectSettingContext = createContext();
 
 const ProejctSettingProvider = ({ children }) => {
   const { surveyID } = useParams();
-  // let survey_id = decryptText(encryptedID.split("-")[0])
-  // let project_id = decryptText(encryptedID.split("-")[1])
-  // let country = decryptText(encryptedID.split("-")[2])
 
   let [surveyData, setSurveyData] = useState({});
 
@@ -23,10 +20,23 @@ const ProejctSettingProvider = ({ children }) => {
       }
     );
   }, []);
-  console.log(surveyData);
+
+  useEffect(() => {
+    console.log(
+      "https://gifted-visvesvaraya-89e692.netlify.app/" +
+        surveyData?.encrypt?.sid +
+        "-" +
+        surveyData?.encrypt?.pid +
+        "-" +
+        surveyData?.encrypt?.cid +
+        `/lightningUrl?SRCID=Vv5JQoX&RID=`
+    );
+  }, [surveyData]);
 
   return (
-    <ProjectSettingContext.Provider value={{ surveyData, surveyID }}>
+    <ProjectSettingContext.Provider
+      value={{ surveyData, setSurveyData, surveyID }}
+    >
       {children}
     </ProjectSettingContext.Provider>
   );
