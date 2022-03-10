@@ -40,10 +40,10 @@ const Reference = () => {
       .then((data) => {
         getSessionBasedOnType(surveyID, sessionID, "Sessions").then(
           (sessionData) => {
-            console.log(sessionData);
+            console.log(sessionData.data());
             const x = data?.live_url.split("[%rid%]")[0];
             const y = data?.live_url.split("[%rid%]")[1];
-            let z = x + sessionData?.ref_id + y;
+            let z = x + sessionData.data()?.ref_id + y;
             console.log(z);
             window.location.href(z);
           }
