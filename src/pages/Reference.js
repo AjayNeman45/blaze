@@ -4,6 +4,7 @@ import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import Loader from "../components/loader/Loader";
 import { decryptText } from "../utils/enc-dec.utils";
 import {
+  getSessionBasedOnType,
   getSessionID,
   getSurvey,
   updateSession,
@@ -37,14 +38,16 @@ const Reference = () => {
 
     getSurvey(surveyID)
       .then((data) => {
-        getSessionID(sessionID).then((sessionData) => {
-          console.log(sessionData);
-          const x = data?.live_url.split("[%rid%]")[0];
-          const y = data?.live_url.split("[%rid%]")[1];
-          let z = x + sessionData?.ref_id + y;
-          console.log(z);
-          window.location.href(z);
-        });
+        getSessionBasedOnType(surveyID, sessionID, "Sessions").then(
+          (sessionData) => {
+            console.log(sessionData);
+            const x = data?.live_url.split("[%rid%]")[0];
+            const y = data?.live_url.split("[%rid%]")[1];
+            let z = x + sessionData?.ref_id + y;
+            console.log(z);
+            window.location.href(z);
+          }
+        );
       })
       .catch((err) => console.log(err.message));
   }, []);
