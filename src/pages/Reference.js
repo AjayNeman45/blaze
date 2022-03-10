@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import Loader from "../components/loader/Loader";
 import { decryptText } from "../utils/enc-dec.utils";
-import { updateSession } from "../utils/firebaseQueries";
+import {
+  getSessionID,
+  getSurvey,
+  updateSession,
+} from "../utils/firebaseQueries";
 
 const Reference = () => {
+  const history = useHistory();
   const [gamma, setGamma] = useState(localStorage.getItem("gamma"));
   const [sessionID, setSessionID] = useState(
     localStorage.getItem("session_id")
@@ -26,6 +32,19 @@ const Reference = () => {
     updateSession(surveyID, sessionID, gamma, body)
       .then(() => {
         console.log("survey start time updated");
+      })
+      .catch((err) => console.log(err.message));
+
+    getSurvey(surveyID)
+      .then((data) => {
+        getSessionID(sessionID).then((sessionData) => {
+          console.log(sessionData);
+          const x = data?.live_url.split("[%rid%]")[0];
+          const y = data?.live_url.split("[%rid%]")[1];
+          let z = x + sessionData?.ref_id + y;
+          console.log(z);
+          window.location.href(z);
+        });
       })
       .catch((err) => console.log(err.message));
   }, []);
