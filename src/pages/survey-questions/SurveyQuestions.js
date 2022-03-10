@@ -243,8 +243,8 @@ const SurveyQuestions = () => {
 
   // fetch the question, options and its related data according to question number and set the question state
   useEffect(() => {
-    setMultiPunchRes([default_responses[`${questionNumber}`]]);
-    setResponse(default_responses[`${questionNumber}`]);
+    setMultiPunchRes([default_responses?.[`${questionNumber}`]]);
+    setResponse(default_responses?.[`${questionNumber}`]);
 
     const func = async () => {
       setShowSkeleton(true);
