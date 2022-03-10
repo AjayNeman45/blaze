@@ -1,0 +1,44 @@
+.err_page {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+.err_code {
+  border: 1px solid gray;
+  border-radius: 50%;
+  height: fit-content;
+  padding: 20px;
+  margin-top: -4.55rem;
+  margin-right: -0.4rem;
+  font-size: 40px;
+  transform: rotate(20deg);
+}
+.err_desc {
+  font-size: 25px;
+  width: 80vw;
+  color: rgb(82, 82, 82);
+  /* color: #28b4be; */
+}
+.err_desc > span {
+  color: rgb(45, 188, 207);
+}
+.powered_text {
+  margin-top: 4rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+}
+.terms {
+  font-size: 15px;
+  margin-top: 10px;
+  color: gray;
+}
+.terms span a {
+  text-decoration: none;
+  color: gray;
+  margin: 5px;
+  letter-spacing: 0.1px;
+}

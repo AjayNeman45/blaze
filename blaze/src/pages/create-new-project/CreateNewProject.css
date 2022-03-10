@@ -1,0 +1,175 @@
+.create_survey_page {
+  padding: 2rem 10rem 5rem 4rem;
+  /* border: 1px solid red; */
+}
+.create_survey_page_header {
+  padding: 1rem 0;
+}
+.create_survey_page_header .title {
+  font-size: 33px;
+  font-weight: bold;
+  margin-bottom: -0.5rem;
+}
+.basic_survey_info {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  /* border: 1px solid red; */
+  padding: 2rem 0;
+}
+.create_survey_left {
+  /* border: 1px solid red; */
+  width: 25vw;
+}
+.create_survey_left .title {
+  font-size: 30px;
+  margin: 0;
+}
+.create_survey_right {
+  width: 35vw;
+}
+.create_survey_right .country_select {
+  width: 24vw;
+  margin-top: 1rem;
+}
+.create_survey_right > div {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+.create_survey_right label {
+  font-weight: 500;
+  font-size: 15px;
+}
+.create_survey_right > div > select {
+  height: 2.4rem;
+  width: 24vw;
+  margin-top: 1rem;
+}
+.create_survey_right > div > input {
+  height: 2rem;
+  width: 23vw;
+  padding-left: 10px;
+  margin-top: 1rem;
+}
+.project_detail_info {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 3rem 0;
+}
+.radio_input label {
+  width: 25vw;
+}
+.radio_btns {
+  display: flex;
+  margin-top: 1rem;
+  /* border: 1px solid red; */
+}
+.radio_btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* border: 1px solid red; */
+  width: fit-content;
+  margin-left: 1rem;
+}
+.radio_btn input {
+  width: 15px;
+  height: 15px;
+}
+.radio_btn span {
+  margin-top: 0.2rem;
+}
+.project_name_input {
+  margin-top: 2rem;
+}
+
+.next_btn_container button {
+  background-color: blue;
+  color: white;
+  padding: 10px 20px;
+  font-size: 17px;
+  border-radius: 4px;
+  border: none;
+  outline: none;
+  float: right;
+  cursor: pointer;
+  text-decoration: none;
+}
+.next_btn_container button:hover {
+  background-color: rgb(4, 4, 179);
+}
+
+.insert_loading {
+  float: right;
+}
+
+/* setup requirment  */
+
+.setup_requirment_info {
+  /* border: 1px solid red; */
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 3rem 0;
+}
+.collect_personal_info_div {
+  margin-top: 4rem;
+  /* border: 1px solid red; */
+}
+.collect_personal_info_div > label {
+  /* border: 1px solid red; */
+  padding-top: 1.5rem;
+  font-size: 15px;
+}
+
+/* metrics and data  */
+
+.metrics_and_data,
+.peoples_info,
+.internal_status {
+  display: flex;
+  justify-content: space-between;
+  /* border: 1px solid red; */
+  padding: 3rem 0;
+}
+
+/* peoples  */
+
+.peoples_info {
+  display: flex;
+  justify-content: space-between;
+  /* border: 1px solid red; */
+  padding: 3rem 0;
+}
+.input_helper_card {
+  border: 1px solid rgb(228, 228, 228);
+  padding: 25px 20px;
+  margin-top: 2rem;
+}
+.input_helper_card .title {
+  font-size: 25px;
+}
+
+@media (max-width: 990px) {
+  /* .create_survey_page {
+		padding: 0;
+	}
+	.basic_survey_info_inputs {
+		border: 1px solid red;
+	}
+	.basic_survey_info,
+	.project_detail_info {
+		border: 1px solid red;
+		flex-direction: column;
+		align-items: center;
+	}
+	.basic_survey_info_header,
+	.project_detail_info_header {
+		width: 90%;
+		text-align: center;
+		margin-bottom: 2rem;
+	} */
+}

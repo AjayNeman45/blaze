@@ -1,0 +1,66 @@
+.head {
+	border-bottom: 1px solid rgb(209, 206, 206);
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-end;
+	margin: 0 2rem;
+	padding: 2.2rem 0;
+	/* border: 1px solid red; */
+}
+.head_left {
+	/* border: 1px solid red; */
+	display: flex;
+	flex-wrap: wrap;
+	width: 35vw;
+}
+.project_number {
+	font-size: 26px;
+}
+.project_name,
+.survey_number {
+	margin: 0 0.5rem;
+	margin-top: 1rem;
+}
+.project_name > span:first-child,
+.survey_number > span:first-child {
+	padding: 4px 2px;
+	border: 1px solid rgb(199, 199, 199);
+	text-transform: uppercase;
+	font-size: 12px;
+	margin-right: 0.5rem;
+}
+.project_name > span:last-child,
+.survey_number > span:last-child {
+	color: rgb(148, 148, 148);
+}
+.staus_change_select_field {
+	width: 15rem;
+	height: 2.2rem;
+	outline: none !important;
+	box-shadow: none !important;
+	border-radius: 2px;
+}
+.fielding_assistant_btn,
+.add_quota_btn {
+	height: 2.1rem;
+	padding: 0 1rem;
+	border: none;
+	cursor: pointer;
+	background-color: rgb(30, 112, 221);
+	color: white;
+	margin-left: 0.4rem;
+	border-radius: 2px;
+}
+.status_select_field {
+	width: 14rem;
+	height: 2.2rem;
+	border-radius: 2px !important;
+}
+.action_select_field {
+	width: 7rem;
+	height: 2.2rem;
+	margin-left: 0.5rem;
+}
+.select_field {
+	width: 20vw;
+}

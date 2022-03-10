@@ -1,0 +1,130 @@
+.qualification_page {
+  /* border: 1px solid red; */
+  /* margin-top: 7rem; */
+}
+.head_section {
+  margin: 2rem;
+}
+.head_section_right {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+}
+.head_section_left .title {
+  font-size: 30px;
+  font-weight: 500;
+}
+.head_section_right_btns {
+  display: flex;
+  /* margin-top: 1.3rem; */
+}
+.head_section_right_btns button {
+  margin: 0 5px;
+}
+.add_qualification_btn,
+.manage_logic_btn,
+.search_btn {
+  outline: none;
+  padding: 9px 20px;
+  border: 1px solid #1765dc;
+  background: #1765dc;
+  color: rgb(255, 255, 255);
+  border-radius: 2px;
+  cursor: pointer;
+  font-size: 15px;
+  border-radius: 6px;
+}
+.add_qualification_btn:hover,
+.search_btn:hover,
+.manage_logic_btn:hover {
+  background-color: #1765dc;
+}
+
+.select_input_field {
+  padding: 7.2px;
+  border-radius: 2px;
+  border-color: rgb(219, 216, 216);
+}
+.survay_name_search {
+  margin: 0 5px;
+  /* border: 1px solid red; */
+}
+.survay_name_search input {
+  height: 1.8rem;
+  border-radius: 2px;
+  border: 1px solid rgb(206, 206, 206);
+  outline: none;
+}
+
+.survey_info_section {
+  display: flex;
+  align-items: flex-start;
+  justify-content: start;
+  /* border: 1px solid red; */
+  /* padding-left: 2rem; */
+}
+.survey_info_section > div {
+  margin: 1.5rem 2rem;
+}
+.survey_info_section > div > p {
+  color: blue;
+  font-size: 18px;
+}
+
+/* table   */
+.table_section {
+  overflow-x: auto;
+  margin: 0 2rem;
+  margin-bottom: 2rem;
+  border: 1px solid gray;
+  border-radius: 20px;
+}
+.qualification_table > thead > tr > th {
+  text-align: start;
+  padding: 25px 20px;
+  font-size: 14px;
+}
+
+.qualification_table tbody > tr > td {
+  padding: 10px 20px;
+  text-align: start;
+  font-size: 13px;
+}
+
+.qualification_table tbody > tr:nth-child(odd) {
+  background-color: #e3eeff;
+}
+.condition_tag {
+  padding: 3px 7px;
+  color: rgb(27, 27, 27);
+  margin: 0 2px;
+  font-size: 12px;
+  border: 1px solid rgb(199, 196, 196);
+}
+.table_function_col {
+  display: flex;
+  flex-direction: column;
+}
+.table_function_col > span {
+  cursor: pointer;
+}
+.table_function_col > span:hover {
+  text-decoration: underline;
+}
+.conditions_col {
+  width: 45%;
+}
+.conditions_col span,
+.any_condition_pass {
+  display: inline-block;
+  padding: 2px 10px;
+  color: rgb(27, 27, 27);
+  margin: 0 2px;
+  font-size: 12px;
+  border: 1px solid rgb(199, 196, 196);
+  width: fit-content;
+  margin-bottom: 5px;
+}
+.any_condition_pass {
+  background-color: rgb(228, 228, 228);
+}

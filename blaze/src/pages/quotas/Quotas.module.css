@@ -1,0 +1,126 @@
+.head {
+  border-bottom: 1px solid rgb(209, 206, 206);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 2rem;
+  padding: 2.2rem 0;
+}
+.head_left {
+  /* border: 1px solid red; */
+  display: flex;
+  flex-wrap: wrap;
+  width: 35vw;
+}
+.project_number {
+  font-size: 26px;
+}
+.project_name,
+.survey_number {
+  margin: 0 0.5rem;
+  margin-top: 1rem;
+}
+.project_name > span:first-child,
+.survey_number > span:first-child {
+  padding: 4px 2px;
+  border: 1px solid rgb(199, 199, 199);
+  text-transform: uppercase;
+  font-size: 12px;
+  margin-right: 0.5rem;
+}
+.project_name > span:last-child,
+.survey_number > span:last-child {
+  color: rgb(148, 148, 148);
+}
+.staus_change_select_field {
+  width: 15rem;
+  height: 2.2rem;
+  outline: none !important;
+  box-shadow: none !important;
+  border-radius: 2px;
+}
+.fielding_assistant_btn,
+.add_quota_btn,
+.import_btn {
+  height: 2.2rem;
+  padding: 0 1rem;
+  border: none;
+  cursor: pointer;
+  background-color: rgb(30, 112, 221);
+  color: white;
+  margin-left: 0.4rem;
+  border-radius: 2px;
+}
+.quota_info {
+  /* border: 1px solid red; */
+  display: flex;
+  padding: 1.5rem 1rem;
+  display: flex;
+  justify-content: space-between;
+}
+.quota_info_left {
+  display: flex;
+}
+.quota_info_section {
+  border-left: 1px solid rgb(185, 185, 185);
+  /* width: 7rem; */
+  display: flex;
+  flex-direction: column;
+  padding: 0 1rem;
+}
+.quota_info_section:first-child {
+  border-left: none;
+}
+.quota_info_section label {
+  text-transform: uppercase;
+  color: rgb(65, 65, 65);
+  font-size: 13px;
+}
+.quota_info_section span {
+  font-size: 14px;
+}
+
+/* table */
+.quota_table {
+  /* border: 1px solid red; */
+  margin: 1rem 2rem;
+  overflow-x: auto;
+}
+.table_input {
+  width: 4.4rem;
+  height: 2rem;
+  border-radius: 2px;
+  border: 1px solid rgb(209, 209, 209);
+  border-radius: 2px;
+  padding-left: 0.5rem;
+  table-layout: fixed;
+  /* width: 200px; */
+}
+.table_input:focus {
+  outline: 1px solid blue;
+}
+.quota_table > table tr th {
+  padding: 1rem 0;
+  padding-left: 1rem;
+  border-bottom: 2px solid gray;
+  text-align: start;
+  /* border: 1px solid red; */
+}
+.quota_table > table tr td {
+  /* border: 1px solid red; */
+  text-align: start;
+  padding: 0.5rem 1rem;
+}
+.quota_table > table tr td:nth-child(2) {
+  color: blue;
+}
+.quota_table > table > tbody tr:nth-child(1) {
+  background: #e3eeff;
+}
+.quota_table > table > tbody tr:nth-child(1) td:first-child {
+  text-align: center;
+}
+.quota_table > table tr td:first-child input {
+  /* border: 1px solid red; */
+  margin: 0 0.5rem;
+}

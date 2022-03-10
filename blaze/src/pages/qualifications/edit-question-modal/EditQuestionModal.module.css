@@ -1,0 +1,173 @@
+.modal_header {
+}
+.modal_header .legend {
+  font-size: 28px;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 2px;
+}
+.question_name_and_text {
+  margin: 2rem 0;
+}
+.question_name {
+  font-size: 14px;
+  margin: 0;
+  margin-bottom: 0.5rem;
+  color: rgb(107, 107, 107);
+}
+.question_text {
+  margin: 0;
+  font-size: 18px;
+}
+
+/* multipunch edit display options */
+.edit_display_options {
+  border: 1px solid rgb(192, 190, 190);
+  padding: 1rem;
+}
+.edit_display_options .legend {
+  display: block;
+  width: fit-content;
+  padding: 10px 0;
+  border-bottom: 1px solid gray;
+}
+.edit_display_options input {
+  width: 1rem;
+  height: 1rem;
+  margin-right: 10px;
+}
+/* compulsary options , ans */
+.conditions_container {
+  border: 1px solid rgb(192, 190, 190);
+  padding: 1rem;
+  margin-top: 1rem;
+}
+.textfields {
+  margin-top: 1rem;
+}
+.textfield {
+  height: 1rem !important;
+}
+.textfield:focus {
+  border: none !important;
+}
+.compulsary_options {
+  height: 15rem;
+  overflow: auto;
+}
+.valid_options .legend_container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.valid_options .legend_container label {
+  margin-right: 5px;
+}
+
+/* description  */
+.description {
+  border: 1px solid rgb(192, 190, 190);
+  margin-top: 1rem;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+.description input {
+  width: 100%;
+  height: 2.5rem;
+  border: 1px solid rgb(114, 113, 113);
+  padding-left: 10px;
+  margin-top: 1rem;
+}
+.description input:focus {
+  border: 1px solid black;
+}
+.modal_footer {
+  display: flex;
+  justify-content: end;
+  margin-top: 1rem;
+}
+.modal_footer button {
+  width: 5rem;
+  height: 2.5rem;
+  font-size: 15px;
+  letter-spacing: 1px;
+}
+.modal_footer .save_btn {
+  background: rgb(58, 135, 250);
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.modal_footer .save_btn:hover {
+  background-color: rgb(39, 117, 235);
+}
+.modal_footer .cancel_btn {
+  margin-left: 10px;
+  background-color: white;
+  border: none;
+  color: rgb(70, 69, 69);
+  cursor: pointer;
+}
+.modal_footer .cancel_btn:hover {
+  background-color: rgb(223, 221, 221);
+  transition: all 0.2s linear;
+  border-radius: 3px;
+}
+
+/* valid options  */
+.allowed_options {
+  border: 1px solid rgb(192, 190, 190);
+  margin: 1rem 0;
+  padding: 1rem;
+}
+.options {
+  height: 15rem;
+  overflow-y: auto;
+}
+.allowed_options .legend {
+  border-bottom: 1px solid gray;
+  display: block;
+  padding: 10px 0;
+  width: fit-content;
+}
+
+/* valid response  */
+.response_container {
+  border: 1px solid rgb(192, 190, 190);
+}
+.responses {
+  padding: 1rem;
+}
+.response_container input {
+  height: 2.5rem;
+  padding-left: 10px;
+  width: 7rem;
+}
+.response_inputs {
+  display: flex;
+  align-items: center;
+  margin-top: 1rem;
+}
+.add_condition_btn {
+  display: flex;
+  align-items: center;
+  margin-top: 0.5rem;
+  background-color: rgb(240, 240, 240);
+  justify-content: start;
+  padding: 0.4rem;
+  cursor: pointer;
+}
+
+/* allowed ans  */
+.allowed_ans {
+  border: 1px solid gray;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+.allowed_ans input {
+  height: 2.5rem;
+  margin-top: 1rem;
+  padding-left: 10px;
+}

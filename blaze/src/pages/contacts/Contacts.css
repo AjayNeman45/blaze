@@ -1,0 +1,35 @@
+.contacts_page {
+	margin: 2rem 4rem;
+}
+.contacts_page_title {
+	font-size: 35px;
+	font-weight: bold;
+}
+.contacts_table tr {
+	border: 1px solid rgb(221, 221, 221);
+}
+.contacts_table th {
+	padding: 20px 10px;
+	text-align: center;
+}
+.contacts_table td {
+	padding: 20px 10px;
+	/* border-bottom: 1px solid gray; */
+	font-size: 15px;
+}
+.contacts_table td:nth-child(2) {
+	cursor: pointer;
+	font-weight: bold;
+}
+.contacts_table tr:hover {
+	background-color: rgb(241, 241, 250);
+}
+.contacts_table td:nth-child(2):hover {
+	color: blue;
+	text-decoration: underline;
+}
+.contacts_table th:nth-child(2) {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}

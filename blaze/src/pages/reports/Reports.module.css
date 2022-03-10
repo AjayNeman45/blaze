@@ -1,0 +1,299 @@
+.reports_page .container {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	/* border: 1px solid red; */
+	margin: 0 2rem;
+}
+.reports_page .container .right {
+	display: flex;
+	align-items: center;
+}
+
+.reports_page .container .right .avg_cpi_epc {
+	display: flex;
+}
+.reports_page .container .right .first_complete,
+.last_complete {
+	border-right: 1px solid gray;
+	padding: 0 30px;
+}
+.avg_cpi_epc > span {
+	background-color: black;
+	color: white;
+	font-size: 12px;
+	padding: 8px;
+	margin: 0 0.5rem;
+	border-radius: 5px;
+}
+.avg_cpi_epc > span:last-child {
+	background-color: white;
+	color: black;
+	border: 1px solid black;
+}
+.reports_page .container .left button,
+.reports_page .container .left input {
+	padding: 8px 15px;
+	border: 1px solid gray;
+	border-radius: 2px;
+	background-color: white;
+	cursor: pointer;
+	margin: 0 0.5rem;
+}
+.reports_page .container .left button {
+	padding: 10px 17px;
+}
+.reports_page .main {
+	display: flex;
+	padding: 2rem;
+	/* border: 1px solid red; */
+}
+
+.main > .left,
+.main > .right {
+	/* border: 1px solid black; */
+	margin: 0 0.5rem;
+}
+
+/* respondant activity  */
+.respondant_activity {
+	height: fit-content;
+	width: 60vw;
+	border: 1px solid lightgray;
+	border-radius: 5px;
+}
+.respondant_activity .head {
+	display: flex;
+	align-items: center;
+}
+.respondant_activity .head > div {
+	display: flex;
+	/* border: 1px solid red; */
+	border-right: 1px solid lightgray;
+	border-bottom: 1px solid lightgray;
+	cursor: pointer;
+	align-items: center;
+	justify-content: space-between;
+	width: 20vw;
+	padding: 10px;
+}
+.respondant_activity .head > div:last-child {
+	border-right: none;
+}
+.respondant_activity .head .title {
+	/* border: 1px solid red; */
+	display: flex;
+	align-items: center;
+}
+.respondant_activity .head .title span {
+	text-transform: uppercase;
+	font-size: 14px;
+	margin-left: 10px;
+}
+.respondant_activity .head .value {
+	font-size: 24px;
+	font-weight: 500;
+}
+
+.respondant_activity .legend {
+	background-color: lightgray;
+	margin: 0;
+	padding: 10px;
+}
+/* Rates  */
+.rates {
+	background-color: #fff;
+	border: 1px solid lightgray;
+	border-radius: 5px;
+	width: fit-content;
+	margin-top: 1rem;
+	/* border: 1px solid red; */
+}
+
+.rates .legend {
+	background-color: lightgray;
+	padding-left: 15px;
+	margin: 0;
+	padding: 10px;
+}
+
+.rates .rates_container {
+	/* padding: 5px; */
+	display: flex;
+}
+
+.rates_body {
+	width: 13vw;
+	padding: 8px;
+	margin: 13px 5px;
+	border: 1px solid lightgray;
+	border-radius: 5px;
+}
+
+.quota_rate span {
+	text-transform: uppercase;
+	font-size: 15px;
+	color: rgb(34, 33, 33);
+	font-weight: 400;
+	font-size: 13px;
+}
+
+.percentage h1 {
+	margin: 5px 0;
+}
+
+.percentage span {
+	background-color: lightgray;
+	border-radius: 5px;
+}
+
+.quota_rate,
+.percentage {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin: 2px 0px;
+	font-size: 13px;
+}
+
+.text_light {
+	color: rgb(34, 33, 33);
+}
+
+.footer_data {
+	display: flex;
+	justify-content: space-between;
+	margin: 5px;
+	font-size: 14px;
+}
+
+.rates_body:not(:first-of-type) {
+	background-color: thistle;
+}
+
+/* data analysis card  */
+.data_analysis_card {
+	border: 1px solid rgb(212, 210, 210);
+	border-radius: 5px;
+	width: 30vw;
+	height: 110vh;
+	overflow: auto;
+	overflow-x: hidden;
+}
+.data_analysis_card .legend {
+	margin: 0;
+	padding: 10px;
+	color: rgb(54, 54, 54);
+	background-color: lightgray;
+}
+.data_analysis_card .select_field {
+	width: 27.5vw !important;
+	height: 2.5rem;
+	margin: 1rem;
+}
+.client_codes,
+.marketplace_codes {
+	margin: 1rem;
+}
+
+.accordion {
+	box-shadow: none !important;
+}
+.accordion_name {
+	text-transform: uppercase;
+	font-weight: 800;
+	font-size: 15px;
+}
+.accordion_summary {
+	border-bottom: 2px solid rgb(228, 228, 228) !important;
+	padding: 0;
+}
+.css-yw020d-MuiAccordionSummary-expandIconWrapper {
+	font-size: 37px !important;
+}
+.accordion_details {
+	padding: 10px 0;
+}
+.accordion_details .name {
+	display: flex;
+	justify-content: space-between;
+	font-weight: 500;
+}
+.accordion_details .name span:last-child {
+	font-weight: bold;
+	font-size: 25px;
+	padding-right: 10px;
+}
+.accordion_details .tag {
+	background-color: lightgray;
+	border-radius: 20px;
+	padding: 2px 7px;
+	font-size: 12px;
+	font-weight: bold;
+}
+.accordion_details .total {
+	background-color: rgb(219, 218, 218);
+	padding: 6px;
+	padding-right: 20px;
+	text-align: end;
+	margin-top: 0.5rem;
+}
+.accordion_details .total span {
+	font-weight: bold;
+}
+
+/* loi card  */
+
+.LOI_card {
+	border: 1px solid lightgray;
+	margin-top: 1rem;
+	width: 60vw;
+}
+.LOI_card .left {
+	width: 40vw;
+	/* border: 1px solid red; */
+	padding: 1rem;
+}
+.LOI_card .legend {
+	background-color: lightgray;
+	margin: 0;
+	padding: 10px;
+	font-family: bold;
+}
+.LOI_card .left .head {
+	/* border: 1px solid red; */
+	display: flex;
+	align-items: center;
+}
+.LOI_card .left .head span:last-child {
+	margin-left: 10px;
+	text-transform: uppercase;
+}
+
+.LOI_card .middle .timing {
+	display: flex;
+	justify-content: space-between;
+	margin: 10px 0;
+}
+.timing h1 {
+	margin: 5px 0;
+	font-size: 25px;
+}
+.timing {
+	display: flex;
+	align-items: center;
+}
+.timing span {
+	background-color: lightgray;
+	border-radius: 20px;
+	padding: 0 3px;
+	height: fit-content;
+	font-size: 14px;
+}
+.LOI_card .bottom {
+	display: flex;
+	align-items: center;
+}
+.LOI_card .bottom span {
+	margin: 2px;
+}

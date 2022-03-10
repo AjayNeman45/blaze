@@ -1,0 +1,28 @@
+.add_qualification_page {
+  width: 80%;
+  margin: 1rem auto;
+}
+.question_types {
+  border: 1px solid gray;
+  padding: 1rem;
+  margin: 1rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+.questions_dropdown {
+  margin: 1rem 0;
+}
+.set_question_btn {
+  background-color: rgb(33, 33, 33);
+  color: white;
+  width: 7rem;
+  height: 3rem;
+  border: none;
+  border-radius: 3px;
+  margin-top: 1rem;
+  cursor: pointer;
+}
+.set_question_btn:hover{
+	background-color: gray;
+}

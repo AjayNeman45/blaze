@@ -1,0 +1,177 @@
+.dashboard {
+	/* border: 1px solid red; */
+	padding: 1rem 3rem;
+}
+.page_title {
+	font-size: 35px;
+}
+.first {
+	/* border: 1px solid red; */
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 3rem;
+	border-bottom: 2px solid gray;
+}
+.graph {
+	width: 45rem;
+	/* border: 1px solid green; */
+	height: 28rem;
+}
+.projects {
+	/* border: 1px solid grey; */
+	background-color: white;
+	border-radius: 7px;
+	width: 27rem;
+	height: 28rem;
+}
+.second {
+	/* border: 1px solid blue; */
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding-bottom: 3rem;
+	margin-bottom: 4rem;
+	border-bottom: 2px solid gray;
+}
+.contacts {
+	margin: 2rem;
+	width: 35rem;
+	height: 28rem;
+	/* border: 1px solid red; */
+}
+.bids_stats {
+	width: 35rem;
+	height: 28rem;
+}
+.bids_earn {
+	width: 35rem;
+	height: 13rem;
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	/* box-shadow: 0 0 6px 2px gray; */
+	border-bottom: 1px solid gray;
+	margin-bottom: 2rem;
+}
+.bids_earn > span:first-child {
+	font-size: 6rem;
+}
+.bids_earn > span:last-child {
+	font-size: 3rem;
+	color: gray;
+}
+.bids_lost {
+	/* box-shadow: 0 0 6px 2px gray; */
+	width: 35rem;
+	height: 13rem;
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+}
+.bids_lost > span:last-child {
+	font-size: 6rem;
+}
+.bids_lost > span:first-child {
+	font-size: 3rem;
+	color: gray;
+}
+
+.project {
+	padding: 10px 2rem;
+	margin: 0 2rem;
+	/* margin-bottom: 1rem; */
+	/* background-color: rgb(210, 205, 224); */
+	/* border-radius: 6px; */
+	border-bottom: 1px solid rgb(158, 154, 154);
+	cursor: pointer;
+	color: black;
+}
+.project:hover {
+	background-color: rgb(79, 67, 110);
+	color: white;
+}
+.projects_section_title {
+	font-size: 22px;
+	margin: 1rem 2rem;
+	text-align: center;
+	padding: 14px 0;
+	background-color: rgb(79, 67, 110);
+	color: white;
+}
+.name_status,
+.start_end_date {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+.name_status > span {
+	font-weight: bold;
+}
+.start_end_date > div > span,
+.start_end_date > span {
+	font-size: 12px;
+}
+.contact {
+	padding: 10px 2rem;
+	margin: 0 2rem;
+	border-bottom: 1px solid gray;
+	color: black;
+	cursor: pointer;
+}
+.contact > span {
+	font-weight: bold;
+}
+.email_phone_number {
+	font-size: 14px;
+	color: gray;
+}
+
+.contact:hover {
+	background-color: rgb(114, 90, 58);
+	color: white;
+}
+.contacts_section_title {
+	font-size: 22px;
+	margin: 0rem;
+	margin: 1rem 2rem;
+	background-color: rgb(114, 90, 58);
+	color: white;
+	text-align: center;
+	padding: 14px;
+}
+
+.dashboard_cards {
+	display: flex;
+	flex-wrap: wrap;
+	margin-top: 3rem;
+}
+.dashboard_card {
+	border: 1px solid rgb(212, 212, 212);
+	box-shadow: 0 0 9px 1px rgb(211, 211, 211);
+	width: 10.9rem;
+	height: 12rem;
+	border-radius: 6px;
+	margin-left: 2rem;
+	margin-bottom: 2rem;
+	text-align: center;
+}
+.dashboard_card:nth-child(1) {
+	margin-left: 1rem;
+}
+.dashboard_card_value {
+	font-size: 25px;
+	font-weight: bold;
+	/* border: 1px solid red; */
+	width: 6rem;
+	text-align: start;
+	margin: 2rem auto;
+}
+.dashboard_card_attribute {
+	font-size: 17px;
+	letter-spacing: 0.2px;
+	width: 6rem;
+	margin: 0 auto;
+	/* border: 1px solid red; */
+	text-align: start;
+}

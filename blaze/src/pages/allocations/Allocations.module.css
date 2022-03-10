@@ -1,0 +1,210 @@
+/*  allocations info */
+.allocations_info {
+  /* border: 1px solid red; */
+  display: flex;
+  padding: 1.5rem 1rem;
+  display: flex;
+  justify-content: space-between;
+}
+.allocations_info_left {
+  display: flex;
+}
+.allocations_info_section {
+  border-left: 1px solid rgb(185, 185, 185);
+  /* width: 7rem; */
+  display: flex;
+  flex-direction: column;
+  padding: 0 1rem;
+  /* border: 1px solid red; */
+}
+.allocations_info_section:first-child {
+  border-left: none;
+}
+.allocations_info_section label {
+  text-transform: uppercase;
+  color: rgb(65, 65, 65);
+  font-size: 13px;
+}
+.allocations_info_section span {
+  font-size: 14px;
+}
+
+/* marketplace suppliers  */
+
+.marketplace_suppliers,
+.external_supply_sources {
+  margin: 2rem;
+}
+.marketplace_suppliers .title,
+.external_supply_sources .title {
+  font-size: 18px;
+  padding: 1rem 1rem;
+  padding-left: 0;
+  margin: 0;
+  font-weight: bold;
+}
+.external_supply_sources .top {
+  display: flex;
+}
+.btns_filters {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  /* padding: 1rem 0.7rem; */
+  border-bottom: 1px solid rgb(192, 192, 192);
+}
+.add_supplier_btn {
+  border: none;
+  background: none;
+  display: flex;
+  align-items: center;
+  font-size: 17px;
+  color: rgb(51, 119, 221);
+  font-weight: bold;
+}
+.btns_filters .left button {
+  padding: 10px 14px;
+  border-radius: 2px;
+  background-color: rgb(30, 112, 221);
+  color: white;
+  border: none;
+  margin: 1rem;
+  margin-right: 0;
+  cursor: pointer;
+}
+.btns_filters .left button:hover {
+  background-color: rgb(9, 86, 185);
+}
+.btns_filters .right select,
+.btns_filters .right input {
+  padding: 10px 14px;
+  margin: 0 0.3rem;
+  border: 1px solid rgb(204, 204, 204);
+}
+.instruction {
+  font-size: 15px;
+  /* border: 1px solid red; */
+  padding: 1rem;
+  margin: 0;
+  color: rgb(80, 79, 79);
+  font-family: 500;
+}
+
+/* add supplier modal  */
+.supplier_account_field {
+  width: 100% !important;
+  margin-top: 0.7rem;
+}
+.allocations {
+  margin-top: 1rem;
+}
+.allocation_inputs {
+  margin-top: 0.7rem;
+}
+.allocation_inputs .allocation_input {
+  width: 9rem;
+  border-radius: 4px;
+  /* padding: 0 10px; */
+  border: none !important;
+  outline: none !important;
+}
+.allocation_inputs .allocation_input:last-child {
+  margin-left: 0.8rem;
+}
+.cpi {
+  display: flex;
+  flex-direction: column;
+}
+.cpi_and_unreserved_container {
+  display: flex;
+  align-items: start;
+  margin-top: 1rem;
+}
+.unreserved_completes {
+  margin-left: 1rem;
+}
+.supply_manager,
+.project_manager {
+  margin-top: 1rem;
+}
+.project_manager input,
+.supply_manager input,
+.cpi_field {
+  display: flex;
+  flex-direction: column;
+  height: 3.4rem;
+  width: 100%;
+  border: 1px solid rgb(192, 192, 192);
+  border-radius: 4px;
+  margin-top: 0.7rem;
+  padding: 0 10px;
+}
+.cpi_field {
+  width: 9rem;
+}
+.modal_footer {
+  margin-top: 0.4rem;
+  padding-top: 1rem;
+  display: flex;
+  justify-content: end;
+}
+.modal_footer .save_btn,
+.cancel_btn {
+  width: 4rem;
+  height: 2.4rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.save_btn {
+  background-color: rgb(30, 112, 221);
+  color: white;
+  margin-right: 1rem;
+}
+.save_btn:hover {
+  background-color: rgb(53, 125, 219);
+}
+.cancel_btn {
+  background-color: white;
+  border: 1px solid #ccc;
+}
+.cancel_btn:hover {
+  background-color: #ccc;
+}
+.required_field {
+  color: red;
+}
+.header {
+  text-align: center;
+  margin-bottom: 1rem;
+  border-radius: 5px;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+/* external supply soruces table  */
+.external_supply_sources_table {
+  text-align: start;
+  border: 1px solid rgb(196, 196, 196);
+  border-radius: 10px;
+}
+.external_supply_sources_table thead {
+  border: 1px solid rgb(196, 196, 196);
+  border-radius: 10px;
+}
+.external_supply_sources thead th {
+  padding: 1.2rem;
+  text-align: start;
+}
+.external_supply_sources td {
+  padding: 1rem;
+}
+
+.required {
+  color: white;
+  background: #ff4141;
+  text-transform: uppercase;
+  padding: 0 14px;
+  font-size: 12px;
+  margin-left: 10px;
+}

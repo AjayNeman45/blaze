@@ -1,0 +1,108 @@
+.accounts_page {
+	margin: 2rem 4rem;
+}
+.accounts_page_title {
+	font-size: 35px;
+	font-weight: bold;
+}
+.accounts_table tr {
+	border: 1px solid rgb(221, 221, 221);
+}
+.accounts_table th {
+	padding: 20px 10px;
+	text-align: center;
+}
+.accounts_table td {
+	padding: 20px 10px;
+	/* border-bottom: 1px solid gray; */
+	font-size: 15px;
+}
+.accounts_table td:nth-child(2) {
+	cursor: pointer;
+	font-weight: bold;
+}
+.accounts_table td:nth-child(2):hover {
+	color: blue;
+	text-decoration: underline;
+}
+.accounts_table th:nth-child(2) {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.accounts_table tr:hover {
+	background-color: rgb(241, 241, 250);
+}
+.edit_account_modal span {
+	font-size: 20px;
+}
+.edit_account_modal {
+	border: none !important;
+	border-radius: 6px;
+	width: 60rem !important;
+	outline: none !important;
+	text-align: center;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 700;
+	background-color: white;
+	outline: none;
+	box-shadow: 24;
+	padding: 2rem;
+}
+.edit_account_modal form {
+	color: rgb(65, 63, 63);
+	font-size: 16px;
+}
+.edit_account_modal .inputs {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	margin-top: 2rem;
+}
+.edit_account_modal .inputs > div {
+	/* border: 1px solid red !important; */
+	width: 26rem;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	margin: 1rem 2rem;
+	margin-top: 0;
+	/* margin-bottom: 1rem; */
+}
+.edit_account_name {
+	margin-top: 2rem;
+}
+.edit_account_modal > form > .inputs > div > input,
+textarea {
+	width: 17rem;
+	border: 1px solid rgb(184, 184, 184);
+	outline: none;
+	height: 2rem;
+	padding-left: 10px;
+	border-radius: 4px;
+}
+.edit_account_modal .btns {
+	display: flex;
+	align-items: center;
+	justify-content: end;
+	margin-right: 1.5rem;
+}
+.edit_account_modal .btns > button {
+	padding: 10px 20px;
+	margin: 0 0.4rem;
+	background-color: rgb(96, 202, 221);
+	border: none;
+	outline: none;
+	color: white;
+	border-radius: 6px;
+	cursor: pointer;
+}
+.edit_account_modal > .btns > button:hover {
+	background-color: rgb(49, 156, 175);
+}
+.required {
+	color: red;
+}
