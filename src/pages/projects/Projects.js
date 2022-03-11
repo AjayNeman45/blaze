@@ -11,8 +11,16 @@ import "./Projects.css";
 import { useEffect, useState } from "react";
 import Subheader from "../../components/subheader/Subheader";
 import { useProjectContext } from "./ProjectContext";
+import Hashids from "hashids";
 
 const Projects = () => {
+  const hashids = new Hashids("My Project");
+
+  var id = hashids.encodeHex("5as7f78");
+  console.log(id);
+  var hex = hashids.decodeHex(id);
+  console.log(hex);
+
   const history = useHistory();
   const [countCheckedProjects, setCountCheckProjects] = useState(0);
   const [checkRows, setCheckRows] = useState([]);

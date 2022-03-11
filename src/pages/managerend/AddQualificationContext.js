@@ -1,3 +1,4 @@
+import { setInstallerType } from "clientjs/src/vendor/deployJava";
 import { useEffect } from "react";
 import { useState } from "react";
 import { createContext, useContext } from "react";
@@ -23,6 +24,8 @@ const AddQualificationContextProvider = ({ children }) => {
   const [allowedResponses, setAllowedResponses] = useState([]);
   const [minMaxCondition, setMinMaxCondition] = useState();
   const [allowedTextAns, setAllowedTextAns] = useState(null);
+  const [insertLoading, setInsertLoading] = useState(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   const { surveyID } = useParams();
   const handleMinMaxCondition = (value, type) => {
@@ -30,14 +33,10 @@ const AddQualificationContextProvider = ({ children }) => {
       setMinMaxCondition({ ...minMaxCondition, min: parseInt(value) });
     else setMinMaxCondition({ ...minMaxCondition, max: parseInt(value) });
   };
-  // fetch all the questions from question library
-  //   useEffect(() => {
-  //     getQuestions("All")
-  //       .then((res) => {
-  //         setDropDownQuestions(res);
-  //       })
-  //       .catch((err) => console.log(err.message));
-  //   }, []);
+
+  const handleSnackbar = () => {
+    setOpenSnackbar(!openSnackbar);
+  };
 
   // fetch the question according the question type change
   const handleQuestionTypeSelect = (e) => {
@@ -51,6 +50,7 @@ const AddQualificationContextProvider = ({ children }) => {
   };
 
   const handleSetQuestionBtn = () => {
+    setInsertLoading(true);
     let body = {
       question_id: selectedQuestion?.question_id,
       status: true,
@@ -90,7 +90,11 @@ const AddQualificationContextProvider = ({ children }) => {
 
   const insertQualificationQuestion = (body) => {
     addQualificationQuestion(body, surveyID)
-      .then(() => console.log("Question added successfully"))
+      .then(() => {
+        setInsertLoading(false);
+        handleSnackbar();
+        console.log("Question added successfully");
+      })
       .catch((err) => console.log(err.message));
   };
 
@@ -120,6 +124,9 @@ const AddQualificationContextProvider = ({ children }) => {
     allowedTextAns,
     setAllowedTextAns,
     questionType,
+    insertLoading,
+    openSnackbar,
+    handleSnackbar,
   };
   return (
     <addQualificationContext.Provider value={value}>

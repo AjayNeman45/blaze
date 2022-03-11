@@ -17,6 +17,8 @@ import {
   OptionsToDisplay,
 } from "../qualifications/edit-question-modal/EditQuestionModal";
 import { useAddQualificationContext } from "./AddQualificationContext";
+import { Loading } from "@nextui-org/react";
+import SnackbarMsg from "../../components/Snackbar";
 
 const questionTypeRawData = [
   {
@@ -54,11 +56,20 @@ const NewManagerEnd = () => {
     allowedTextAns,
     setAllowedTextAns,
     questionType,
+    insertLoading,
+    openSnackbar,
+    handleSnackbar,
   } = useAddQualificationContext();
 
   console.log(dropDownQuestions);
   return (
     <>
+      <SnackbarMsg
+        msg="Qualification added successfully...!"
+        severity="success"
+        open={openSnackbar}
+        handleClose={handleSnackbar}
+      />
       <Header />
       <div className={styles.add_qualification_page}>
         <RadioGroup
@@ -165,12 +176,16 @@ const NewManagerEnd = () => {
           }
         })()}
 
-        <button
-          onClick={handleSetQuestionBtn}
-          className={styles.set_question_btn}
-        >
-          Set Question
-        </button>
+        {insertLoading ? (
+          <Loading type="spinner" size="lg" />
+        ) : (
+          <button
+            onClick={handleSetQuestionBtn}
+            className={styles.set_question_btn}
+          >
+            Set Question
+          </button>
+        )}
       </div>
     </>
   );

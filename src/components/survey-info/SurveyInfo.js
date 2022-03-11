@@ -10,9 +10,16 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/system";
 import { useParams } from "react-router-dom";
-import { getSurvey, updateSurvey } from "../../utils/firebaseQueries";
+import {
+  addSurvey,
+  getAllSurveys,
+  getSurvey,
+  updateSurvey,
+} from "../../utils/firebaseQueries";
 import { v4 as uuid } from "uuid";
 import SnackbarMsg from "../Snackbar";
+import { setDoc } from "firebase/firestore";
+import { encryptText } from "../../utils/enc-dec.utils";
 
 const style = {
   position: "absolute",
@@ -98,6 +105,7 @@ function SurveyInfo() {
   const [surveyAction, setSurveyAction] = useState("");
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMsg, setSnackbarMsg] = useState("");
+  const [surveyCloneModal, setSurveyCloneModal] = useState(false);
 
   const handleSnackbar = () => {
     setOpenSnackbar(!openSnackbar);
@@ -151,6 +159,34 @@ function SurveyInfo() {
   const handleSurveyStatusChange = (e) => {
     setSurveyStatus(e.target.value);
   };
+
+  useEffect(() => {
+    let lastSurveyID = 0;
+    let body = {};
+    if (surveyAction === "clone_survey") {
+      getAllSurveys().then((surveys) => {
+        surveys.forEach((survey) => {
+          if (parseInt(survey.id) > lastSurveyID) {
+            lastSurveyID = parseInt(survey.id);
+            body = survey.data();
+          }
+        });
+        delete body?.external_suppliers;
+        delete body?.changes;
+        body.survey_id = lastSurveyID + 1;
+        if (body?.encrypt?.sid !== encryptText(String(lastSurveyID + 1))) {
+          console.log("different ids....");
+        }
+        body.encrypt.sid = encryptText(String(lastSurveyID + 1));
+        // addSurvey(lastSurveyID + 1, body)
+        //   .then(() => {
+        //     setSurveyCloneModal(true);
+        //     console.log("survey cloned successfully....");
+        //   })
+        //   .catch((err) => console.log(err.message));
+      });
+    }
+  }, [surveyAction]);
 
   return (
     <>
@@ -216,6 +252,12 @@ function SurveyInfo() {
           </select>
         </div>
       </div>
+
+      {surveyCloneModal && (
+        <Modal>
+          <Modal.Body>Survey clone successfully</Modal.Body>
+        </Modal>
+      )}
 
       {surveyAction === "set_external_name" ? (
         <NameModal

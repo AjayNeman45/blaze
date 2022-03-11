@@ -36,6 +36,9 @@ export const useBlazeContext = () => {
 };
 const hashids = new Hashids("My Project");
 
+var id = hashids.encodeHex("507f1f77bcf86cd799439011"); // y42LW46J9luq3Xq9XMly
+var hex = hashids.decodeHex(id);
+
 const BlazeContextProvider = ({ children }) => {
   const { encryptedID } = useParams();
   const [baseLoading, setBaseLoading] = useState(false);
