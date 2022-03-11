@@ -7,6 +7,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 });
 
 const SnackbarMsg = ({ msg, severity, open, handleClose }) => {
+  console.log(msg);
   return (
     <>
       <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>

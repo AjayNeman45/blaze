@@ -337,10 +337,7 @@ const BlazeContextProvider = ({ children }) => {
           "device type " + device_type + " dosent allowed to attend the survey"
         );
         techincalDetailsVerification = false;
-      } else if (
-        survey?.country?.country !==
-        sessionTechnicalDetails?.geo_data?.country_code
-      ) {
+      } else if (survey?.country?.country !== geoData?.country_code) {
         setErrCodeAndMsg(37, "Respondent is not in the country of the survey");
         techincalDetailsVerification = false;
       } else {

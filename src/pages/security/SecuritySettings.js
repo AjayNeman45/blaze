@@ -32,10 +32,13 @@ const SecuritySettings = ({ setOpenSnackbar }) => {
   useEffect(() => {
     const func = async () => {
       const survey = await getSurvey(surveyID);
+      console.log(survey);
       setSecurityChecks(survey?.security_checks);
     };
     func();
   }, []);
+
+  console.log(securityChecks);
 
   return (
     <div className={styles.security_settings}>

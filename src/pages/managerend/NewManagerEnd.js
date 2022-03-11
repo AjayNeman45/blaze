@@ -53,10 +53,10 @@ const NewManagerEnd = () => {
     handleSetQuestionBtn,
     allowedTextAns,
     setAllowedTextAns,
-	questionType
+    questionType,
   } = useAddQualificationContext();
 
-  console.log(dropDownQuestions)
+  console.log(dropDownQuestions);
   return (
     <>
       <Header />
@@ -166,8 +166,8 @@ const NewManagerEnd = () => {
         })()}
 
         <button
-          className={styles.set_question_btn}
           onClick={handleSetQuestionBtn}
+          className={styles.set_question_btn}
         >
           Set Question
         </button>

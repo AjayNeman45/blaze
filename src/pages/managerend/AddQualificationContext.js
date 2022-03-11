@@ -102,7 +102,6 @@ const AddQualificationContextProvider = ({ children }) => {
     setDisplayOpt(options);
   }, [selectedQuestion]);
 
-  console.log(allowedTextAns);
   //   console.log(selectedQuestion, displayOpt, minMaxCondition, compulsaryOpt);
 
   const value = {

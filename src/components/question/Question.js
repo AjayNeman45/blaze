@@ -61,7 +61,7 @@ const Question = ({
                                 id={option}
                                 name="option"
                                 value={option}
-                                checked={option === response}
+                                defaultChecked={option === response}
                                 onChange={(e) => setResponse(e.target.value)}
                               />
                               <label htmlFor={option}>

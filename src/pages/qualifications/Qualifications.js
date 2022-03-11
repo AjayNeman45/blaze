@@ -54,6 +54,27 @@ const Qualifications = () => {
   const handleAddQualificationBtn = () => {
     history.push(`/add/qualifications/${surveyID}`);
   };
+
+  const tableSearchByName = (e) => {
+    var input, filter, table, tr, td, i, txtValue;
+    input = e.target.value;
+    filter = input.toUpperCase();
+    table = document.getElementById("qualification__table");
+    tr = table.getElementsByTagName("tr");
+    for (i = 0; i < tr.length; i++) {
+      td = tr[i].getElementsByTagName("td")[1];
+      if (td) {
+        txtValue = td.textContent || td.innerText;
+        console.log(txtValue);
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          tr[i].style.display = "";
+        } else {
+          tr[i].style.display = "none";
+        }
+      }
+    }
+  };
+
   return (
     <>
       <Header />
@@ -62,25 +83,22 @@ const Qualifications = () => {
         <SurveyInfo />
         <div className={styles.head_section}>
           <div className={styles.head_section_right}>
-            <div className={styles.survey_status_search}>
-              <select className={styles.select_input_field}>
-                <option value="all">All</option>
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-              </select>
-            </div>
             <div className={styles.survay_name_search}>
-              <input type="text" />
+              <input
+                type="text"
+                placeholder="search by name"
+                id="qualification_name_search"
+                onChange={tableSearchByName}
+              />
             </div>
             <div className={styles.head_section_right_btns}>
-              <button className={styles.search_btn}>Seach</button>
               <button
                 className={styles.add_qualification_btn}
                 onClick={handleAddQualificationBtn}
               >
                 Add Qualification
               </button>
-              <button className={styles.manage_logic_btn}>Add Logic</button>
+              {/*  we will going to use this button later <button className={styles.manage_logic_btn}>Add Logic</button>  */}
             </div>
           </div>
         </div>
@@ -88,7 +106,10 @@ const Qualifications = () => {
           {fetchingQualifications ? (
             <Loading />
           ) : (
-            <table className={styles.qualification_table}>
+            <table
+              className={styles.qualification_table}
+              id="qualification__table"
+            >
               <thead>
                 <tr>
                   <th>Order</th>
@@ -125,7 +146,6 @@ const Qualifications = () => {
                         >
                           Inactivate
                         </span>
-                        <span>Targetable</span>
                       </td>
                     </tr>
                   );

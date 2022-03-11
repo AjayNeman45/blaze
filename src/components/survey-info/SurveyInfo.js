@@ -11,7 +11,8 @@ import {
 import { Box } from "@mui/system";
 import { useParams } from "react-router-dom";
 import { getSurvey, updateSurvey } from "../../utils/firebaseQueries";
-import cx from "classnames";
+import { v4 as uuid } from "uuid";
+import SnackbarMsg from "../Snackbar";
 
 const style = {
   position: "absolute",
@@ -29,30 +30,83 @@ const style = {
 };
 
 const options = [
-  "Archieved",
-  "Awarded",
-  "Bidding",
-  "Canceled Non chagred",
-  "Canceled with charge",
-  "complete",
-  "Live",
-  "paid",
-  "pending",
-  "ready to invoice",
-  "Invoiced",
-  "Titania",
-  "Triton",
-  "Umbriel",
+  {
+    label: "Archieved",
+    value: "awarded",
+  },
+  {
+    label: "Awarded",
+    value: "awarded",
+  },
+  {
+    label: "Bidding",
+    value: "bidding",
+  },
+  {
+    label: "Canceled Non charged",
+    value: "canceled_non_charged",
+  },
+  {
+    label: "Canceled with charge",
+    value: "canceled_with_charge",
+  },
+  {
+    label: "Complete",
+    value: "complete",
+  },
+  {
+    label: "Live",
+    value: "live",
+  },
+  {
+    label: "Paid",
+    value: "paid",
+  },
+  {
+    label: "Pending",
+    value: "pending",
+  },
+  {
+    label: "Ready to Invoice",
+    value: " ready_to_invoice",
+  },
+  {
+    label: "Invoiced",
+    value: "invoiced",
+  },
+  {
+    label: "Titanic",
+    value: "titanic",
+  },
+  {
+    label: "Triton",
+    value: "triton",
+  },
+  {
+    label: "Umbriel",
+    value: "umbriel",
+  },
 ];
 
 function SurveyInfo() {
   const [openEditNameModal, setOpenEditNameModal] = useState(false);
   const [newSurveyName, setNewSurveyName] = useState();
   const [disabledSaveBtn, setDisabledSaveBtn] = useState(true);
-  const [changedSurveyName, setChangeSurveyName] = useState();
+  const [changedSurveyName, setChangeSurveyName] = useState("");
+  const [setExternalSurveyName, setExternalProjectName] = useState("");
+  const [surveyStatus, setSurveyStatus] = useState("");
+  const [surveyAction, setSurveyAction] = useState("");
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMsg, setSnackbarMsg] = useState("");
+
+  const handleSnackbar = () => {
+    setOpenSnackbar(!openSnackbar);
+  };
+
   const { surveyID } = useParams();
   const [survey, setSurvey] = useState({});
   const handleEditSurveyNameModal = () => {
+    setSurveyAction("");
     setOpenEditNameModal(!openEditNameModal);
   };
 
@@ -60,6 +114,7 @@ function SurveyInfo() {
     getSurvey(surveyID)
       .then((data) => {
         setSurvey(data);
+        setSurveyStatus(data?.status);
         setChangeSurveyName(data?.survey_name);
         setNewSurveyName(data?.survey_name);
       })
@@ -74,15 +129,37 @@ function SurveyInfo() {
     updateSurvey(surveyID, body)
       .then(() => {
         console.log("survey name updated");
+        setSnackbarMsg("survey name is updated");
+        handleSnackbar();
         setNewSurveyName(changedSurveyName);
       })
       .catch((err) => console.log(err.message));
   };
-
-  console.log(survey.status);
+  const handleSetExternalSurveyNameBtn = () => {
+    setOpenEditNameModal(false);
+    const body = {
+      external_survey_name: setExternalSurveyName,
+    };
+    updateSurvey(surveyID, body)
+      .then(() => {
+        setSnackbarMsg("External Name for the survey is updated");
+        handleSnackbar();
+        console.log("external project name updated");
+      })
+      .catch((err) => console.log(err.message));
+  };
+  const handleSurveyStatusChange = (e) => {
+    setSurveyStatus(e.target.value);
+  };
 
   return (
     <>
+      <SnackbarMsg
+        msg={snackbarMsg}
+        severity="success"
+        open={openSnackbar}
+        handleClose={handleSnackbar}
+      />
       <div className={styles.survey_info_container}>
         <div className={styles.survey_info_left}>
           <div className={styles.survey_info_name}>
@@ -109,73 +186,117 @@ function SurveyInfo() {
         <div className={styles.survey_info_right}>
           <FormControl sx={{ m: 1, minWidth: 120 }}>
             <Select
-              onChange={(e) => console.log(e.target.value)}
-              displayEmpty
+              onChange={handleSurveyStatusChange}
               inputProps={{ "aria-label": "Without label" }}
-              value={survey?.status}
               className={styles.status_select_field}
+              value={surveyStatus}
             >
               {options?.map((option) => (
-                <MenuItem value={option}>{option}</MenuItem>
+                <MenuItem value={option.value} key={uuid()}>
+                  {option.label}
+                </MenuItem>
               ))}
             </Select>
           </FormControl>
 
-          <select className={styles.action_select_field}>
-            <option value="" disabled selected hidden>
+          <select
+            className={styles.action_select_field}
+            value=""
+            onChange={(e) => {
+              setOpenEditNameModal(true);
+              setSurveyAction(e.target.value);
+            }}
+          >
+            <option value="" disabled hidden>
               Action
             </option>
-            <option>Test Survey</option>
-            <option>Clone Survey</option>
-            <option>Set External Name</option>
+            <option value="test_survey">Test Survey</option>
+            <option value="clone_survey">Clone Survey</option>
+            <option value="set_external_name">Set External Name</option>
           </select>
         </div>
       </div>
 
-      <Modal
-        open={openEditNameModal}
-        onClose={handleEditSurveyNameModal}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          <h3>Change Survey Name</h3> <br />
-          <form onSubmit={handleChangeSurveyNameBtn}>
-            <input
-              type="text"
-              value={changedSurveyName}
-              className={styles.change_survey_name_input}
-              onChange={(e) => {
-                setChangeSurveyName(e.target.value);
-                setDisabledSaveBtn(false);
-              }}
-            />
-            <div className={styles.btns}>
-              <button
-                className={
-                  disabledSaveBtn ? styles.deactivate_btn : styles.change_btn
-                }
-                disabled={disabledSaveBtn}
-                type="submit"
-              >
-                Change
-              </button>
-              <button
-                className={styles.cancel_btn}
-                onClick={() => {
-                  setOpenEditNameModal(false);
-                  setChangeSurveyName(survey?.survey_name);
-                  setDisabledSaveBtn(true);
-                }}
-              >
-                Cancel
-              </button>
-            </div>
-          </form>
-        </Box>
-      </Modal>
+      {surveyAction === "set_external_name" ? (
+        <NameModal
+          title="Set External Project name"
+          changeName={setExternalSurveyName}
+          setChangeName={setExternalProjectName}
+          disabledSaveBtn={disabledSaveBtn}
+          setDisabledSaveBtn={setDisabledSaveBtn}
+          openEditNameModal={openEditNameModal}
+          setOpenEditNameModal={setOpenEditNameModal}
+          handleSaveBtn={handleSetExternalSurveyNameBtn}
+        />
+      ) : (
+        <NameModal
+          title="Change Survey name"
+          changeName={changedSurveyName}
+          setChangeName={setChangeSurveyName}
+          disabledSaveBtn={disabledSaveBtn}
+          setDisabledSaveBtn={setDisabledSaveBtn}
+          openEditNameModal={openEditNameModal}
+          setOpenEditNameModal={setOpenEditNameModal}
+          handleSaveBtn={handleChangeSurveyNameBtn}
+        />
+      )}
     </>
   );
 }
+
+const NameModal = ({
+  title,
+  changeName,
+  setChangeName,
+  disabledSaveBtn,
+  setDisabledSaveBtn,
+  openEditNameModal,
+  setOpenEditNameModal,
+  handleSaveBtn,
+}) => {
+  return (
+    <Modal
+      open={openEditNameModal}
+      onClose={() => setOpenEditNameModal(false)}
+      aria-labelledby="modal-modal-title"
+      aria-describedby="modal-modal-description"
+    >
+      <Box sx={style}>
+        <h3>{title}</h3> <br />
+        <form onSubmit={handleSaveBtn}>
+          <input
+            type="text"
+            value={changeName}
+            className={styles.change_survey_name_input}
+            onChange={(e) => {
+              setChangeName(e.target.value);
+              setDisabledSaveBtn(false);
+            }}
+          />
+          <div className={styles.btns}>
+            <button
+              className={
+                disabledSaveBtn ? styles.deactivate_btn : styles.change_btn
+              }
+              disabled={disabledSaveBtn}
+              type="submit"
+            >
+              Change
+            </button>
+            <button
+              className={styles.cancel_btn}
+              onClick={() => {
+                setOpenEditNameModal(false);
+                setDisabledSaveBtn(true);
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </Box>
+    </Modal>
+  );
+};
 
 export default SurveyInfo;

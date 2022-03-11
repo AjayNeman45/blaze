@@ -96,7 +96,7 @@ const ProjectSettings = () => {
         break;
     }
   };
-  console.log(sdata, changes);
+  // console.log(sdata, changes);
 
   return (
     <>
@@ -125,6 +125,7 @@ const ProjectSettings = () => {
       </div>
 
       <div className="project_settings_page">
+        {/* setup requrement card  */}
         <div className="card">
           <p className="title">Setup Requirements</p>
           <div>
@@ -233,6 +234,8 @@ const ProjectSettings = () => {
             </div>
           </div>
         </div>
+
+        {/* url setup and cost card  */}
         <div className="card">
           <p className="title">URL Setup & Costs</p>
           <div>
@@ -262,7 +265,28 @@ const ProjectSettings = () => {
           </button>
           <div>
             <label>Client CPI</label>
-            <input placeholder="$USD input in integers" />
+            <input
+              placeholder="$USD input in integers"
+              value={sdata?.client_info?.client_cpi}
+              onChange={(e) => {
+                {
+                  setChanges({
+                    ...changes,
+                    client_cpi: {
+                      changed_to: parseInt(e.target.value),
+                      previous_change: surveyData?.client_info?.client_cpi,
+                    },
+                  });
+                  setSData({
+                    ...sdata,
+                    client_info: {
+                      ...sdata?.client_info,
+                      client_cpi: parseInt(e.target.value),
+                    },
+                  });
+                }
+              }}
+            />
             <small>Notes the price a client is paying for completes</small>
           </div>
           <div>
@@ -273,6 +297,8 @@ const ProjectSettings = () => {
             </small>
           </div>
         </div>
+
+        {/* expected metrics and data  */}
         <div className="card">
           <p className="title">Expected Metrics & Data</p>
           <div>
@@ -354,6 +380,8 @@ const ProjectSettings = () => {
             </small>
           </div>
         </div>
+
+        {/* survey basics  */}
         <div className="card">
           <p className="title">Survey Basics</p>
           <div>
@@ -369,7 +397,7 @@ const ProjectSettings = () => {
             <input
               placeholder="Start Date"
               class="textbox-n"
-              type="text"
+              type="date"
               onfocus="(this.type='date')"
               id="date"
             />
@@ -380,7 +408,7 @@ const ProjectSettings = () => {
             <input
               placeholder="out-field Date"
               class="textbox-n"
-              type="text"
+              type="date"
               onfocus="(this.type='date')"
               id="date"
             />
@@ -611,16 +639,14 @@ const ProjectSettings = () => {
               onChange={(e) => {
                 setChanges({
                   ...changes,
-                  external_name: {
+                  external_project_name: {
                     changed_to: e.target.value,
-                    previous_change: surveyData?.external_name
-                      ? surveyData?.external_name
-                      : null,
+                    previous_change: surveyData?.external_project_name,
                   },
                 });
                 setSData({
                   ...sdata,
-                  external_name: e.target.value,
+                  external_project_name: e.target.value,
                 });
               }}
             />
@@ -668,14 +694,15 @@ const ProjectSettings = () => {
                   ...changes,
                   client_pm_email: {
                     changed_to: e.target.value,
-                    previous_change: surveyData?.client_pm_email
-                      ? surveyData?.client_pm_email
-                      : null,
+                    previous_change: surveyData?.client_info?.client_pm_email,
                   },
                 });
                 setSData({
                   ...sdata,
-                  client_pm_email: e.target.value,
+                  client_info: {
+                    ...sdata?.client_info,
+                    client_pm_email: e.target.value,
+                  },
                 });
               }}
             />
@@ -691,20 +718,23 @@ const ProjectSettings = () => {
                   ...changes,
                   client_project_manager: {
                     changed_to: e.target.value,
-                    previous_change: surveyData?.client_project_manager
-                      ? surveyData?.client_project_manager
-                      : null,
+                    previous_change:
+                      surveyData?.client_info?.client_project_manager,
                   },
                 });
                 setSData({
                   ...sdata,
-                  client_project_manager: e.target.value,
+                  client_info: {
+                    ...sdata?.client_info,
+                    client_project_manager: e.target.value,
+                  },
                 });
               }}
             />
           </div>
         </div>
 
+        {/* save and cancle button  */}
         <div
           className="savediscardContainer"
           style={{

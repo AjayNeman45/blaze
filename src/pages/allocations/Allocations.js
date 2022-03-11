@@ -360,7 +360,7 @@ const AddSupplierModal = () => {
               Cancel
             </button>
           </div>
-          <small style={{ color: "red" }}>{err}</small>
+          <small style={{ color: "red" }}>Error: {err}</small>
         </Box>
       </Modal>
     </div>

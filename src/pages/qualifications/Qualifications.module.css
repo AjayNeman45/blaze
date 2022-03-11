@@ -21,11 +21,10 @@
 .head_section_right_btns button {
   margin: 0 5px;
 }
-.add_qualification_btn,
-.manage_logic_btn,
-.search_btn {
+.add_qualification_btn {
   outline: none;
-  padding: 9px 20px;
+  width: 9rem;
+  height: 2.5rem;
   border: 1px solid #1765dc;
   background: #1765dc;
   color: rgb(255, 255, 255);
@@ -34,10 +33,9 @@
   font-size: 15px;
   border-radius: 6px;
 }
-.add_qualification_btn:hover,
-.search_btn:hover,
-.manage_logic_btn:hover {
-  background-color: #1765dc;
+
+.add_qualification_btn:hover {
+  background-color: #0857cc;
 }
 
 .select_input_field {
@@ -50,10 +48,12 @@
   /* border: 1px solid red; */
 }
 .survay_name_search input {
-  height: 1.8rem;
-  border-radius: 2px;
+  height: 2.5rem;
+  width: 16rem;
+  border-radius: 6px;
   border: 1px solid rgb(206, 206, 206);
   outline: none;
+  padding-left: 10px;
 }
 
 .survey_info_section {

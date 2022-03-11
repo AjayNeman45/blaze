@@ -113,9 +113,10 @@
 }
 .project_table_first_col .coldiv label {
   cursor: pointer;
-  /* border: 1px solid red; */
+  font-size: 15px;
   color: rgb(18, 82, 219);
   font-weight: bold;
+  text-align: start;
 }
 .project_table_first_col .coldiv label:hover {
   color: rgb(18, 149, 209);

@@ -194,7 +194,7 @@ const CreateNewProjectProvider = ({ children }) => {
               blocked_ips: [],
               blocked_rids: [],
               blocked_countries: [],
-              security_cheks: {
+              security_checks: {
                 unique_ip: true,
                 unique_rid: true,
                 unique_fingerprint: true,
