@@ -18,8 +18,11 @@ const ProjectSettings = () => {
 
   let [sdata, setSData] = useState({});
   let [changes, setChanges] = useState({});
+  let [displaychanges, setDisplayChanges] = useState([]);
+
   useEffect(() => {
     setSData(surveyData);
+    setDisplayChanges(surveyData?.changes);
   }, [surveyData]);
 
   useEffect(() => {
@@ -749,6 +752,7 @@ const ProjectSettings = () => {
           </Button>
         </div>
 
+        {/* change log  */}
         <div className="change_log">
           <p className="change_log_title">Change log</p>
           <p className="change_log_instruction">
@@ -756,20 +760,51 @@ const ProjectSettings = () => {
             and when
           </p>
           <div style={{ overflowX: "auto" }}>
-            <table className="change_log_table">
+            <table className="change_log_table" border="1">
               <thead>
                 <tr>
                   <th>Time @ Date</th>
                   <th>Profile Name</th>
                   <th>Profile Email</th>
-                  <th>Changed Elements/Fields</th>
-                  <th>Removed</th>
-                  <th>Changed to</th>
+                  <th>Changes</th>
+                  {/* <th>Removed</th>
+                  <th>Changed to</th>  */}
                 </tr>
               </thead>
-              {/* <tbody>{sdata?.changes.map((data) => {
+              <tbody>
+                {displaychanges?.map((change) => {
+                  return (
+                    <tr>
+                      {/* <td>{change?.updated_date.toDate()}</td> */}
+                      <td>{change?.updated_date.toDate().toString()}</td>
+                      <td>Profile Name </td>
+                      <td>Profile email</td>
+                      <td>
+                        <th>Changed Elements/Fields</th>
+                        <th>Removed</th>
+                        <th>Changed to</th>
+                        {Object.keys(change).map((oneKey, i) => {
+                          if (oneKey != "updated_date") {
+                            console.log(change[oneKey], "change is ");
+                            return (
+                              <>
+                                {/* <table> */}
 
-			  })}</tbody> */}
+                                <tr>
+                                  <td>{oneKey}</td>
+                                  <td>{change[oneKey]?.previous_change}</td>
+                                  <td>{change[oneKey]?.changed_to}</td>
+                                </tr>
+                                {/* </table> */}
+                              </>
+                            );
+                          }
+                        })}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
             </table>
           </div>
         </div>

@@ -215,6 +215,7 @@ const CreateNewProjectProvider = ({ children }) => {
                 client_project_manager: "",
                 client_cpi: "",
               },
+              creation_date: new Date(),
             },
             { merge: true }
           )

@@ -1,137 +1,201 @@
 * {
-  padding: 0;
-  margin: 0;
+	padding: 0;
+	margin: 0;
 }
 
 .survey_info_container {
-  width: 100%;
-  height: 159px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border: 1px;
-  background: rgba(229, 229, 229, 0.29);
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.09);
-  border-radius: 12px;
-  padding: 0 2rem;
-  font-family: "Poppins", sans-serif;
+	width: 100%;
+	height: 159px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	border: 1px;
+	background: rgba(229, 229, 229, 0.29);
+	box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.09);
+	border-radius: 12px;
+	padding: 0 2rem;
+	font-family: "Poppins", sans-serif;
 }
 .survey_info_container h1 {
-  color: black;
-  font-size: 35px;
-  font-weight: 600;
+	color: black;
+	font-size: 35px;
+	font-weight: 600;
 }
 .survey_info_name {
-  display: flex;
-  align-items: flex-end;
+	display: flex;
+	align-items: flex-end;
+	/* border: 1px solid red; */
 }
 .survey_info_name h1 {
-  text-transform: uppercase;
+	text-transform: uppercase;
+	cursor: pointer;
+}
+.survey_info_name h1:hover {
+	text-decoration: underline;
 }
 .survey_info_container .edit_btn {
-  font-size: 13px;
-  color: gray;
-  margin-left: 10px;
-  cursor: pointer;
+	font-size: 13px;
+	color: gray;
+	margin-left: 10px;
+	cursor: pointer;
+	margin-bottom: 6px;
 }
 
 .survey_info_container .survey_info {
-  display: flex;
-  margin-top: 20px;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  width: 30rem;
+	display: flex;
+	margin-top: 20px;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	width: 30rem;
 }
 
 .title {
-  font-size: 14px;
-  font-weight: 400;
-  padding: 2px 5px 2px 5px;
-  color: #6c6c6c;
-  border: 1px solid #6b6b6b;
-  border-radius: 4px;
-  line-height: 21px;
+	font-size: 14px;
+	font-weight: 400;
+	padding: 2px 5px 2px 5px;
+	color: #6c6c6c;
+	border: 1px solid #6b6b6b;
+	border-radius: 4px;
+	line-height: 21px;
 }
 .value {
-  color: #404040;
-  font-size: 18px;
-  line-height: 27px;
-  transform: translate;
-  display: block;
+	color: #404040;
+	font-size: 18px;
+	line-height: 27px;
+	transform: translate;
+	display: block;
 }
 
 .live {
-  display: flex;
-  align-items: center;
-  color: #1bc64b;
-  font-size: 16px;
-  line-height: 24px;
+	display: flex;
+	align-items: center;
+	color: #1bc64b;
+	font-size: 16px;
+	line-height: 24px;
 }
 .survey_info_right {
-  margin-right: 2rem;
-  display: flex;
-  align-items: center;
+	margin-right: 2rem;
+	display: flex;
+	align-items: center;
 }
 .survey_info_right .status_select_field {
-  width: 13rem !important;
-  height: 2.5rem !important;
-  outline: none !important;
-  border-radius: 4px !important;
+	width: 13rem !important;
+	height: 2.5rem !important;
+	outline: none !important;
+	border-radius: 4px !important;
 }
 .action_select_field {
-  width: 13rem;
-  height: 2.5rem;
-  border-radius: 4px;
-  margin-left: 10px;
+	width: 13rem;
+	height: 2.5rem;
+	border-radius: 4px;
+	margin-left: 10px;
 }
 
 /* change survey name input field  */
 .change_survey_name_input {
-  width: 100%;
-  height: 4rem;
-  font-size: 20px;
-  padding-left: 20px;
-  outline: none;
-  border: 1px solid gray;
-  border-radius: 10px;
+	width: 100%;
+	height: 4rem;
+	font-size: 20px;
+	padding-left: 20px;
+	outline: none;
+	border: 1px solid gray;
+	border-radius: 10px;
 }
 .btns {
-  text-align: end;
-  margin: 3rem 0;
+	text-align: end;
+	margin: 3rem 0;
 }
 .btns .change_btn {
-  background: rgb(58, 135, 250);
-  color: white;
-  border: none;
-  border-radius: 3px;
-  cursor: pointer;
+	background: rgb(58, 135, 250);
+	color: white;
+	border: none;
+	border-radius: 3px;
+	cursor: pointer;
 }
 .btns .deactivate_btn {
-  background-color: rgb(170, 204, 255);
-  color: white;
-  border: none;
-  border-radius: 3px;
-  cursor: not-allowed;
+	background-color: rgb(170, 204, 255);
+	color: white;
+	border: none;
+	border-radius: 3px;
+	cursor: not-allowed;
 }
 .btns button {
-  width: 5rem;
-  height: 2.5rem;
-  font-size: 15px;
-  letter-spacing: 1px;
+	width: 5rem;
+	height: 2.5rem;
+	font-size: 15px;
+	letter-spacing: 1px;
 }
 .btns .change_btn:hover {
-  background-color: rgb(39, 117, 235);
+	background-color: rgb(39, 117, 235);
 }
 .btns .cancel_btn {
-  margin-left: 10px;
-  background-color: white;
-  border: none;
-  color: rgb(70, 69, 69);
-  cursor: pointer;
+	margin-left: 10px;
+	background-color: white;
+	border: none;
+	color: rgb(70, 69, 69);
+	cursor: pointer;
 }
 .btns .cancel_btn:hover {
-  background-color: rgb(223, 221, 221);
-  transition: all 0.2s linear;
-  border-radius: 3px;
+	background-color: rgb(223, 221, 221);
+	transition: all 0.2s linear;
+	border-radius: 3px;
+}
+
+.clonedMsgModalStyle {
+	width: 500px;
+	height: 300px;
+	border-radius: 30px;
+	background-color: white;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	padding: 2rem;
+	text-align: center;
+	-webkit-box-shadow: 0px 0px 59px -21px rgba(0, 0, 0, 0.75);
+	-moz-box-shadow: 0px 0px 59px -21px rgba(0, 0, 0, 0.75);
+	box-shadow: 0px 0px 59px -21px rgba(0, 0, 0, 0.75);
+	position: relative;
+}
+.clonedMsgModalStyle h2 {
+	margin-top: 1rem;
+	letter-spacing: 0.5px;
+	font-size: 30px;
+}
+
+.clonedMsgModalStyle .btns {
+	display: flex;
+	align-items: flex-end;
+	justify-content: center;
+}
+.clonedMsgModalStyle a {
+	color: rgb(0, 0, 0);
+	font-size: 17px;
+	margin-left: 10px;
+	width: 8rem;
+	height: 2.5rem;
+	padding: 0.5rem 0;
+	text-decoration: none;
+	background-color: rgb(214, 214, 214);
+	border-radius: 5px;
+	text-align: center;
+}
+.clonedMsgModalStyle a:hover {
+	background-color: rgb(194, 194, 194);
+}
+
+.clonedMsgModalStyle button {
+	width: 5rem;
+	height: 2.5rem;
+	background-color: rgb(58, 135, 250);
+	color: white;
+	border-radius: 5px;
+	cursor: pointer;
+	border: none;
+	font-size: 15px;
+	letter-spacing: 1px;
+}
+.clonedMsgModalStyle button:hover {
+	background-color: rgb(39, 117, 235);
 }

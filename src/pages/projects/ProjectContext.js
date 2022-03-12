@@ -22,7 +22,7 @@ const ProjectContextProvider = ({ children }) => {
 			const querySnapshot = await getDocs(
 				collection(db, "mirats", "surveys", "survey")
 			)
-			querySnapshot.forEach(doc => {
+			querySnapshot.docs.reverse().forEach(doc => {
 				setProjects(prevData => {
 					return [...prevData, doc.data()]
 				})

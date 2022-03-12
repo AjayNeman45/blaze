@@ -188,3 +188,26 @@
 .generate_report_btn button:hover {
   background-color: #0d5cd4;
 }
+.tableContainer {
+  overflow: scroll;
+  width: 100%;
+}
+.table {
+  text-align: left;
+  /* border-collapse: collapse; */
+}
+
+.table td,
+.table th {
+  /* border: 2px solid #DFFF00;   */
+  text-align: left;
+  padding: 8px 30px;
+  border-bottom: 1px solid rgb(209, 207, 207);
+}
+.table tbody tr:nth-child(odd) {
+  background-color: rgb(218, 242, 252);
+}
+.result_not_founds {
+  text-align: center;
+  color: gray;
+}

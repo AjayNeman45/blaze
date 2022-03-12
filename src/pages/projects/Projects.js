@@ -93,6 +93,90 @@ const Projects = () => {
     });
   }, [checkRows]);
 
+  const tableSearchBySurveyName = (e) => {
+    console.log(e.target.value);
+    var input, filter, table, tr, td, i, txtValue;
+    input = e.target.value;
+    filter = input.toUpperCase();
+    table = document.getElementById("project_table");
+    tr = table.getElementsByTagName("tr");
+    for (i = 0; i < tr.length; i++) {
+      td = tr[i].getElementsByTagName("td")[0];
+      if (td) {
+        txtValue = td.textContent || td.innerText;
+        console.log(txtValue);
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          tr[i].style.display = "";
+        } else {
+          tr[i].style.display = "none";
+        }
+      }
+    }
+  };
+
+  const tableSearchByStudyType = (e) => {
+    var input, filter, table, tr, td, i, txtValue;
+    input = e.target.value;
+    filter = input.toUpperCase();
+    table = document.getElementById("project_table");
+    tr = table.getElementsByTagName("tr");
+    for (i = 0; i < tr.length; i++) {
+      td = tr[i].getElementsByTagName("td")[8];
+      console.log(td);
+      if (td) {
+        txtValue = td.textContent || td.innerText;
+        console.log(txtValue);
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          tr[i].style.display = "";
+        } else {
+          tr[i].style.display = "none";
+        }
+      }
+    }
+  };
+
+  const tableSearchByCountry = (e) => {
+    var input, filter, table, tr, td, i, txtValue;
+    input = e.target.value;
+    filter = input.toUpperCase();
+    table = document.getElementById("project_table");
+    tr = table.getElementsByTagName("tr");
+    for (i = 0; i < tr.length; i++) {
+      td = tr[i].getElementsByTagName("td")[9];
+      console.log(td);
+      if (td) {
+        txtValue = td.textContent || td.innerText;
+        console.log(txtValue);
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          tr[i].style.display = "";
+        } else {
+          tr[i].style.display = "none";
+        }
+      }
+    }
+  };
+
+  const tableSearchByMonth = (e) => {
+    var input, filter, table, tr, td, i, txtValue;
+    input = e.target.value;
+    filter = input.toUpperCase();
+    table = document.getElementById("project_table");
+    tr = table.getElementsByTagName("tr");
+    for (i = 0; i < tr.length; i++) {
+      td = tr[i].getElementsByTagName("td")[10];
+      console.log(td);
+      if (td) {
+        txtValue = td.textContent || td.innerText;
+        console.log(txtValue);
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          tr[i].style.display = "";
+        } else {
+          tr[i].style.display = "none";
+        }
+      }
+    }
+  };
+
   return (
     <>
       <Header />
@@ -105,6 +189,7 @@ const Projects = () => {
               type="text"
               placeholder="search project by name or id"
               className="input"
+              onChange={tableSearchBySurveyName}
             />
           </div>
           <div className="searchby">
@@ -121,21 +206,23 @@ const Projects = () => {
             <label>Study Type</label>
             <input
               type="text"
-              placeholder="search project by name or id"
+              placeholder="search project by study type"
               className="input"
+              onChange={tableSearchByStudyType}
             />
           </div>
           <div className="searchby">
             <label>Countries</label>
             <input
               type="text"
-              placeholder="search project by name or id"
+              placeholder="search by country name"
               className="input"
+              onChange={tableSearchByCountry}
             />
           </div>
           <div className="searchby">
             <label>Months</label>
-            <select className="month input">
+            <select className="month input" onChange={tableSearchByMonth}>
               <option name="January" value="Jan">
                 January
               </option>
@@ -224,7 +311,7 @@ const Projects = () => {
           </ul>
         </div>
         <div style={{ overflowX: "auto" }}>
-          <table className="project_table">
+          <table className="project_table" id="project_table">
             <thead>
               <tr>
                 <th>Survey</th>
@@ -236,6 +323,7 @@ const Projects = () => {
                 <th>PM</th>
                 <th>EPC</th>
                 <th>Study Type</th>
+                <th>Country</th>
                 <th>Creation Date</th>
               </tr>
             </thead>
@@ -286,7 +374,8 @@ const Projects = () => {
                       <td>{project?.project_manager}</td>
                       <td>{project.EPC}</td>
                       <td>{project.study_type}</td>
-                      <td>{project.creation_date}</td>
+                      <td>{project?.country?.country}</td>
+                      <td>{project?.creation_date?.toDate().toDateString()}</td>
                     </tr>
                   );
                 } else if (project.status === view) {
