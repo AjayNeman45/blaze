@@ -38,12 +38,9 @@ const RespondantAnswer = () => {
 
   useEffect(() => {
     var dt = new Date();
-    dt.setDate(dt.getDate() + 29);
-    setFromDate(new Date().toISOString().substring(0, 10));
-    setFromDate(new Date().toISOString().substring(0, 10));
-    setEndDate(dt.toISOString().substring(0, 10));
-
-    setEndDate(dt.toISOString().substring(0, 10));
+    dt.setDate(dt.getDate() - 29);
+    setFromDate(dt.toISOString().substring(0, 10));
+    setEndDate(new Date().toISOString().substring(0, 10));
 
     const func = async () => {
       try {
@@ -57,14 +54,6 @@ const RespondantAnswer = () => {
         const allSessions = await getAllSessions(surveyID, gamma);
         allSessions.forEach((session) => {
           setSessions((oldData) => [
-            ...oldData,
-            {
-              session_data: session.data(),
-              survey_id: survey.survey_id,
-              survey_name: survey.survey_name,
-            },
-          ]);
-          setSessionsCopy((oldData) => [
             ...oldData,
             {
               session_data: session.data(),

@@ -22,6 +22,7 @@ const ProjectSettings = () => {
 
   useEffect(() => {
     setSData(surveyData);
+    console.log(surveyData);
     setDisplayChanges(surveyData?.changes);
   }, [surveyData]);
 
@@ -56,16 +57,60 @@ const ProjectSettings = () => {
   }
 
   const handleDeviceSuitability = (type, value) => {
-    // setSurveyData({
-    // 	...surveyData,
-    // 	device_suitability: {
-    // 	  type: true,
-    // 	},
-    //   });
+    setChanges({
+      ...changes,
+      devices_allowed: {
+        changed_to: `${type} - ${value ? "Allowed" : "Not Allowed"}`,
+        previous_change: `${type} - ${!value ? "Allowed" : "Not Allowed"} `,
+      },
+    });
+    switch (type) {
+      case "mobile":
+        return setSData({
+          ...sdata,
+          device_suitability: {
+            ...sdata?.device_suitability,
+            mobile: value,
+          },
+        });
+      case "tablet":
+        return setSData({
+          ...sdata,
+          device_suitability: {
+            ...sdata?.device_suitability,
+            tablet: value,
+          },
+        });
+      case "desktop":
+        return setSData({
+          ...sdata,
+          device_suitability: {
+            ...sdata?.device_suitability,
+            desktop: value,
+          },
+        });
+      case "tv":
+        return setSData({
+          ...sdata,
+          device_suitability: {
+            ...sdata?.device_suitability,
+            tv: value,
+          },
+        });
+      case "webcam":
+        return setSData({
+          ...sdata,
+          device_suitability: {
+            ...sdata?.device_suitability,
+            webcam: value,
+          },
+        });
+    }
   };
 
+  console.log(sdata);
+
   const handleUrlChange = (type, e) => {
-    console.log(type, e.target.value);
     switch (type) {
       case "live_url":
         setSData(() => {
@@ -99,7 +144,7 @@ const ProjectSettings = () => {
         break;
     }
   };
-  // console.log(sdata, changes);
+  console.log(displaychanges);
 
   return (
     <>
@@ -425,7 +470,7 @@ const ProjectSettings = () => {
                   type="radio"
                   name="mobile"
                   id="yes"
-                  checked={surveyData?.device_suitability?.mobile}
+                  checked={sdata?.device_suitability?.mobile}
                   onChange={() => {
                     handleDeviceSuitability("mobile", true);
                   }}
@@ -436,7 +481,7 @@ const ProjectSettings = () => {
                   type="radio"
                   name="mobile"
                   id="no"
-                  checked={!surveyData?.device_suitability?.mobile}
+                  checked={!sdata?.device_suitability?.mobile}
                   onChange={() => {
                     handleDeviceSuitability("mobile", false);
                   }}
@@ -450,7 +495,10 @@ const ProjectSettings = () => {
                   type="radio"
                   name="tablet"
                   id="yes"
-                  checked={surveyData?.device_suitability?.tablet}
+                  checked={sdata?.device_suitability?.tablet}
+                  onChange={() => {
+                    handleDeviceSuitability("tablet", true);
+                  }}
                 />
                 &nbsp;
                 <lable htmlFor="yes">Yes</lable> &nbsp; &nbsp; &nbsp;
@@ -458,7 +506,10 @@ const ProjectSettings = () => {
                   type="radio"
                   name="tablet"
                   id="no"
-                  checked={!surveyData?.device_suitability?.tablet}
+                  checked={!sdata?.device_suitability?.tablet}
+                  onChange={() => {
+                    handleDeviceSuitability("tablet", false);
+                  }}
                 />{" "}
                 &nbsp;
                 <lable htmlFor="no">No</lable>
@@ -469,7 +520,10 @@ const ProjectSettings = () => {
                   type="radio"
                   name="desktop"
                   id="yes"
-                  checked={surveyData?.device_suitability?.desktop}
+                  checked={sdata?.device_suitability?.desktop}
+                  onChange={() => {
+                    handleDeviceSuitability("desktop", true);
+                  }}
                 />{" "}
                 &nbsp;
                 <lable htmlFor="yes">Yes</lable> &nbsp; &nbsp; &nbsp;
@@ -477,7 +531,10 @@ const ProjectSettings = () => {
                   type="radio"
                   name="desktop"
                   id="no"
-                  checked={!surveyData?.device_suitability?.desktop}
+                  checked={!sdata?.device_suitability?.desktop}
+                  onChange={() => {
+                    handleDeviceSuitability("desktop", false);
+                  }}
                 />{" "}
                 &nbsp;
                 <lable htmlFor="no">No</lable>
@@ -488,7 +545,10 @@ const ProjectSettings = () => {
                   type="radio"
                   name="tv"
                   id="yes"
-                  checked={surveyData?.device_suitability?.tv}
+                  checked={sdata?.device_suitability?.tv}
+                  onChange={() => {
+                    handleDeviceSuitability("tv", true);
+                  }}
                 />{" "}
                 &nbsp;
                 <lable htmlFor="yes">Yes</lable> &nbsp; &nbsp; &nbsp;
@@ -496,7 +556,10 @@ const ProjectSettings = () => {
                   type="radio"
                   name="tv"
                   id="no"
-                  checked={!surveyData?.device_suitability?.tv}
+                  checked={!sdata?.device_suitability?.tv}
+                  onChange={() => {
+                    handleDeviceSuitability("tv", false);
+                  }}
                 />{" "}
                 &nbsp;
                 <lable htmlFor="no">No</lable>
@@ -505,17 +568,23 @@ const ProjectSettings = () => {
                 <p>Requires webcam</p>
                 <input
                   type="radio"
-                  name="tv"
+                  name="webcam"
                   id="yes"
-                  checked={surveyData?.device_suitability?.tv}
+                  checked={sdata?.device_suitability?.webcam}
+                  onChange={() => {
+                    handleDeviceSuitability("webcam", true);
+                  }}
                 />{" "}
                 &nbsp;
                 <lable htmlFor="yes">Yes</lable> &nbsp; &nbsp; &nbsp;
                 <input
                   type="radio"
-                  name="tv"
+                  name="webcam"
                   id="no"
-                  checked={!surveyData?.device_suitability?.tv}
+                  checked={!sdata?.device_suitability?.webcam}
+                  onChange={() => {
+                    handleDeviceSuitability("webcam", false);
+                  }}
                 />{" "}
                 &nbsp;
                 <lable htmlFor="no">No</lable>
@@ -753,6 +822,62 @@ const ProjectSettings = () => {
         </div>
 
         {/* change log  */}
+        {/* <div className="change_log">
+          <p className="change_log_title">Change log</p>
+          <
+		  p className="change_log_instruction">
+            Review Changes to your survey configurations. See who made changes
+            and when
+          </>
+          <div style={{ overflowX: "auto" }}>
+            <table className="change_log_table" border="1">
+              <thead>
+                <tr>
+                  <th>Time @ Date</th>
+                  <th>Profile Name</th>
+                  <th>Profile Email</th>
+                  <th colSpan={3}>Changes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+
+                  <th>Change log</th>
+                  <th>previous change</th>
+                  <th>current change</th>
+                </tr>
+
+                {displaychanges?.map((change, index) => {
+                  //   console.log(change);
+
+                  return (
+                    <tr>
+                      <td>{change?.updated_date?.toDate()?.toString()}</td>
+                      <td>Profile Name </td>
+                      <td>Profile email</td>
+                      {Object.keys(change).map((oneKey, i) => {
+                        console.log(oneKey);
+                        if (oneKey != "updated_date") {
+                          return (
+                            <>
+                              <td>{oneKey}</td>
+                              <td>{change[oneKey]?.previous_change}</td>
+                              <td>{change[oneKey]?.changed_to}</td>
+                            </>
+                          );
+                        }
+                      })}
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div> */}
+
         <div className="change_log">
           <p className="change_log_title">Change log</p>
           <p className="change_log_instruction">
@@ -836,3 +961,33 @@ const handleProjectSettingChanges = (
     survey_group: e.target.value,
   });
 };
+
+{
+  /* <tbody> */
+}
+{
+  /* {displaychanges?.map((change, indx) => {
+  return (
+	<tr>
+	  <td>{change?.updated_date.toDate()}</td>
+	  <td>{change?.updated_date.toDate().toLocaleString()}</td>
+	  <td>Profile Name </td>
+	  <td>Profile email</td>
+	  {Object.keys(change).map((oneKey, i) => {
+		if (oneKey != "updated_date") {
+		  return (
+			<>
+
+			  <td>{oneKey}</td>
+			  <td>{change[oneKey]?.previous_change}</td>
+			  <td>{change[oneKey]?.changed_to}</td>
+			
+			</>
+		  );
+		}
+	  })}
+	</tr>
+  );
+})}
+</tbody> */
+}

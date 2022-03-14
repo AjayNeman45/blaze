@@ -23,13 +23,13 @@ const ProejctSettingProvider = ({ children }) => {
 
   useEffect(() => {
     console.log(
-      "https://gifted-visvesvaraya-89e692.netlify.app/" +
+      "https://gifted-visvesvaraya-89e692.netlify.app/blaze/" +
         surveyData?.encrypt?.sid +
         "-" +
         surveyData?.encrypt?.pid +
         "-" +
         surveyData?.encrypt?.cid +
-        `/lightningUrl?SRCID=Vv5JQoX&RID=`
+        `/lightningUrl?SRCID=Vv5JQoX&RID=794639`
     );
   }, [surveyData]);
 

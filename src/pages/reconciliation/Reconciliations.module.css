@@ -1,213 +1,225 @@
 .main {
-  flex-grow: 1;
-  display: flex;
-  margin: 3rem;
+	flex-grow: 1;
+	display: flex;
+	margin: 3rem;
 }
 
 /* data analysis  */
 .filter_by_field_Date .legend {
-  font-weight: bold;
+	font-weight: bold;
 }
 .date_input {
-  padding: 7px 15px;
-  border: 1px solid #e7e6e6;
-  background-color: #e7e6e6;
-  border-radius: 10px;
-  margin-top: 10px;
+	padding: 7px 15px;
+	border: 1px solid #e7e6e6;
+	background-color: #e7e6e6;
+	border-radius: 10px;
+	margin-top: 10px;
 }
 .date_input:last-child {
-  margin-left: 1rem;
+	margin-left: 1rem;
 }
 .filter_by_status {
-  display: flex;
-  /* border: 1px solid red; */
-  margin-bottom: 2rem;
+	display: flex;
+	/* border: 1px solid red; */
+	margin-bottom: 2rem;
 }
 .status {
-  display: block;
-  border-radius: 30px;
-  width: 8rem;
-  padding: 5px 0;
-  font-size: 14px;
-  text-align: center;
-  border: 2px solid rgb(176, 175, 175);
-  margin-right: 1rem;
-  cursor: pointer;
+	display: block;
+	border-radius: 30px;
+	width: 8rem;
+	padding: 5px 0;
+	font-size: 14px;
+	text-align: center;
+	border: 2px solid rgb(176, 175, 175);
+	margin-right: 1rem;
+	cursor: pointer;
 }
 .status:hover {
-  background-color: #e7e6e6;
+	background-color: #e7e6e6;
 }
 .active_status {
-  background: #1765dc;
-  color: white;
-  border: 2px solid #1765dc;
+	background: #1765dc;
+	color: white;
+	border: 2px solid #1765dc;
 }
 .active_status:hover {
-  background-color: #0d5cd4;
+	background-color: #0d5cd4;
 }
 .btns {
-  width: fit-content;
-  margin: 0 auto;
+	width: fit-content;
+	margin: 0 auto;
 }
 .btns button {
-  width: 180px;
-  height: 40px;
-  left: 549px;
-  background: #1765dc;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 16px;
+	width: 180px;
+	height: 40px;
+	left: 549px;
+	background: #1765dc;
+	color: white;
+	border: none;
+	border-radius: 6px;
+	cursor: pointer;
+	font-weight: bold;
+	font-size: 16px;
 }
 .btns button:last-child {
-  margin-left: 1rem;
+	margin-left: 1rem;
 }
 .btns button:hover {
-  background-color: #0450c4;
+	background-color: #0450c4;
 }
 
 /* reconciliation  */
 .reconciliations_section {
-  padding-left: 2rem;
-  border: 1px solid gray;
-  padding: 1.5rem;
-  border-radius: 10px;
+	padding-left: 2rem;
+	border: 1px solid gray;
+	padding: 1.5rem;
+	border-radius: 10px;
 }
 .setup_reconciliation {
-  font-weight: bold;
-  font-size: 20px;
-  margin-bottom: 1.2rem;
+	font-weight: bold;
+	font-size: 20px;
+	margin-bottom: 1.2rem;
 }
 .instruction_legend {
-  font-weight: 500;
+	font-weight: 500;
 }
 .instructions {
-  margin-top: 1rem;
+	margin-top: 1rem;
 }
 .middle_container {
-  margin: 2rem 0;
+	margin: 2rem 0;
 }
 .reconciliation_type {
-  display: flex;
+	display: flex;
 }
 .upload_file {
-  display: flex;
-  margin-top: 1rem;
+	display: flex;
+	margin-top: 1rem;
 }
 .upload_file .file_input input::file-selector-button {
-  background: #e7e6e6;
-  border-radius: 6px;
-  width: 114px;
-  height: 33px;
-  border: none;
-  font-weight: bold;
+	background: #e7e6e6;
+	border-radius: 6px;
+	width: 114px;
+	height: 33px;
+	border: none;
+	font-weight: bold;
 }
 
 .reconciliation_type .legend,
 .upload_file .legend {
-  width: 15rem;
+	width: 15rem;
 }
 
 .reconciliations_section .note {
-  /* border: 1px solid red; */
-  font-size: 14px;
+	/* border: 1px solid red; */
+	font-size: 14px;
 }
 .select_field {
-  width: 17rem !important;
-  border: 1px solid #e7e6e6 !important;
-  background-color: #e7e6e6 !important;
-  height: 3rem;
-  font-weight: bold !important;
+	width: 17rem !important;
+	border: 1px solid #e7e6e6 !important;
+	background-color: #e7e6e6 !important;
+	height: 3rem;
+	font-weight: bold !important;
 }
 .continue_btn button {
-  width: 100px;
-  height: 45px;
-  background: #1765dc;
-  border: none;
-  border-radius: 6px;
-  color: white;
-  font-weight: bold;
-  font-size: 17px;
-  margin-left: 15rem;
-  cursor: pointer;
+	width: 100px;
+	height: 45px;
+	background: #1765dc;
+	border: none;
+	border-radius: 6px;
+	color: white;
+	font-weight: bold;
+	font-size: 17px;
+	margin-left: 15rem;
+	cursor: pointer;
 }
 .continue_btn button:hover {
-  background-color: #0d5cd4;
+	background-color: #0d5cd4;
 }
 .note {
-  display: flex;
-  width: 70%;
-  margin: 1rem 0;
+	display: flex;
+	width: 70%;
+	margin: 1rem 0;
 }
 
 /* term details section  */
 .term_details_section {
-  /* border: 1px solid red; */
+	/* border: 1px solid red; */
 }
 .term_details_select_fields {
-  display: flex;
-  justify-content: space-evenly;
+	display: flex;
+	justify-content: space-evenly;
 }
 .term_details_select_fields > .section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 1rem;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin-bottom: 1rem;
 }
 .term_details_select_fields > .section span {
-  margin-bottom: 1rem;
-  font-weight: bold;
+	margin-bottom: 1rem;
+	font-weight: bold;
 }
 .term_details_select_fields > .section select {
-  background: #e7e6e6;
-  border: none;
-  box-sizing: border-box;
-  border-radius: 15px;
-  width: 263px;
-  height: 47px;
-  padding: 0 10px;
+	background: #e7e6e6;
+	border: none;
+	box-sizing: border-box;
+	border-radius: 15px;
+	width: 263px;
+	height: 47px;
+	padding: 0 10px;
 }
 
 .generate_report_btn {
-  text-align: center;
-  margin: 5rem 0;
+	text-align: center;
+	margin: 5rem 0;
 }
 .generate_report_btn button {
-  width: 210px;
-  height: 49px;
-  background: #1765dc;
-  border-radius: 6px;
-  color: white;
-  border: none;
-  font-size: 18px;
-  letter-spacing: 1px;
-  cursor: pointer;
+	width: 210px;
+	height: 49px;
+	background: #1765dc;
+	border-radius: 6px;
+	color: white;
+	border: none;
+	font-size: 18px;
+	letter-spacing: 1px;
+	cursor: pointer;
 }
 .generate_report_btn button:hover {
-  background-color: #0d5cd4;
+	background-color: #0d5cd4;
 }
 .tableContainer {
-  overflow: scroll;
-  width: 100%;
+	overflow: auto;
+	width: 100%;
 }
 .table {
-  text-align: left;
-  /* border-collapse: collapse; */
+	text-align: left;
+	/* border-collapse: collapse; */
 }
 
 .table td,
 .table th {
-  /* border: 2px solid #DFFF00;   */
-  text-align: left;
-  padding: 8px 30px;
-  border-bottom: 1px solid rgb(209, 207, 207);
+	/* border: 2px solid #DFFF00;   */
+	text-align: left;
+	padding: 8px 30px;
+	border-bottom: 1px solid rgb(209, 207, 207);
 }
 .table tbody tr:nth-child(odd) {
-  background-color: rgb(218, 242, 252);
+	background-color: rgb(218, 242, 252);
 }
+.table_tag span {
+	display: block;
+	border: 1px solid rgb(231, 231, 231);
+	background-color: white;
+	font-size: 13px;
+	text-transform: uppercase;
+	padding: 2px 0;
+	text-align: center;
+	width: 7.6rem;
+	color: rgb(68, 68, 68);
+}
+
 .result_not_founds {
-  text-align: center;
-  color: gray;
+	text-align: center;
+	color: gray;
 }

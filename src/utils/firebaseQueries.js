@@ -360,3 +360,17 @@ export const addSurvey = async (surveyID, body) => {
     { merge: true }
   );
 };
+
+export const getStatusDesc = async (statusType, code) => {
+  const result = await getDoc(
+    doc(db, "mirats", "error_codes", statusType, String(code))
+  );
+  return result.data();
+};
+
+export const addQuota = async (surveyID, body) => {
+  const result = await getDoc(
+    doc(db, "mirats", "surveys", "survey", String(surveyID))
+  );
+  result.data()?.qualifications?.questions?.map((question) => {});
+};

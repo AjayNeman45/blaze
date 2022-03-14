@@ -2,7 +2,12 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { db } from "../../firebase";
-import { getAllSessions, getSurvey } from "../../utils/firebaseQueries";
+import {
+  getAllSessions,
+  getAllStatus,
+  getStatusDesc,
+  getSurvey,
+} from "../../utils/firebaseQueries";
 // import XLSX from "xlsx"
 import styles from "./Reconciliations.module.css";
 import { ReconciliationTable } from "./Reconciliations";
@@ -57,9 +62,9 @@ const DataAnalysis = () => {
   // fetching all the sessions of the project
   useEffect(() => {
     var dt = new Date();
-    dt.setDate(dt.getDate() + 29);
-    setFromDate(new Date().toISOString().substring(0, 10));
-    setEndDate(dt.toISOString().substring(0, 10));
+    dt.setDate(dt.getDate() - 29);
+    setFromDate(dt.toISOString().substring(0, 10));
+    setEndDate(new Date().toISOString().substring(0, 10));
 
     const func = async () => {
       try {
@@ -67,15 +72,25 @@ const DataAnalysis = () => {
         console.log(survey);
         const allSessions = await getAllSessions(surveyID, gamma);
         allSessions.forEach((session) => {
-          setSessions((oldData) => [
-            ...oldData,
-            {
-              session_data: session.data(),
-              survey_id: survey.survey_id,
-              survey_name: survey.survey_name,
-              session_id: session.id,
-            },
-          ]);
+          let clientStatus = session.data()?.client_status;
+          let miratsStatus = session.data()?.mirats_status;
+          getStatusDesc("client_codes", clientStatus).then((miratCodeDesc) => {
+            getStatusDesc("mirats_codes", miratsStatus).then(
+              (clientCodeDesc) => {
+                setSessions((oldData) => [
+                  ...oldData,
+                  {
+                    session_data: session.data(),
+                    survey_id: survey.survey_id,
+                    survey_name: survey.survey_name,
+                    session_id: session.id,
+                    client_status_desc: miratCodeDesc?.m_desc,
+                    mirats_status_desc: clientCodeDesc?.m_desc,
+                  },
+                ]);
+              }
+            );
+          });
         });
       } catch (err) {
         console.log(err);
@@ -83,23 +98,6 @@ const DataAnalysis = () => {
     };
     func();
   }, []);
-
-  useEffect(() => {
-    let from_d = new Date(fromDate);
-    let end_d = new Date(endDate);
-    sessions.map((session) => {
-      if (
-        new Date(session?.session_data?.date?.toDate()).valueOf() >=
-          from_d.valueOf() &&
-        new Date(session?.session_data?.date?.toDate()).valueOf() <=
-          end_d.valueOf()
-      ) {
-        setSessionsCopy((prevData) => [...prevData, session]);
-      }
-    });
-  }, [sessions]);
-
-  // console.log(sessionsCopy)
 
   // handles status change function
   const handleStatusClick = (e, code) => {
@@ -225,14 +223,17 @@ const DataAnalysis = () => {
               <table className={styles.table} id="table-to-xls">
                 <thead className={styles.tableHead}>
                   <tr>
+                    <th>#</th>
                     <th>RID</th>
                     <th>Ref ID</th>
                     <th>SRC ID</th>
                     <th>Survey Number</th>
                     <th>Survey Name</th>
                     <th>Client Status</th>
+                    <th>Client Status Description</th>
                     <th>Session ID</th>
                     <th>Mirats Status</th>
+                    <th>Mirats Status Description</th>
                     <th>Fingerprint</th>
                     <th>GDPR consent</th>
                     <th>City</th>
@@ -242,33 +243,37 @@ const DataAnalysis = () => {
                     <th>IP</th>
                     <th>Reconciled</th>
                     <th>Browser Name</th>
-                    <th>Cookie enabled</th>
+                    <th>Cookie</th>
                     <th>Device Type</th>
                     <th>Operating System</th>
                     <th>language</th>
-                    <th>Survey Start Time</th>
+                    <th>Survey Start Date & Time</th>
                     <th>Survey End Time</th>
                   </tr>
                 </thead>
                 <tbody className={styles.tableBody}>
-                  {sessionsCopy?.map((session) => {
-                    console.log(session);
+                  {sessionsCopy?.map((session, indx) => {
                     if (Object.keys(session).length) {
                       return (
                         <tr>
+                          <td>{indx}</td>
                           <td>{session?.session_data?.rid}</td>
                           <td>{session?.session_data?.ref_id}</td>
                           <td>{session?.session_data?.supplier_account_id}</td>
                           <td>{session?.survey_id}</td>
                           <td>{session?.survey_name}</td>
                           <td>{session?.session_data?.client_status}</td>
+                          <td>{session?.client_status_desc}</td>
                           <td>{session.session_id}</td>
                           <td>{session?.session_data?.mirats_status}</td>
+                          <td>{session?.mirats_status_desc}</td>
                           <td>{session?.session_data?.fingerprint}</td>
-                          <td>
-                            {session?.session_data?.gdpr_consent
-                              ? "True"
-                              : "False"}
+                          <td className={styles.table_tag}>
+                            <span>
+                              {session?.session_data?.gdpr_consent
+                                ? "accepted"
+                                : "declined"}
+                            </span>
                           </td>
                           <td>{session?.session_data?.geo_data?.city}</td>
                           <td>{session?.session_data?.geo_data?.country}</td>
@@ -276,22 +281,27 @@ const DataAnalysis = () => {
                           <td>{session?.session_data?.geo_data?.timezone}</td>
 
                           <td>{session?.session_data?.geo_data?.ip}</td>
-                          <td>
-                            {session?.session_data?.is_reconciled
-                              ? "True"
-                              : "False"}
+                          <td className={styles.table_tag}>
+                            <span>
+                              {session?.session_data?.is_reconciled
+                                ? "reconciled"
+                                : "not reconciled"}
+                            </span>
                           </td>
+
                           <td>
                             {
                               session?.session_data?.session_techincal_details
                                 ?.browser_name
                             }
                           </td>
-                          <td>
-                            {session?.session_data?.session_techincal_details
-                              ?.cookie_enabled
-                              ? "True"
-                              : "False"}
+                          <td className={styles.table_tag}>
+                            <span>
+                              {session?.session_data?.session_techincal_details
+                                ?.cookie_enabled
+                                ? "enabled"
+                                : "disabled"}
+                            </span>
                           </td>
                           <td>
                             {
@@ -312,16 +322,14 @@ const DataAnalysis = () => {
                             }
                           </td>
                           <td>
-                            {new Date(
-                              session?.session_data?.survey_start_time
-                                ?.seconds * 1000
-                            ).toLocaleDateString("en-US")}
+                            {session?.session_data?.survey_start_time
+                              ?.toDate()
+                              ?.toLocaleString()}
                           </td>
                           <td>
-                            {new Date(
-                              session?.session_data?.survey_end_time?.seconds *
-                                1000
-                            ).toLocaleDateString("en-US")}
+                            {session?.session_data?.survey_end_time
+                              ?.toDate()
+                              ?.toLocaleString()}
                           </td>
                         </tr>
                       );

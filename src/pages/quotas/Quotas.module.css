@@ -124,3 +124,79 @@
   /* border: 1px solid red; */
   margin: 0 0.5rem;
 }
+
+/* quotas modal  */
+.quotas_modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400;
+  height: 400;
+  background-color: white;
+  outline: none;
+  border-radius: 30px;
+  box-shadow: 24;
+  padding: 2rem;
+}
+.qualifications_list {
+  display: flex;
+  flex-direction: column;
+}
+.qualifications_list .qualification {
+  margin: 1rem 0;
+}
+
+.quota_add_modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 500px;
+  height: 400;
+  background-color: white;
+  outline: none;
+  border-radius: 30px;
+  box-shadow: 24;
+  padding: 2rem;
+}
+.quota_add_modal .title {
+  font-size: 20px;
+  font-weight: bold;
+}
+.quota_add_modal .question_text {
+  margin-top: 1rem;
+  font-size: 18px;
+}
+.quota_add_modal .numeric_conditions {
+  display: flex;
+  align-items: center;
+  margin-top: 1rem;
+}
+.quota_add_modal .numeric_conditions span {
+  display: block;
+  border: 1px solid black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 5rem;
+  height: 2.5rem;
+  margin-right: 10px;
+}
+.quota_add_modal .numeric_conditions input {
+  width: 7rem;
+  height: 2.5rem;
+  padding-left: 10px;
+}
+
+.quota_add_modal .save_btn {
+  width: 5rem;
+  height: 2.5rem;
+  background-color: rgb(73, 161, 233);
+  border: none;
+  color: white;
+  font-size: 17px;
+  border-radius: 3px;
+  margin-top: 2rem;
+  cursor: pointer;
+}
