@@ -5,7 +5,10 @@ import { GoSettings } from "react-icons/go";
 import "./ProjectSettings.css";
 import { useParams } from "react-router-dom/cjs/react-router-dom.min";
 import { useContext, useEffect, useState } from "react";
-import { ProjectSettingContext } from "./ProjectSettingContext";
+import {
+  ProjectSettingContext,
+  useProjectSettingsContext,
+} from "./ProjectSettingContext";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import { db } from "../../firebase";
@@ -14,7 +17,7 @@ import { arrayUnion } from "firebase/firestore";
 const ProjectSettings = () => {
   const DB = db.collection("mirats").doc("surveys").collection("survey");
   const { surveyID } = useParams();
-  const { surveyData, setSurveyData } = useContext(ProjectSettingContext);
+  const { surveyData, setSurveyData } = useProjectSettingsContext();
 
   let [sdata, setSData] = useState({});
   let [changes, setChanges] = useState({});
@@ -144,7 +147,6 @@ const ProjectSettings = () => {
         break;
     }
   };
-  console.log(displaychanges);
 
   return (
     <>

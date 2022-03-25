@@ -238,7 +238,7 @@ export const Conditions = ({
       )}
 
       <div className={styles.compulsary_options_container}>
-        <label>Complusary Options</label>{" "}
+        <label>One or More from</label>{" "}
         <Tooltip
           title="Specify the condition for the editQuestion, If you want to give range then type it as eg. 1-7"
           placement="right"
@@ -304,6 +304,8 @@ export const AllowedResponses = ({
     });
     setCnt(cnt - 1);
   };
+
+  console.log(allowed_responses);
 
   return (
     <div className={styles.response_container}>

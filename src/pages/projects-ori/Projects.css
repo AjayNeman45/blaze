@@ -1,0 +1,230 @@
+:root {
+  --border-color: rgb(230, 230, 230);
+}
+
+.project_page_title {
+  font-size: 34px;
+  margin-left: 2px;
+}
+.project_page_instructions {
+  border-radius: 10px;
+  background-color: rgb(242, 240, 252);
+  padding: 2rem;
+  margin-top: -1rem;
+}
+.project_page_instructions > ul {
+  list-style: none;
+}
+.project_page_switch_to_lite_mode {
+  background-color: none;
+  border: 1px solid rgb(199, 198, 198);
+  border-radius: 5px;
+  padding: 0.5rem 1rem;
+  background-color: white;
+  color: rgb(80, 168, 226);
+  font-weight: bold;
+  cursor: pointer;
+}
+.project_page_switch_to_lite_mode:hover {
+  background-color: rgb(247, 247, 247);
+}
+.search_section {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: start;
+  margin-top: 2rem;
+}
+.search_section > .searchby {
+  display: flex;
+  flex-direction: column;
+  margin: 0 1rem;
+  margin-bottom: 1rem;
+}
+.input {
+  width: 15rem;
+  height: 2rem;
+  margin-top: 0.5rem;
+  padding-left: 0.5rem;
+}
+.filter_project_section {
+  margin-bottom: 1rem;
+}
+.filter_project_section > ul {
+  list-style: none;
+  display: flex;
+  margin-top: 4rem;
+  padding: 0;
+}
+.filter_project_section > ul > li {
+  margin: 0 1rem;
+  cursor: pointer;
+  color: red;
+}
+.filter_project_section .link {
+  text-decoration: none;
+  color: rgb(65, 63, 63);
+}
+/* .filter_project_section .view_active_class {
+	color: blue;
+} */
+.project_table {
+  border: 1px solid red;
+  text-align: center;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+  margin-bottom: 5rem;
+}
+.project_table th {
+  padding: 20px 1.5rem;
+  font-size: 14px;
+  text-align: start;
+}
+.project_table tr {
+  border: 1px solid var(--border-color);
+}
+
+.project_table td {
+  padding: 1rem 0;
+}
+
+.project_table_first_col {
+  display: flex;
+  align-items: start;
+  justify-content: flex-start;
+  width: 13rem;
+  /* border: 1px solid red; */
+}
+.project_table_first_col input {
+  width: 17px;
+  height: 17px;
+  margin-left: 1rem;
+}
+.project_table_first_col .coldiv {
+  /* border: 1px solid red; */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-left: 8px;
+}
+.project_table_first_col .coldiv label {
+  cursor: pointer;
+  font-size: 15px;
+  color: rgb(18, 82, 219);
+  font-weight: bold;
+  text-align: start;
+}
+.project_table_first_col .coldiv label:hover {
+  color: rgb(18, 149, 209);
+  text-decoration: underline;
+}
+
+.project_id_and_internal_status {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: -1rem;
+}
+.project_id_and_internal_status span {
+  /* border: 1px solid black; */
+  font-size: 12px;
+}
+.survey_status {
+  width: 4rem;
+  padding: 0.5rem 0;
+  border-radius: 20px;
+  margin-left: 10px;
+  font-weight: 600;
+}
+.survey_status_ongoing {
+  background-color: rgb(255, 204, 93);
+}
+.survey_status_lost {
+  background-color: rgb(186, 0, 0);
+  color: white;
+}
+.survey_status_won {
+  background-color: rgb(89, 133, 67);
+  color: white;
+}
+.survey_status_lead {
+  background-color: gray;
+  color: white;
+}
+
+.project_table tr td:nth-child(2) span {
+  font-size: 14px;
+  color: gray;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+.project_table th {
+  padding: 10px 1.5rem;
+  color: black;
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+}
+.project_table th:first-child {
+  border-left: 1px solid var(--border-color);
+}
+.project_table th:last-child {
+  border-right: 1px solid var(--border-color);
+}
+.project_table td {
+  text-align: center;
+}
+
+.selected_project_op {
+  border-top: 1px solid rgb(228, 228, 228);
+  box-shadow: 0 0 5px 0 gray;
+  background-color: white;
+  position: fixed;
+  bottom: 0px;
+  right: 0;
+  height: 5rem;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  width: 100vw;
+  transition: all 1s ease-out;
+}
+
+.selected_project_op p {
+  padding-left: 4rem;
+  margin-right: 2rem;
+  display: flex;
+  align-items: center;
+}
+.selected_project_op p span {
+  border: 1px solid rgb(202, 200, 200);
+  background-color: rgb(209, 209, 209);
+  font-weight: 1000;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+.selected_project_op button {
+  margin: 0 0.5rem;
+  background-color: white;
+  border: none;
+  outline: none;
+  border: 1px solid rgb(221, 221, 221);
+  border-radius: 2px;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+  color: rgb(70, 67, 67);
+  cursor: pointer;
+}
+.selected_project_op button:hover {
+  border: 1px solid rgb(3, 3, 138);
+  background-color: rgb(242, 242, 250);
+  color: blue;
+}

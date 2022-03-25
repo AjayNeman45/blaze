@@ -1,15 +1,21 @@
 import { collection, doc, onSnapshot } from "firebase/firestore";
+import { useContext } from "react";
 import { createContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { db } from "../../firebase";
 import { decryptText } from "../../utils/enc-dec.utils";
 
-export const ProjectSettingContext = createContext();
+const ProjectSettingContext = createContext();
+
+export const useProjectSettingsContext = () => {
+  return useContext(ProjectSettingContext);
+};
 
 const ProejctSettingProvider = ({ children }) => {
   const { surveyID } = useParams();
 
   let [surveyData, setSurveyData] = useState({});
+  const [changes, setChanges] = useState({ updated_date: new Date() });
 
   useEffect(() => {
     const DB = db.collection("mirats").doc("surveys").collection("survey");
@@ -29,13 +35,13 @@ const ProejctSettingProvider = ({ children }) => {
         surveyData?.encrypt?.pid +
         "-" +
         surveyData?.encrypt?.cid +
-        `/lightningUrl?SRCID=Vv5JQoX&RID=794639`
+        `/lightningStart?SRCID=Vv5JQoX&RID=794639`
     );
   }, [surveyData]);
 
   return (
     <ProjectSettingContext.Provider
-      value={{ surveyData, setSurveyData, surveyID }}
+      value={{ surveyData, setSurveyData, surveyID, changes, setChanges }}
     >
       {children}
     </ProjectSettingContext.Provider>

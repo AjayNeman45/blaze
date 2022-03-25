@@ -35,7 +35,19 @@ import EndPoint from "./pages/end-point/EndPoint";
 import Reference from "./pages/Reference";
 import ErrorPage from "./pages/BlazeErrorpage/ErrorPage";
 import ThankYouPage from "./components/thank-you-page/ThankYouPage";
-
+import Analytics from "./pages/analytics/Analytics";
+import SurveyDashboard from "./pages/survey-dashboard/SurveyDashboard";
+import SurveyDashboardContextProvider from "./pages/survey-dashboard/SurveyDashboardContext";
+import NewProjectSettings from "./pages/project-settings/NewProjectSettings";
+import BiddingQuota from "./pages/bidding-quota/BiddingQuota";
+import ViewRedirectsEndpoints from "./pages/viewRedirectsEndpoints/ViewRedirectsEndpoints";
+import Sources from "./pages/sources/Sources";
+import Login from "./pages/login/Login";
+import LiveSurveyLogs from "./pages/live-survey-logs/LiveSurveyLogs";
+import ReportsContextProvider from "./pages/reports/ReportsContext";
+import AnalyticsContextProvider from "./pages/analytics/AnalyticsContext";
+import SourcesContextProvider from "./pages/sources/SourcesContext";
+import { LiveSurveyLogsContextProvider } from "./pages/live-survey-logs/LiveSurveyLogsContext";
 function App() {
   return (
     <>
@@ -60,15 +72,26 @@ function App() {
             <Leads />
           </Route>
 
+          {/* Login */}
+          <Route path="/login">
+            <Login />
+          </Route>
+
           <Route path="/create-new-project/:edit_option" exact>
             <CreateNewProjectProvider>
               <CreateNewProject />
             </CreateNewProjectProvider>
           </Route>
 
+          <Route path="/projects/dashboard/:surveyID">
+            <SurveyDashboardContextProvider>
+              <SurveyDashboard />
+            </SurveyDashboardContextProvider>
+          </Route>
+
           <Route path="/projects/settings/:surveyID" exact>
             <ProejctSettingProvider>
-              <ProjectSettings />
+              <NewProjectSettings />
             </ProejctSettingProvider>
           </Route>
 
@@ -88,7 +111,9 @@ function App() {
             </AllocationContextProvider>
           </Route>
           <Route path="/projects/reports/:surveyID" exact>
-            <Reports />
+            <ReportsContextProvider>
+              <Reports />
+            </ReportsContextProvider>
           </Route>
           <Route path="/projects/documents/:surveyID" exact>
             <Documents />
@@ -106,6 +131,12 @@ function App() {
               <Reconciliations />
             </ReconciliationContextProvider>
           </Route>
+          <Route path="/projects/analytics/:navigationTab/:surveyID">
+            <AnalyticsContextProvider>
+              <Analytics />
+            </AnalyticsContextProvider>
+          </Route>
+
           <Route path="/error">
             <Blaze />
           </Route>
@@ -159,6 +190,32 @@ function App() {
             <ThankYouPage />
           </Route>
           {/* blaze end */}
+
+          {/* source  pages  */}
+
+          <Route path="/viewredirects/:surveyID" exact>
+            <ViewRedirectsEndpoints />
+          </Route>
+          <Route path="/biddingquota/:surveyID" exact>
+            <BiddingQuota />
+          </Route>
+
+          <Route path="/sources/:surveyID" exact>
+            <Sources />
+          </Route>
+
+          <Route path="/livesurveylogs/:surveyID" exact>
+            <LiveSurveyLogsContextProvider>
+              <LiveSurveyLogs />
+            </LiveSurveyLogsContextProvider>
+          </Route>
+
+          <Route path="/projects/sources/:surveyID" exact>
+            <SourcesContextProvider>
+              <Sources />{" "}
+            </SourcesContextProvider>
+          </Route>
+          {/* source pages end  */}
         </BaseContextProvider>
       </Switch>
     </>

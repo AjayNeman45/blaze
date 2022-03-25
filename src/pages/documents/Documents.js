@@ -4,7 +4,13 @@ import Header from "../../components/header/Header";
 import Subheader from "../../components/subheader/Subheader";
 import { useState } from "react";
 import { storage } from "../../firebase";
-import { listAll, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import {
+  listAll,
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
 import { useParams } from "react-router-dom";
 import SurveyInfo from "../../components/survey-info/SurveyInfo";
 import { CircularProgress, Tab, Tabs, Typography } from "@mui/material";
@@ -13,6 +19,8 @@ import { Box } from "@mui/system";
 import PropTypes from "prop-types";
 import { IoMdClose } from "react-icons/io";
 import { Loading } from "@nextui-org/react";
+import SnackbarMsg from "../../components/Snackbar";
+import Recontact from "./Recontact";
 
 const Documents = () => {
   const [documents, setDocuments] = useState([]);
@@ -22,6 +30,9 @@ const Documents = () => {
   const { surveyID } = useParams();
   const surveyInputFileRef = useRef();
   const [value, setValue] = useState(0);
+  const [snackbarData, setSnackbarData] = useState("");
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const folderRef = ref(storage, `Survey-attachement-documents/${surveyID}`);
   // for left tab panel
   const handleTabChange = (event, newValue) => {
     setValue(newValue);
@@ -29,6 +40,9 @@ const Documents = () => {
 
   const handleFileChange = (e) => {
     setDocuments(e.target.files);
+  };
+  const handleSnackbar = () => {
+    setOpenSnackbar(!openSnackbar);
   };
 
   const handleFileUpload = async (e) => {
@@ -50,10 +64,36 @@ const Documents = () => {
     setDocuments([]);
   };
 
+  const handleFileDelete = (fileName) => {
+    console.log(fileName);
+    const documentRef = ref(
+      storage,
+      `Survey-attachement-documents/${surveyID}/${fileName}`
+    );
+    deleteObject(documentRef)
+      .then(() => {
+        fetchSurveyDocuments();
+        setSnackbarData({
+          msg: "File deleted successfully...",
+          severity: "success",
+        });
+        handleSnackbar();
+        console.log("file deleted successfully");
+      })
+      .catch((err) => {
+        setSnackbarData({
+          msg: "Your internet connection is slow or something went wrong from server side...!",
+          severity: "error",
+        });
+        handleSnackbar();
+        console.log(err.message);
+      });
+  };
+
   const fetchSurveyDocuments = () => {
     setDocumentLoading(true);
     setUploadedDocuments([]);
-    const folderRef = ref(storage, `Survey-attachement-documents/${surveyID}`);
+
     listAll(folderRef)
       .then((res) => {
         if (!res.items.length) setDocumentLoading(false);
@@ -79,6 +119,7 @@ const Documents = () => {
   useEffect(() => {
     fetchSurveyDocuments();
   }, []);
+
   return (
     <>
       <Header />
@@ -154,7 +195,11 @@ const Documents = () => {
                             • &nbsp;
                             {document.file_name}
                           </a>
-                          &nbsp; <IoMdClose />
+                          &nbsp;{" "}
+                          <IoMdClose
+                            onClick={() => handleFileDelete(document.file_name)}
+                            className={styles.cross_icon}
+                          />
                         </li>
                       );
                     })
@@ -180,61 +225,17 @@ const Documents = () => {
             </div>
           </TabPanel>
           <TabPanel value={value} index={1} styles={{ width: "80%" }}>
-            <div className={styles.recontacts}>
-              <p className={styles.legend}>recontacts</p>
-              <div className={styles.content}>
-                <p>
-                  Marketplace Interface's Recontact Solution makes it easy for
-                  you to reach the respondents you need by seamlessly
-                  integrating Lucid Marketplace in the process.
-                </p>
-                <a href="#">Learn More</a>
-                <h5>Upload IDs</h5>
-                <span>
-                  Upload a list of the IDs you need to recontact. You can use
-                  the RID and original Survey Number to upload your file or you
-                  can use the PID and Supplier ID.
-                </span>
-                <br />
-                <a href="#">Example File</a> <br />
-                <br />
-                <span>One of the two is required:</span>
-                <br />
-                <ol>
-                  <li>RID and original Survey Number</li>
-                  <li>PID and Supplier ID</li>
-                </ol>
-                <p>
-                  If you are recontacting respondents from more than three
-                  months ago, you will need to include the Supplier ID and PID.
-                </p>
-                <div className={styles.select_file_section}>
-                  <input type="file" id="upload-file" />
-                  <button>Upload</button> &nbsp; <span>or</span> &nbsp;
-                  <button>Cancel</button>
-                </div>
-                <p>
-                  For more information on additional recontact options,
-                  including how to pass PID-specific variables, visit the
-                  <a href="#">Knowledge Hub</a>.
-                </p>
-                <p>
-                  Once you launch your survey, suppliers will be able to target
-                  the specific IDs you have uploaded.
-                </p>
-                <h5>Download Details</h5>
-                <p>
-                  Recontact details include RID, PID, Supplier ID, Supplier
-                  Name, and Additional Parameters.
-                </p>
-                <button className={styles.download_details_btn}>
-                  Download Detials
-                </button>
-              </div>
-            </div>
+            <Recontact />
           </TabPanel>
         </div>
       </div>
+
+      <SnackbarMsg
+        msg={snackbarData.msg}
+        severity={snackbarData.severity}
+        open={openSnackbar}
+        handleClose={handleSnackbar}
+      />
     </>
   );
 };

@@ -1,0 +1,51 @@
+.card_container {
+  height: 70vh;
+  border: 1px solid #e0e0e0;
+  border-radius: 32px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  padding: 2vmax;
+}
+.card_container > h2 {
+  font-size: 1.2vmax;
+  margin-left: 2vmax 0 0 2vmax;
+}
+.card_container > h1 {
+  margin-top: 0.7vmax;
+  font-size: 2.5vmax;
+}
+
+.percent_container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: -2.4vmax;
+}
+
+.black_circle > h4 > span {
+  font-size: 6vmax;
+  color: #323232;
+}
+
+.gray_circle > h4 > span {
+  font-size: 6vmax;
+  color: #e1e1e1;
+}
+
+.black_circle > h4,
+.gray_circle > h4 {
+  color: #484848;
+}
+
+.gray_circle > h2,
+.black_circle > h2 {
+  font-size: 2vmax;
+  font-weight: 300;
+  color: #484848;
+  /* margin: -.5vmax 0 0 .1vmax; */
+}
+
+.chart {
+  /* height:30vh !important;
+    margin-top: 1.2vmax;
+    padding: 0 !important; */
+  transform: rotate(60deg);
+}

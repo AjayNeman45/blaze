@@ -118,7 +118,7 @@
 }
 .cpi_and_unreserved_container {
   display: flex;
-  align-items: start;
+  align-items: center;
   margin-top: 1rem;
 }
 .unreserved_completes {
@@ -128,8 +128,7 @@
 .project_manager {
   margin-top: 1rem;
 }
-.project_manager input,
-.supply_manager input,
+
 .cpi_field {
   display: flex;
   flex-direction: column;
@@ -149,7 +148,7 @@
   display: flex;
   justify-content: end;
 }
-.modal_footer .save_btn,
+.modal_footer .next_btn,
 .cancel_btn {
   width: 4rem;
   height: 2.4rem;
@@ -157,12 +156,12 @@
   border-radius: 4px;
   cursor: pointer;
 }
-.save_btn {
+.next_btn {
   background-color: rgb(30, 112, 221);
   color: white;
   margin-right: 1rem;
 }
-.save_btn:hover {
+.next_btn:hover {
   background-color: rgb(53, 125, 219);
 }
 .cancel_btn {
@@ -208,4 +207,46 @@
   padding: 0 14px;
   font-size: 12px;
   margin-left: 10px;
+}
+
+/* global redirects modal  */
+
+.global_redirects_modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 850px;
+  background-color: white;
+  border-radius: 30px;
+  outline: none;
+  padding: 2rem;
+}
+
+.global_redirects_modal .inputs {
+  display: grid;
+}
+.global_redirects_modal .inputs textarea {
+  height: 3rem;
+  width: 30rem;
+  margin-right: 1rem;
+  margin-top: 1rem;
+  padding-left: 10px;
+  padding-top: 10px;
+}
+.global_redirects_modal .btns {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 2rem;
+}
+.global_redirects_modal .btns button {
+  width: 5rem;
+  height: 2.5rem;
+  font-size: 16px;
+  background-color: rgb(133, 192, 247);
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
 }

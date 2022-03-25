@@ -13,6 +13,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase";
 import { ClientJS } from "clientjs";
+import { encryptText } from "./enc-dec.utils";
 const client = new ClientJS();
 
 const fetchIP = async () => {
@@ -337,10 +338,10 @@ export const updateQualificationQuestion = async (body, surveyID) => {
 };
 
 export const getSuppier = async (srcID) => {
-  const globalRedirects = await getDoc(
+  const staticRedirects = await getDoc(
     doc(db, "mirats", "supplier", "supplier", String(srcID))
   );
-  return globalRedirects.data();
+  return staticRedirects.data();
 };
 
 export const updateSurvey = async (surveyID, body) => {
@@ -368,9 +369,74 @@ export const getStatusDesc = async (statusType, code) => {
   return result.data();
 };
 
-export const addQuota = async (surveyID, body) => {
-  const result = await getDoc(
+export const addQuota = async (surveyID, questionID, body) => {
+  console.log(surveyID, questionID, body);
+  let result = await getDoc(
     doc(db, "mirats", "surveys", "survey", String(surveyID))
   );
-  result.data()?.qualifications?.questions?.map((question) => {});
+  let questions = result.data().qualifications?.questions?.map((question) => {
+    if (question?.question_id === questionID) {
+      return {
+        ...question,
+        conditions: {
+          ...question?.conditions,
+          quotas: body,
+        },
+      };
+    } else return question;
+  });
+
+  console.log(questions);
+  return await updateDoc(
+    doc(db, "mirats", "surveys", "survey", String(surveyID)),
+    {
+      "qualifications.questions": questions,
+    },
+    { merge: true }
+  );
+};
+
+export const getAllSuppliers = async () => {
+  return await getDocs(collection(db, "mirats", "supplier", "supplier"));
+};
+
+export const addStaticRedirects = async (supplier_id, body) => {
+  console.log(supplier_id, body);
+  return await updateDoc(
+    doc(db, "mirats", "supplier", "supplier", String(supplier_id)),
+    {
+      global_redirects: body,
+    },
+    {
+      merge: true,
+    }
+  );
+};
+export const updateSurveyData = async (surveyID, sData, changes) => {
+  console.log(sData, changes);
+  const newEncryptedCid = encryptText(sData?.country?.country);
+  console.log(sData?.encrypt?.cid === newEncryptedCid);
+  return await updateDoc(
+    doc(db, "mirats", "surveys", "survey", String(surveyID)),
+    {
+      ...sData,
+      changes: arrayUnion(changes),
+      "encrypt.cid": newEncryptedCid,
+    },
+    {
+      merge: true,
+    }
+  );
+};
+
+export const getErrorCodesForClientStatus = async () => {
+  return await getDocs(
+    query(collection(db, "mirats", "error_codes", "client_codes"))
+  );
+};
+
+export const getErrorCodesForMiratsStatus = async () => {
+  return await getDocs(
+    query(collection(db, "mirats", "error_codes", "mirats_codes"))
+  );
 };

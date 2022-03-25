@@ -1,0 +1,75 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.loginContainer {
+  width: 100%;
+  height: 100vh;
+  background-color: #e5e5e5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.login {
+  width: 802px;
+  height: 619px;
+  border-radius: 56px;
+  border: 1px solid #f1f1f1;
+  background-color: #ffff;
+  box-shadow: 0px 4px 4px 0px #00000040;
+}
+.login form {
+  height: inherit;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.login form .formInputes {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+.login form .formInputes h2 {
+  font-size: 2.4vmax;
+  /* font-size: 36px; */
+  font-weight: 600;
+  padding: 2vmax 0;
+
+  /* width: 514.39px; */
+}
+.login form .formInputes label {
+  /* font-size: 1.2vmax; */
+  font-size: 14px;
+  font-weight: 400;
+  color: #5f5f5f;
+  margin-top: 1vmax;
+  padding-bottom: 0.5vmax;
+  margin-left: 0.2vmax;
+}
+.login form .formInputes input {
+  width: 435.44px;
+  height: 55.19px;
+  font-size: 18px;
+  padding: 10px 15px;
+  border-radius: 10px;
+  border: 1px solid #959595;
+  padding-bottom: 1vmax;
+}
+.login form .formInputes input::placeholder {
+  /* text-align: start; */
+  display: flex;
+  font-size: 12px;
+  font-weight: 500;
+}
+.login form .formInputes .loginBtn {
+  width: 130px;
+  height: 62px;
+  background-color: #313131;
+  border-radius: 7px;
+  font-size: 20px;
+  color: #ffff;
+  border: none;
+  margin: 1.5vmax 0;
+}

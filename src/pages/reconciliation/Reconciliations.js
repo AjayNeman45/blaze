@@ -12,6 +12,7 @@ import DataAnalysis from "./DataAnalysis";
 import RespondantAnswer from "./RespondantAnswer";
 import Reconcile from "./Reconcile";
 import SurveyInfo from "../../components/survey-info/SurveyInfo";
+import TermDetails from "./TermDetails";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -83,38 +84,7 @@ const Reconciliations = () => {
             <RespondantAnswer />
           </TabPanel>
           <TabPanel value={value} index={3} style={{ width: "80%" }}>
-            <div className={styles.term_details_section}>
-              <div className={styles.term_details_select_fields}>
-                <div className={styles.section}>
-                  <span>Supplier</span>
-                  <select>
-                    <option>Please Select a supplier</option>
-                  </select>
-                </div>
-                <div className={styles.section}>
-                  <span>Link Type</span>
-                  <select>
-                    <option>--All--</option>
-                    <option>APIDelivered / Standalone</option>
-                    <option>Offerwall / Standalone</option>
-                    <option>Passthrough / Standalone</option>
-                    <option>Targeted / Standalone</option>
-                    <option>Yeild Management / Standalone</option>
-                  </select>
-                </div>
-                <div className={styles.section}>
-                  <span>Target Type</span>
-                  <select>
-                    <option>--All</option>
-                    <option>Targeted</option>
-                    <option>Route</option>
-                  </select>
-                </div>
-              </div>
-              <div className={styles.generate_report_btn}>
-                <button>Generate Report</button>
-              </div>
-            </div>
+            <TermDetails />
           </TabPanel>
         </div>
       </div>
@@ -123,47 +93,61 @@ const Reconciliations = () => {
 };
 
 export const ReconciliationTable = ({ sessionsCopy, showTable }) => {
+  console.log(sessionsCopy);
   return (
     <>
       {!sessionsCopy.length ? (
         <p style={{ textAlign: "center", color: "gray" }}>No Result Found</p>
       ) : (
-        <table id="table-to-xls" style={{ display: showTable ? "" : "none" }}>
-          <thead>
-            <tr>
-              <th>RID</th>
-              <th>SRC ID</th>
-              <th>Survey Number</th>
-              <th>Survey Name</th>
-              <th>Client Status</th>
-              <th>IP</th>
-              <th>Mirats Status</th>
-              <th>Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            {sessionsCopy?.map((session) => {
-              if (Object.keys(session).length) {
-                return (
-                  <tr>
-                    <td>{session?.session_data?.rid}</td>
-                    <td>{session?.session_data?.srcid}</td>
-                    <td>{session?.survey_id}</td>
-                    <td>{session?.survey_name}</td>
-                    <td>{session?.session_data?.client_status}</td>
-                    <td>{session?.session_data?.geo_data?.ip}</td>
-                    <td>{session?.session_data?.mirats_status}</td>
-                    <td>
-                      {new Date(
-                        session?.session_data?.date?.seconds * 1000
-                      ).toLocaleDateString("en-US")}
-                    </td>
-                  </tr>
-                );
-              }
-            })}
-          </tbody>
-        </table>
+        <div className={styles.reconciliation_table_container}>
+          <table id="table-to-xls" style={{ display: showTable ? "" : "none" }}>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>RID</th>
+                <th>SRC ID</th>
+                <th>Survey Number</th>
+                <th>Survey Name</th>
+                <th>Client Status</th>
+                <th>Client Status Description</th>
+                <th>IP</th>
+                <th>Mirats Status</th>
+                <th>Mirats Status Description</th>
+
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {sessionsCopy?.map((session, indx) => {
+                if (Object.keys(session).length) {
+                  return (
+                    <tr>
+                      <td>{indx}</td>
+                      <td>{session?.session_data?.rid}</td>
+                      <td>{session?.session_data?.srcid}</td>
+                      <td>{session?.survey_id}</td>
+                      <td>{session?.survey_name}</td>
+                      <td>{session?.session_data?.client_status}</td>
+                      <td>
+                        {session?.statuses_desc?.client_status_desc?.m_desc}
+                      </td>
+                      <td>{session?.session_data?.geo_data?.ip}</td>
+                      <td>{session?.session_data?.mirats_status}</td>
+                      <td>
+                        {session?.statuses_desc?.mirats_status_desc?.m_desc}
+                      </td>
+                      <td>
+                        {new Date(
+                          session?.session_data?.date?.seconds * 1000
+                        ).toString()}
+                      </td>
+                    </tr>
+                  );
+                }
+              })}
+            </tbody>
+          </table>
+        </div>
       )}
     </>
   );

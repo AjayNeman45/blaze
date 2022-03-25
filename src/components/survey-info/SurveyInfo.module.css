@@ -5,20 +5,16 @@
 
 .survey_info_container {
 	width: 100%;
-	height: 159px;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
 	border: 1px;
 	background: rgba(229, 229, 229, 0.29);
-	box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.09);
-	border-radius: 12px;
-	padding: 0 2rem;
+	box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+	border-radius: 40px;
+	padding: 2rem 4rem;
 	font-family: "Poppins", sans-serif;
 }
 .survey_info_container h1 {
 	color: black;
-	font-size: 35px;
+	font-size: 32px;
 	font-weight: 600;
 }
 .survey_info_name {
@@ -41,13 +37,35 @@
 	margin-bottom: 6px;
 }
 
-.survey_info_container .survey_info {
+.survey_info_container .survey_name_and_btns {
 	display: flex;
-	margin-top: 20px;
-	flex-direction: row;
-	justify-content: space-between;
 	align-items: center;
-	width: 30rem;
+	justify-content: space-between;
+	/* border: 1px solid red; */
+}
+.survey_info_container .survey_name_and_btns .btns {
+	display: flex;
+	align-items: center;
+	margin: 0;
+}
+.survey_info_container .survey_name_and_btns .btns .get_resports_btn {
+	border: 1px solid #1e70da;
+	background: #1e70da;
+	color: white;
+	width: 181.12px;
+	height: 40px;
+	border-radius: 6px;
+}
+.project_name,
+.survey_number {
+	display: flex;
+}
+.survey_number {
+	margin-top: 1rem;
+}
+.project_name span:last-child,
+.survey_number span:last-child {
+	margin-left: 10px;
 }
 
 .title {
@@ -74,22 +92,51 @@
 	font-size: 16px;
 	line-height: 24px;
 }
-.survey_info_right {
-	margin-right: 2rem;
+.survey_numbers_and_status {
+	/* border: 1px solid red; */
 	display: flex;
-	align-items: center;
+	align-items: flex-end;
+	justify-content: space-between;
 }
-.survey_info_right .status_select_field {
-	width: 13rem !important;
+
+.status_select_field {
+	width: 10rem !important;
 	height: 2.5rem !important;
 	outline: none !important;
-	border-radius: 4px !important;
+	border-radius: 6px !important;
+	text-align: start !important;
+}
+.status_select_field span {
+	display: flex !important;
+	align-items: center !important;
+	text-transform: uppercase;
 }
 .action_select_field {
-	width: 13rem;
+	width: 10rem;
 	height: 2.5rem;
-	border-radius: 4px;
+	border-radius: 6px;
 	margin-left: 10px;
+	padding: 0 10px;
+	font-size: 18px;
+}
+.survey_numbers_and_status .status ul {
+	list-style: none;
+	display: flex;
+	margin-left: 10rem;
+}
+.survey_numbers_and_status .status ul li {
+	margin-left: 1rem;
+	text-transform: uppercase;
+	font-size: 15px;
+	display: flex;
+	align-items: center;
+	color: gray;
+	letter-spacing: 0.1px;
+}
+.survey_numbers_and_status .status ul .active {
+	color: #1bc64b;
+	font-weight: bold;
+	letter-spacing: 0.1px;
 }
 
 /* change survey name input field  */

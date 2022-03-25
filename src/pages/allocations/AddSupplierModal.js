@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useAllocationContext } from "./AllocationContext";
 import styles from "./Allocations.module.css";
 import Modal from "@mui/material/Modal";
@@ -8,6 +8,7 @@ import TextField from "@mui/material/TextField";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputAdornment from "@mui/material/InputAdornment";
 import UseSwitchBasic from "../../components/switch";
+import { InputLabel, MenuItem, Select } from "@mui/material";
 
 const style = {
   position: "absolute",
@@ -22,35 +23,82 @@ const style = {
   p: 4,
 };
 
-const suppliers = [
-  {
-    label: "AdGate Media",
-    value: "AdGate Media",
-  },
-  {
-    label: "Adperio Israel",
-  },
-  {
-    label: "Africa Field agents",
-  },
-  {
-    label: "Beachside Ads",
-  },
-];
-
 function AddSupplierModal() {
   const {
     supplierData,
     setSupplierData,
     supplierModal,
-    handleSupplierModal,
+    setSupplierModal,
     handleAddSupplierDetails,
     err,
     survey,
+    suppliers,
   } = useAllocationContext();
 
-  console.log(supplierData);
+  const [supplierAccount, setSupplierAccount] = useState([]);
+  const [supplyManager, setSupplyManager] = useState([]);
+  const [projectManager, setProjectManager] = useState([]);
 
+  // setting the supplierAccount, supplyManager, projectManager using this useState
+  useEffect(() => {
+    setSupplierAccount([]);
+    setSupplyManager([]);
+    setProjectManager([]);
+    suppliers.map((supp) => {
+      let flag = false;
+      //if suppliers are there already then check for the suppliers existance and remove them if they exist
+      if (survey?.external_suppliers?.length) {
+        for (let i = 0; i < survey?.external_suppliers?.length; i++) {
+          let e_supp = survey?.external_suppliers[i];
+          if (supp?.company_name === e_supp?.supplier_account) {
+            flag = false;
+            break;
+          } else {
+            flag = true;
+          }
+        }
+        if (flag) {
+          setSupplierAccount((prevArr) => [
+            ...prevArr,
+            {
+              label: supp.company_name,
+              value: supp.company_name,
+              supplier_id: supp?.supplier_id,
+            },
+          ]);
+        }
+      } else {
+        //if external supplier of survey is empty then directly set supplierAccount from suppliers array
+        setSupplierAccount((prevArr) => [
+          ...prevArr,
+          {
+            label: supp.company_name,
+            value: supp.company_name,
+            supplier_id: supp?.supplier_id,
+          },
+        ]);
+      }
+
+      if (supp?.company_name === supplierData?.supplier_account) {
+        console.log("condition matched");
+        supp?.supply_manager?.map((smanager) => {
+          setSupplyManager((prevArr) => [
+            ...prevArr,
+            { label: smanager.name, value: smanager.name },
+          ]);
+        });
+
+        supp?.project_manager?.map((pmanager) => {
+          setProjectManager((prevArr) => [
+            ...prevArr,
+            { label: pmanager.name, value: pmanager.name },
+          ]);
+        });
+      }
+    });
+  }, [suppliers, supplierData]);
+
+  // handles allocation of supplier in number and percentage is changed by this function
   const handleAllocationChange = (e) => {
     const user_res = e.target.value;
     const body = {};
@@ -69,12 +117,15 @@ function AddSupplierModal() {
       },
     });
   };
+
+  console.log(supplierData);
+
   return (
-    <div>
+    <>
       <Modal
         keepMounted
         open={supplierModal}
-        onClose={handleSupplierModal}
+        onClose={() => setSupplierModal(false)}
         aria-labelledby="keep-mounted-modal-title"
         aria-describedby="keep-mounted-modal-description"
       >
@@ -88,13 +139,16 @@ function AddSupplierModal() {
             <Autocomplete
               disablePortal
               id="combo-box-demo"
-              options={suppliers}
-              onChange={(e, value) =>
+              options={supplierAccount}
+              onChange={(e, value) => {
                 setSupplierData({
                   ...supplierData,
                   supplier_account: value.label,
-                })
-              }
+                  supplier_account_id: parseInt(value?.supplier_id),
+                });
+                setProjectManager([]);
+                setSupplyManager([]);
+              }}
               sx={{ width: 300 }}
               renderInput={(params) => (
                 <TextField {...params} label="Select..." />
@@ -136,12 +190,35 @@ function AddSupplierModal() {
                 onChange={(e) =>
                   setSupplierData({
                     ...supplierData,
-                    tcpi: e.target.value,
+                    tcpi: parseInt(e.target.value),
                   })
                 }
                 type="text"
                 className={styles.cpi_field}
               />
+            </div>
+            <div className={styles.cpi} style={{ marginLeft: "10px" }}>
+              <label>
+                Status <span className={styles.required}>Required</span>
+              </label>
+
+              <Select
+                labelId="vendor_status"
+                id="demo-simple-select"
+                value={supplierData?.vendor_status}
+                label="Vendor status"
+                sx={{ marginTop: "10px" }}
+                onChange={(e, value) => {
+                  setSupplierData({
+                    ...supplierData,
+                    vendor_status: e.target.value,
+                  });
+                }}
+              >
+                <MenuItem value="active">Active</MenuItem>
+                <MenuItem value="paused">Paused</MenuItem>
+                <MenuItem value="closed">Closed</MenuItem>
+              </Select>
             </div>
             <div className={styles.unreserved_completes}>
               <label>Access to unreserved completes</label>
@@ -155,45 +232,69 @@ function AddSupplierModal() {
             <label>
               Supply Manager <span className={styles.required}>Required</span>
             </label>
-            <input
-              type="text"
-              onChange={(e) =>
+            <Autocomplete
+              disablePortal
+              id="combo-box-demo"
+              options={supplyManager}
+              onChange={(e, value) =>
                 setSupplierData({
                   ...supplierData,
-                  supply_manager: e.target.value,
+                  supply_manager: value.label,
                 })
               }
+              disabled={
+                !supplierData.hasOwnProperty("supplier_account") ? true : false
+              }
+              sx={{ width: 300 }}
+              renderInput={(params) => (
+                <TextField {...params} label="Select..." />
+              )}
+              className={styles.supplier_account_field}
             />
           </div>
           <div className={styles.project_manager}>
             <label>
               Project Manager <span className={styles.required}>Required</span>
             </label>
-            <input
-              type="text"
-              onChange={(e) =>
+            <Autocomplete
+              disablePortal
+              id="combo-box-demo"
+              options={projectManager}
+              onChange={(e, value) =>
                 setSupplierData({
                   ...supplierData,
-                  project_manager: e.target.value,
+                  project_manager: value.label,
                 })
               }
+              disabled={
+                !supplierData.hasOwnProperty("supplier_account") ? true : false
+              }
+              sx={{ width: 300 }}
+              renderInput={(params) => (
+                <TextField {...params} label="Select..." />
+              )}
+              className={styles.supplier_account_field}
             />
           </div>
           <div className={styles.modal_footer}>
             <button
-              className={styles.save_btn}
+              className={styles.next_btn}
               onClick={handleAddSupplierDetails}
             >
-              Save
+              Next
             </button>
-            <button className={styles.cancel_btn} onClick={handleSupplierModal}>
+
+            <button
+              className={styles.cancel_btn}
+              onClick={() => setSupplierModal(false)}
+            >
               Cancel
             </button>
           </div>
-          <small style={{ color: "red" }}>Error: {err}</small>
+          <small style={{ color: "red" }}>{err}</small>
         </Box>
       </Modal>
-    </div>
+    </>
   );
 }
 

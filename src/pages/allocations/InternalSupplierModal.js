@@ -142,8 +142,9 @@ function InternalSupplierModal() {
 
           <div className={styles.modal_footer}>
             <button
-              className={styles.save_btn}
+              className={styles.cancel_btn}
               onClick={AddInternalSupplierDetails}
+              style={{ marginRight: "10px" }}
             >
               Save
             </button>

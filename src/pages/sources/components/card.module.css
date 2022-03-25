@@ -1,0 +1,117 @@
+.card {
+  width: 220px;
+  height: 320px;
+  border: 1px solid rgba(132, 131, 131, 1);
+  border-radius: 21px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+
+  /* justify-content: center; */
+  padding: 15px;
+}
+.card .title {
+  font-weight: 500;
+  font-size: 24px;
+  white-space: nowrap;
+  width: 95%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.source_btn {
+  border: none;
+  background-color: rgba(238, 238, 238, 0.75);
+  color: black;
+  border-radius: 21px;
+  width: 100%;
+  margin: 6px 0px;
+  padding: 5px 0px;
+}
+.status_select {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.status_select {
+  border: none;
+  background-color: rgba(238, 238, 238, 0.75);
+  color: black;
+  border-radius: 21px;
+  width: 100%;
+  margin: 6px 0px;
+  text-align: center;
+  padding: 5px 0px;
+}
+
+.status_select {
+  background-image: linear-gradient(45deg, transparent 50%, gray 50%),
+    linear-gradient(135deg, gray 50%, transparent 50%), linear-gradient(to right, #ccc, #ccc);
+  background-position: calc(100% - 20px) calc(1em + 2px), calc(100% - 15px) calc(1em + 2px), calc(100% - 2.5em) 0.5em;
+  background-size: 5px 5px, 5px 5px, 1px 1.5em;
+  background-repeat: no-repeat;
+}
+
+.status_select:focus {
+  outline: 0;
+}
+
+.nameform {
+  background: rgba(238, 235, 235, 0.39);
+  background: #f4f4f4;
+  box-shadow: 0px 0px 40px 4px rgba(0, 0, 0, 0.25);
+  /* width: 500px; */
+  padding: 2em;
+}
+
+.form_btns {
+  text-align: center;
+  background: #f4f4f4;
+  border-radius: 32px;
+  display: flex;
+  justify-content: center;
+  margin-top: -1em;
+  padding-bottom: 1.5em;
+}
+
+.form_btns button {
+  width: 150px;
+  height: 45px;
+  border-radius: 32px;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  margin: 0 20px;
+}
+
+.form_btns .cancel {
+  background: #dfdfdf;
+}
+
+.form_btns .save {
+  background-color: #1e70da;
+  color: white;
+}
+
+.field {
+  margin: 10px 0;
+}
+.globalredirect_warning {
+  color: rgb(243, 75, 75);
+}
+.nameform .field .copybtn,
+.nameform .copyallbtn {
+  margin: 0px 10px;
+  min-width: 100px;
+  padding: 20px;
+  height: 55px;
+  border: none;
+  background-color: #313131bf;
+  cursor: pointer;
+  color: white;
+  transition: 200ms ease;
+}
+.nameform .copyallbtn:hover,
+.nameform .field .copybtn:hover {
+  background-color: black;
+}

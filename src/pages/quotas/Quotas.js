@@ -11,7 +11,10 @@ import SurveyInfo from "../../components/survey-info/SurveyInfo";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import { useParams } from "react-router-dom";
-import { getQuestion } from "../../utils/firebaseQueries";
+import { addQuota, getQuestion } from "../../utils/firebaseQueries";
+import { v4 as uuid } from "uuid";
+import SnackbarMsg from "../../components/Snackbar";
+import { toNumber } from "lodash";
 
 const tableHeadData = {
   field_target: 200,
@@ -22,43 +25,11 @@ const tableHeadData = {
   conversion: 1,
 };
 
-const tableData = [
-  {
-    order: 1,
-    quota_name: "18 to 24 years old",
-    field_target: 30,
-    quota: 30,
-    prescreens: 163,
-    completes: 0,
-    total_remaining: 30,
-    conversion: 0,
-  },
-  {
-    order: 2,
-    quota_name: "25 to 34 years old",
-    field_target: 44,
-    quota: 44,
-    prescreens: 138,
-    completes: 1,
-    total_remaining: 30,
-    conversion: 0,
-  },
-  {
-    order: 3,
-    quota_name: "35 to 44 years old",
-    field_target: 30,
-    quota: 30,
-    prescreens: 163,
-    completes: 0,
-    total_remaining: 30,
-    conversion: 0,
-  },
-];
-
 const Quotas = () => {
   const [showQuotaModal, setShowQuotaModal] = useState(false);
   const [qualifications, setQualifications] = useState([]);
   const [status, setStatus] = useState("");
+  const [quotas, setQuotas] = useState({});
   const { surveyID } = useParams();
   const { survey } = useQuotasContext();
 
@@ -68,6 +39,13 @@ const Quotas = () => {
         .then((res) => {
           res.data()?.qualifications?.questions?.map(async (question) => {
             const qid = question?.question_id;
+            console.log(question);
+            setQuotas((prevData) => {
+              return {
+                ...prevData,
+                [question?.question_name]: { ...question?.conditions?.quotas },
+              };
+            });
             if (!question?.status) return;
             const questionData = await getQuestion(qid);
             setQualifications((prevData) => [
@@ -86,8 +64,7 @@ const Quotas = () => {
     };
     func();
   }, []);
-
-  console.log(qualifications);
+  console.log(qualifications, quotas);
 
   return (
     <>
@@ -167,7 +144,7 @@ const Quotas = () => {
           <table>
             <thead>
               <tr>
-                <th>Order</th>
+                <th>Question Name</th>
                 <th>Quota Name</th>
                 <th>Field Target</th>
                 <th>Quota</th>
@@ -175,7 +152,7 @@ const Quotas = () => {
                 <th>Completes</th>
                 <th>Total Remaining</th>
                 <th>Conversion</th>
-                <th>Lock</th>
+                {/* <th>Lock</th> */}
               </tr>
             </thead>
             <tbody>
@@ -185,6 +162,7 @@ const Quotas = () => {
                   <input
                     className={styles.table_input}
                     type="number"
+                    disabled
                     value={tableHeadData.field_target}
                   />
                 </td>
@@ -192,51 +170,122 @@ const Quotas = () => {
                   <input
                     className={styles.table_input}
                     type="number"
-                    value={tableHeadData.quota}
+                    value={survey?.no_of_completes}
+                    disabled
                   />
                 </td>
                 <td>{tableHeadData.prescreens}</td>
                 <td>{tableHeadData.completes}</td>
                 <td>{tableHeadData.total_remaining}</td>
                 <td>{tableHeadData.conversion} %</td>
-                <td>
+                {/* <td>
                   <IoMdLock size={20} />
-                </td>
+                </td> */}
               </tr>
-              {tableData.map((data, index) => (
-                <tr>
-                  <td>
-                    <input type="checkbox" className={styles.checkbo_} />
-                    <input
-                      className={styles.table_input}
-                      type="text"
-                      value={data.order}
-                    />
-                  </td>
-                  <td>{data.quota_name}</td>
-                  <td>
-                    <input
-                      className={styles.table_input}
-                      type="number"
-                      value={data.field_target}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      className={styles.table_input}
-                      type="number"
-                      value={data.quota}
-                    />
-                  </td>
-                  <td>{data.prescreens}</td>
-                  <td>{data.completes}</td>
-                  <td>{data.total_remaining}</td>
-                  <td>{data.conversion}</td>
-                  <td>
-                    <IoMdLock size={20} />
-                  </td>
-                </tr>
-              ))}
+              {qualifications.map((data, index) => {
+                if (data?.conditions.hasOwnProperty("quotas")) {
+                  // console.log("yes", data);
+                  switch (data?.question_type) {
+                    case "Numeric - Open-end":
+                      return data?.conditions?.valid_responses?.map(
+                        (response, indx) => {
+                          return data?.conditions?.quotas[indx] ? (
+                            <tr>
+                              <td>{data?.question_name}</td>
+                              <td>
+                                {response?.from} to {response?.to}
+                              </td>
+                              <td>
+                                <input
+                                  className={styles.table_input}
+                                  type="number"
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  className={styles.table_input}
+                                  type="text"
+                                  value={data?.conditions?.quotas[indx]}
+                                  onChange={(e) => {
+                                    setQualifications((prear) => {
+                                      return qualifications?.filter((q, i) => {
+                                        console.log(
+                                          i,
+                                          index,
+                                          q?.conditions?.quotas
+                                        );
+                                        let obj = {};
+                                        if (i === index) {
+                                          obj = {
+                                            ...q,
+                                            conditions: {
+                                              ...q?.conditions,
+                                              quotas: {
+                                                ...q?.conditions?.quotas,
+                                                [indx]: parseInt(
+                                                  e.target.value
+                                                ),
+                                              },
+                                            },
+                                          };
+                                        } else {
+                                          obj = q;
+                                        }
+                                        console.log(obj);
+                                        return obj;
+                                      });
+                                    });
+                                  }}
+                                />
+                              </td>
+
+                              <td>{data.prescreens}</td>
+                              <td>{data.completes}</td>
+                              <td>{data.total_remaining}</td>
+                              <td>{data.conversion}</td>
+                              {/* <td>
+                                <IoMdLock size={20} />
+                              </td> */}
+                            </tr>
+                          ) : null;
+                        }
+                      );
+                    case "Single Punch":
+                      return data?.conditions?.valid_options?.map(
+                        (option, indx) => {
+                          return data?.conditions?.quotas[indx] ? (
+                            <tr>
+                              <td>{data?.question_name}</td>
+                              <td>{data?.options[option]}</td>
+                              <td>
+                                <input
+                                  className={styles.table_input}
+                                  type="number"
+                                  value={data.quota}
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  type="text"
+                                  className={styles.table_input}
+                                  value={data?.conditions?.quotas[indx]}
+                                />
+                              </td>
+
+                              <td>{data.prescreens}</td>
+                              <td>{data.completes}</td>
+                              <td>{data.total_remaining}</td>
+                              <td>{data.conversion}</td>
+                              {/* <td>
+                                <IoMdLock size={20} />
+                              </td> */}
+                            </tr>
+                          ) : null;
+                        }
+                      );
+                  }
+                }
+              })}
             </tbody>
           </table>
         </div>
@@ -255,7 +304,6 @@ const Quotas = () => {
 const QuotaModal = ({ showQuotaModal, setShowQuotaModal, qualifications }) => {
   const [showQuotaAddModal, setShowQuotaAddModal] = useState(false);
   const [selectQuestion, setSelectQuestion] = useState({});
-  const [questionToAddQuota, setQuestionToAddQuota] = useState("");
   const handleBtnChange = () => {
     setShowQuotaModal(false);
     setShowQuotaAddModal(true);
@@ -269,20 +317,25 @@ const QuotaModal = ({ showQuotaModal, setShowQuotaModal, qualifications }) => {
         aria-describedby="modal-modal-description"
       >
         <div className={styles.quotas_modal}>
-          <p>Change Quota of Qualifications</p>
+          <h3>Change Quota of Qualifications</h3>
           <div className={styles.qualifications_list}>
             {qualifications?.map((question) => {
-              return (
-                <div className={styles.qualification}>
-                  <input
-                    type="radio"
-                    name="qualification_que"
-                    id={question?.question_text}
-                    onChange={() => setSelectQuestion(question)}
-                  />
-                  &nbsp; <lable>{question?.question_name}</lable>
-                </div>
-              );
+              let questionType = question?.question_type;
+              if (
+                questionType === "Numeric - Open-end" ||
+                questionType === "Single Punch"
+              )
+                return (
+                  <div className={styles.qualification}>
+                    <input
+                      type="radio"
+                      name="qualification_que"
+                      id={question?.question_text}
+                      onChange={() => setSelectQuestion(question)}
+                    />
+                    &nbsp; <label>{question?.question_name}</label>
+                  </div>
+                );
             })}
           </div>
           <div className={styles.change_btn}>
@@ -306,42 +359,127 @@ const AddQuotaModal = ({
   qualification,
 }) => {
   const { survey } = useQuotasContext();
+  const { surveyID } = useParams();
+  const [quotaValues, setQuotaValues] = useState({});
+  const [showSnackbar, setShowSnackbar] = useState(false);
+  const [snackbarData, setSnackbarData] = useState({});
+  const [remainingQuota, setRemainingQuota] = useState();
+  const [quotasUsed, setQuotaUsed] = useState(0);
+  const [disabledBtn, setDisabledBtn] = useState(true);
 
-  const handleSaveBtnClick = () => {};
+  useEffect(() => {
+    setRemainingQuota(survey?.no_of_completes);
+  }, [survey]);
+
+  const handleSaveBtnClick = () => {
+    addQuota(surveyID, qualification?.question_id, quotaValues)
+      .then(() => {
+        setShowSnackbar(true);
+        console.log("quota updated...");
+        setSnackbarData({
+          msg: `quota updated  successfully for question - ${qualification?.question_name}`,
+          severity: "success",
+        });
+      })
+      .catch((err) => {
+        setSnackbarData({
+          msg: `could not update quota for question - ${qualification?.question_name}, try again...!`,
+          severity: "error",
+        });
+      });
+    setQuotaValues([]);
+    setShowQuotaAddModal(false);
+
+    // .then(res => {
+    //   console.log(res)
+    // }).catch(err => {
+    //   console.log(err)
+    // })
+  };
+
+  const handleInputChange = (e, indx) => {
+    let value = parseInt(e.target.value);
+    setQuotaValues((prevData) => {
+      let data = prevData;
+      data[indx] = isNaN(value) ? 0 : value;
+      return data;
+    });
+  };
+
+  // console.log(quotaValues)
+
+  const handleSnackbar = () => {
+    setShowSnackbar(!showSnackbar);
+  };
+
   return (
-    <Modal
-      open={showQuotaAddModal}
-      onClose={() => setShowQuotaAddModal(false)}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
-    >
-      <div className={styles.quota_add_modal}>
-        <p className={styles.title}>
-          Change Quota ( {survey?.no_of_completes} )
-        </p>
-        <p className={styles.question_text}>{qualification.question_text}</p>
-        {(() => {
-          switch (qualification?.question_type) {
-            case "Numeric - Open-end": {
-              return qualification?.conditions?.valid_responses?.map(
-                (response) => {
-                  return (
-                    <div className={styles.numeric_conditions}>
-                      <span>{response.from}</span>
-                      <span>{response.to}</span>
-                      - &nbsp; <input type="number" placeholder="add quota" />
-                    </div>
-                  );
-                }
-              );
+    <>
+      <SnackbarMsg
+        msg={snackbarData?.msg}
+        severity={snackbarData?.severity}
+        open={showSnackbar}
+        handleClose={handleSnackbar}
+      />
+      <Modal
+        open={showQuotaAddModal}
+        onClose={() => setShowQuotaAddModal(false)}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <div className={styles.quota_add_modal}>
+          <div className={styles.modal_header}>
+            <p className={styles.title}>Change Quota</p>
+            <p>Total quotas - {remainingQuota - quotasUsed}</p>
+          </div>
+
+          <p className={styles.question_text}>{qualification.question_text}</p>
+          {(() => {
+            switch (qualification?.question_type) {
+              case "Numeric - Open-end": {
+                return qualification?.conditions?.valid_responses?.map(
+                  (response, indx) => {
+                    return (
+                      <div className={styles.numeric_conditions} key={uuid()}>
+                        <span>{response.from}</span> To
+                        <span>{response.to}</span> - &nbsp;{" "}
+                        <input
+                          type="number"
+                          placeholder="add quota"
+                          value={quotaValues[indx]}
+                          onChange={(e) => handleInputChange(e, indx)}
+                        />
+                      </div>
+                    );
+                  }
+                );
+              }
+              case "Single Punch":
+                return qualification?.conditions?.valid_options?.map(
+                  (option, indx) => {
+                    return (
+                      <div
+                        key={uuid()}
+                        className={styles.single_punch_condition}
+                      >
+                        <span>{qualification?.options[option]}</span> &nbsp; -
+                        <input
+                          type="number"
+                          placeholder="add quota"
+                          value={quotaValues?.[indx]}
+                          onChange={(e) => handleInputChange(e, indx)}
+                        />
+                      </div>
+                    );
+                  }
+                );
             }
-          }
-        })()}
-        <button className={styles.save_btn} onClick={handleSaveBtnClick}>
-          Save
-        </button>
-      </div>
-    </Modal>
+          })()}
+          <button className={styles.save_btn} onClick={handleSaveBtnClick}>
+            Save
+          </button>
+        </div>
+      </Modal>
+    </>
   );
 };
 

@@ -14,6 +14,7 @@ import { v4 as uuid } from "uuid"
 import SnackbarMsg from "../Snackbar"
 import { encryptText } from "../../utils/enc-dec.utils"
 import { BsCheckCircle } from "react-icons/bs"
+import { useHistory } from "react-router-dom"
 
 const style = {
 	position: "absolute",
@@ -45,7 +46,7 @@ const clonedMsgModalStyle = {
 	p: 4,
 }
 
-const options = [
+export const options = [
 	{
 		label: "Archieved",
 		value: "awarded",
@@ -105,6 +106,7 @@ const options = [
 ]
 
 function SurveyInfo() {
+	const history = useHistory()
 	const [surveyNameEditModal, setSurveyNameEditModal] = useState(false)
 	const [newSurveyName, setNewSurveyName] = useState()
 	const [changedSurveyName, setChangeSurveyName] = useState("")
@@ -123,6 +125,7 @@ function SurveyInfo() {
 
 	const { surveyID } = useParams()
 	const [survey, setSurvey] = useState({})
+	const [batti, setBatti] = useState()
 
 	useEffect(() => {
 		getSurvey(surveyID)
@@ -131,6 +134,21 @@ function SurveyInfo() {
 				setSurveyStatus(data?.status)
 				setChangeSurveyName(data?.survey_name)
 				setNewSurveyName(data?.survey_name)
+
+				if (data?.status?.toLowerCase() === "bidding") {
+					setBatti(1)
+				} else if (data?.status?.toLowerCase() === "testing") {
+					setBatti(2)
+				} else if (data?.status?.toLowerCase() === "live") {
+					setBatti(3)
+				} else if (
+					data?.status?.toLowerCase() ===
+					"complete_with_reconciliation"
+				) {
+					setBatti(4)
+				} else if (data?.status?.toLowerCase() === "billed") {
+					setBatti(5)
+				}
 			})
 			.catch(err => console.log(err.message))
 	}, [])
@@ -215,7 +233,7 @@ function SurveyInfo() {
 				handleClose={handleSnackbar}
 			/>
 			<div className={styles.survey_info_container}>
-				<div className={styles.survey_info_left}>
+				<div className={styles.survey_name_and_btns}>
 					<div className={styles.survey_info_name}>
 						<h1
 							onClick={() =>
@@ -234,51 +252,123 @@ function SurveyInfo() {
 						</span>
 					</div>
 
-					<div className={styles.survey_info}>
-						<span className={styles.title}>Project Number </span>
-						<span className={styles.value}>
-							{survey.project_id}
-						</span>
-						/<span className={styles.title}>Survey Number</span>
-						<span className={styles.value}>
-							{survey?.survey_id}/
-						</span>
-						<div className={styles.live}>
-							<GoPrimitiveDot /> {survey?.status}
-						</div>
+					<div className={styles.btns}>
+						<FormControl sx={{ m: 1, minWidth: 120 }}>
+							<Select
+								onChange={e => setSurveyStatus(e.target.value)}
+								inputProps={{ "aria-label": "Without label" }}
+								className={styles.status_select_field}
+								value={surveyStatus}
+							>
+								{options?.map(option => (
+									<MenuItem value={option.value} key={uuid()}>
+										<span>
+											<GoPrimitiveDot size={20} /> &nbsp;
+											{option.label}
+										</span>
+									</MenuItem>
+								))}
+							</Select>
+						</FormControl>
+
+						<button
+							className={styles.get_resports_btn}
+							onClick={() =>
+								history.push(`/projects/reports/${surveyID}`)
+							}
+						>
+							Get Reports
+						</button>
+
+						<select
+							className={styles.action_select_field}
+							value=''
+							onChange={handleSurveyActionChange}
+						>
+							<option value='' disabled hidden>
+								Actions
+							</option>
+							<option value='test_survey'>Test Survey</option>
+							<option value='clone_survey'>Clone Survey</option>
+							<option value='set_external_name'>
+								Set External Name
+							</option>
+						</select>
 					</div>
 				</div>
 
-				<div className={styles.survey_info_right}>
-					<FormControl sx={{ m: 1, minWidth: 120 }}>
-						<Select
-							onChange={e => setSurveyStatus(e.target.value)}
-							inputProps={{ "aria-label": "Without label" }}
-							className={styles.status_select_field}
-							value={surveyStatus}
-						>
-							{options?.map(option => (
-								<MenuItem value={option.value} key={uuid()}>
-									{option.label}
-								</MenuItem>
-							))}
-						</Select>
-					</FormControl>
+				<div className={styles.survey_numbers_and_status}>
+					<div className={styles.survey_info}>
+						<div className={styles.project_name}>
+							<span className={styles.title}>
+								Project Number{" "}
+							</span>
+							<span className={styles.value}>
+								{survey.project_id}
+							</span>
+						</div>
 
-					<select
-						className={styles.action_select_field}
-						value=''
-						onChange={handleSurveyActionChange}
-					>
-						<option value='' disabled hidden>
-							Action
-						</option>
-						<option value='test_survey'>Test Survey</option>
-						<option value='clone_survey'>Clone Survey</option>
-						<option value='set_external_name'>
-							Set External Name
-						</option>
-					</select>
+						<div className={styles.survey_number}>
+							<span className={styles.title}>Survey Number</span>
+							<span className={styles.value}>
+								{survey?.survey_id}
+							</span>
+						</div>
+						{/* <div className={styles.live}>
+              <GoPrimitiveDot /> {survey?.status}
+            </div> */}
+					</div>
+					<div className={styles.status}>
+						<ul>
+							<li
+								className={
+									batti >= 1 ? styles.active : styles.inactive
+								}
+							>
+								<GoPrimitiveDot /> order recieved
+							</li>
+							<li
+								className={
+									batti >= 2 ? styles.active : style.inactive
+								}
+							>
+								<GoPrimitiveDot />
+								awarded
+							</li>
+							<li
+								className={
+									batti >= 3 ? styles.active : style.inactive
+								}
+							>
+								<GoPrimitiveDot />
+								soft launch
+							</li>
+							<li
+								className={
+									batti >= 3 ? styles.active : style.inactive
+								}
+							>
+								<GoPrimitiveDot />
+								full launch
+							</li>
+							<li
+								className={
+									batti >= 4 ? styles.active : style.inactive
+								}
+							>
+								<GoPrimitiveDot />
+								reconciliation
+							</li>
+							<li
+								className={
+									batti >= 5 ? styles.active : style.inactive
+								}
+							>
+								<GoPrimitiveDot />
+								closed & billed{" "}
+							</li>
+						</ul>
+					</div>
 				</div>
 			</div>
 
@@ -331,7 +421,7 @@ function SurveyInfo() {
 	)
 }
 
-const NameModal = ({
+export const NameModal = ({
 	title,
 	changeName,
 	setChangeName,

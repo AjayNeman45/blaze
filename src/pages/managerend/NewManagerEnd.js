@@ -61,7 +61,6 @@ const NewManagerEnd = () => {
     handleSnackbar,
   } = useAddQualificationContext();
 
-  console.log(dropDownQuestions);
   return (
     <>
       <SnackbarMsg

@@ -79,6 +79,9 @@
   border: 1px solid gray;
   border-radius: 20px;
 }
+.qualification_table {
+  width: 100%;
+}
 .qualification_table > thead > tr > th {
   text-align: start;
   padding: 25px 20px;

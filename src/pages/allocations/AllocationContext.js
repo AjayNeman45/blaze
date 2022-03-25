@@ -2,7 +2,7 @@ import { arrayUnion, doc, getDoc, setDoc } from "firebase/firestore";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { db } from "../../firebase";
-import { getSurvey } from "../../utils/firebaseQueries";
+import { getAllSuppliers, getSurvey } from "../../utils/firebaseQueries";
 
 const AllocationContext = createContext();
 
@@ -20,26 +20,22 @@ const AllocationContextProvider = ({ children }) => {
   const [externalSuppliers, setExternalSuppliers] = useState([]);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [err, setErr] = useState(null);
+  const [suppliers, setSuppliers] = useState([]);
   const [supplierModal, setSupplierModal] = useState(false);
-
-  const [internalSuppliers, setInternalSuppliers] = useState([]);
   const [internalsupplierModal, setinternalSupplierModal] = useState(false);
+  const [staticRedirectsModal, setStaticRedirectsModal] = useState(false);
+  const [snackbarData, setSnackbarData] = useState("");
+  const [supplierData, setSupplierData] = useState({
+    unreserved_completes: false,
+    global_redirect: true,
+  });
+  const [internalSuppliers, setInternalSuppliers] = useState([]);
 
-  const handleSupplierModal = () => {
-    setSupplierModal(!supplierModal);
-  };
   const handleInternalSupplierModal = () => {
     setinternalSupplierModal(!internalsupplierModal);
   };
   // console.log(internalsupplierModal);
-  console.log(
-    typeof parseInt(survey?.client_info?.client_cpi * 0.5),
-    parseInt(survey?.client_info?.client_cpi * 0.5)
-  );
-  const [supplierData, setSupplierData] = useState({
-    unreserved_completes: false,
-    supplier_account_id: Math.floor(1000000000 + Math.random() * 9000000000),
-  });
+
   const [internalSupplierState, setInternalSupplierState] = useState({
     unreserved_completes: false,
     supplier_account_id: 1234567890,
@@ -48,11 +44,11 @@ const AllocationContextProvider = ({ children }) => {
     supply_manager: supply_manager,
     // tcpi:{survey?.client_info?.client_cpi * 0.5}
   });
-  console.log("Internal Supplier state", internalSupplierState);
   const handleSnackbar = () => {
     setOpenSnackbar(!openSnackbar);
   };
 
+  // handle next btn of external supplier modal
   const handleAddSupplierDetails = async () => {
     if (
       !supplierData?.supplier_account ||
@@ -71,21 +67,46 @@ const AllocationContextProvider = ({ children }) => {
       );
     } else {
       setErr("");
-      handleSupplierModal();
-      await setDoc(
-        doc(db, "mirats", "surveys", "survey", surveyID),
-        { external_suppliers: arrayUnion(supplierData) },
-        { merge: true }
-      )
-        .then((res) => {
-          getAllTheExternalSuppliers();
-          handleSnackbar();
-          console.log("external supply added in database");
-        })
-        .catch((err) => console.log(err));
+      setSupplierModal(false);
+      for (let i = 0; i < suppliers.length; i++) {
+        if (
+          suppliers[i]?.company_name === supplierData?.supplier_account &&
+          !suppliers[i].global_redirect
+        ) {
+          setStaticRedirectsModal(true);
+          return;
+        }
+      }
+      insertExternalSupplier();
     }
   };
 
+  // insert external supplier in the database
+  const insertExternalSupplier = async (staticRedirects) => {
+    await setDoc(
+      doc(db, "mirats", "surveys", "survey", surveyID),
+      { external_suppliers: arrayUnion(supplierData) },
+      { merge: true }
+    )
+      .then(() => {
+        getAllTheExternalSuppliers();
+        setSnackbarData({
+          msg: "Supplier added successfully...",
+          severity: "success",
+        });
+        handleSnackbar();
+      })
+      .catch((err) => {
+        setSnackbarData({
+          msg: err.message,
+          severity: "error",
+        });
+        handleSnackbar();
+      });
+    setSupplierData({});
+  };
+
+  // insert external supplier in database
   const AddInternalSupplierDetails = async () => {
     if (
       !internalSupplierState?.allocation?.number ||
@@ -126,6 +147,13 @@ const AllocationContextProvider = ({ children }) => {
     getSurvey(surveyID)
       .then((data) => setSurvey(data))
       .catch((err) => console.log(err.message));
+
+    getAllSuppliers().then((res) => {
+      res.forEach((result) => {
+        let data = { ...result.data(), supplier_id: result.id };
+        setSuppliers((prevArr) => [...prevArr, data]);
+      });
+    });
   }, []);
 
   const getAllTheExternalSuppliers = async () => {
@@ -138,7 +166,6 @@ const AllocationContextProvider = ({ children }) => {
       .then((res) => setInternalSuppliers(res.data().internal_suppliers))
       .catch((err) => console.log(err.message));
   };
-  console.log(internalSuppliers);
   const value = {
     externalSuppliers,
     internalSuppliers,
@@ -151,12 +178,17 @@ const AllocationContextProvider = ({ children }) => {
     handleAddInternalSupplierDetails,
     err,
     supplierModal,
-    handleSupplierModal,
+    setSupplierModal,
     handleInternalSupplierModal,
     internalsupplierModal,
     handleSnackbar,
     openSnackbar,
     survey,
+    suppliers,
+    staticRedirectsModal,
+    setStaticRedirectsModal,
+    insertExternalSupplier,
+    snackbarData,
   };
   return (
     <AllocationContext.Provider value={value}>

@@ -67,12 +67,12 @@ const RidExclusions = () => {
             <p>4. Maximum number of RID's are 4K</p>
           </div>
 
-          <div className={styles.supplier_input}>
+          {/* <div className={styles.supplier_input}>
             <label>SUPPLIER</label>
             <select>
               <options></options>
             </select>
-          </div>
+          </div> */}
           <div className={styles.file_input}>
             <label>
               Upload file <span style={{ color: "Red" }}>*</span>

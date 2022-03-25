@@ -2,7 +2,6 @@ import React, { useState } from "react"
 import styles from "./Reports.module.css"
 import Header from "../../components/header/Header"
 import Subheader from "../../components/subheader/Subheader"
-import ProjectInfo from "../../components/project-info/ProjectInfo"
 import {
 	Accordion,
 	AccordionDetails,
@@ -10,10 +9,8 @@ import {
 	LinearProgress,
 	MenuItem,
 	Select,
-	Typography,
 } from "@mui/material"
 import { Box } from "@mui/system"
-import { HiOutlineDocumentReport } from "react-icons/hi"
 import { AiOutlineInfoCircle, AiOutlineCheck } from "react-icons/ai"
 import { BiChevronDown, BiInfoCircle } from "react-icons/bi"
 import {
@@ -22,7 +19,6 @@ import {
 	RiFullscreenExitFill,
 	RiAncientGateLine,
 } from "react-icons/ri"
-import { GrNavigate } from "react-icons/gr"
 import {
 	Chart as ChartJS,
 	CategoryScale,
@@ -33,22 +29,18 @@ import {
 	Legend,
 } from "chart.js"
 import { Bar } from "react-chartjs-2"
-// import faker from "faker"
+import SurveyInfo from "../../components/survey-info/SurveyInfo"
+import Grid from "@mui/material/Grid"
+import Typography from "@mui/material/Typography"
+import ExternalSupplier from "../../components/miratsExternalSupplier/ExternalSupplier"
+import { useReportsContext } from "./ReportsContext"
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
 function LinearProgressWithLabel(props) {
 	return (
 		<Box sx={{ display: "flex", alignItems: "center" }}>
-			{props.mainProgressBar && (
-				<Typography
-					variant='body2'
-					sx={{ mr: 2 }}
-					color='text.secondary'
-				>
-					Progress
-				</Typography>
-			)}
-
-			<Box sx={{ width: "100vw" }}>
+			<Box sx={{ width: "100%" }}>
 				<LinearProgress
 					variant='determinate'
 					{...props}
@@ -59,82 +51,247 @@ function LinearProgressWithLabel(props) {
 					}}
 				/>
 			</Box>
-			<Box sx={{ minWidth: 35 }}>
-				<Typography variant='body2' color='text.secondary'>
-					{`${Math.round(props.value)}%`}
-				</Typography>
-			</Box>
 		</Box>
 	)
 }
 
+let external_supplier_completes1 = {
+	title: "mirats external supplier completes",
+	table_data: [
+		{ supplier_name: "Cint AB", completes: 234, avg_cpi: 3.6, amount: 900 },
+		{
+			supplier_name: "Pure Spectrum",
+			completes: 123,
+			avg_cpi: 4.5,
+			amount: 600,
+		},
+		{ supplier_name: "Prodege", completes: 112, avg_cpi: 6.2, amount: 700 },
+		{
+			supplier_name: "Data diggers",
+			completes: 156,
+			avg_cpi: 2.5,
+			amount: 200,
+		},
+	],
+	table_footer: { total_completes: 625, total_cpi: 3.9, total_amount: 2400 },
+}
+let external_supplier_completes2 = {
+	title: "mirats external supplier completes",
+	table_data: [
+		{
+			supplier_name: "Mirats Quanto",
+			completes: 10,
+			avg_cpi: 5,
+			amount: 50,
+		},
+	],
+	table_footer: { total_completes: 10, total_cpi: 5, total_amount: 50 },
+}
+
+const clientStatusesData = [
+	{
+		title: "In Client Survey",
+		value: "in_client_survey",
+		statusCode: 3,
+		desc: "Currently in current survey or drop",
+	},
+	{
+		title: "Completed",
+		value: "completed",
+		statusCode: 10,
+		desc: "Survey Completed by User",
+	},
+	{
+		title: "Terminated",
+		value: "term",
+		statusCode: 20,
+		desc: "Survey terminated at client side",
+	},
+]
+
+const miratsStatusesData = [
+	{
+		title: "In Client Survey",
+		value: "in_client_survey",
+		statusCode: 3,
+		desc: "Currently in current survey or drop",
+	},
+	{
+		title: "Static",
+		value: "static",
+		statusCode: 0,
+		desc: "Did not answer a question",
+	},
+	{
+		title: "In Screener",
+		value: "inScreener",
+		statusCode: 1,
+		desc: "Currently in screener or drop",
+	},
+]
+
 const Reports = () => {
+	const {
+		survey,
+		statusesCnt,
+		miratsStatusesCnt,
+		alertCardData,
+		extIntSupplierData,
+		clientCpiSum,
+	} = useReportsContext()
+
+	console.log(statusesCnt, miratsStatusesCnt)
 	return (
 		<>
 			<Header />
 			<Subheader />
 			<div className={styles.reports_page}>
-				<ProjectInfo />
-				<div style={{ margin: "2rem" }}>
-					<LinearProgressWithLabel
-						value={10}
-						height={7}
-						mainProgressBar={true}
-					/>
-				</div>
-				<div className={styles.container}>
-					<div className={styles.left}>
-						<input type='date' />
-						<button>
-							<HiOutlineDocumentReport />
-							Get Reports
-						</button>
-					</div>
-					<div className={styles.right}>
-						<div className={styles.first_complete}>
-							<label>first complete</label>
-							<br />
-							<span>-</span>
-						</div>
-						<div className={styles.last_complete}>
-							<label>last complete</label>
-							<br />
-							<span>-</span>
-						</div>
-						<div className={styles.avg_cpi_epc}>
-							<span>
-								AVG. CPI <br />
-								<b>0.50 USD</b>
-							</span>
-							<span>
-								EPC <br />
-								<b>0.00 USD</b>
-							</span>
-						</div>
-					</div>
-				</div>
-
+				<SurveyInfo />
 				<div className={styles.main}>
 					<div className={styles.left}>
 						{/* respondent activity  */}
 						<RespondantActivity />
-						{/* Rates */}
-						<Rates />
-						{/* length of interview  */}
-						<LengthOfInterview />
+						<div style={{ margin: "1rem 0 0 1rem" }}>
+							<Grid container spacing={2} alignItems='flex-end'>
+								<Grid itme xs={7}>
+									<AlertCard
+										title='Length of Interview'
+										subtitle='completion loi'
+										count={
+											statusesCnt?.completed
+												? alertCardData?.totalTimeForCompletedSessions /
+												  statusesCnt?.completed
+												: 0
+										}
+										unit='min'
+										expectedCount={
+											survey?.expected_completion_loi
+										}
+									/>
+								</Grid>
+								<Grid item xs={5}>
+									<AlertCard
+										title='Term LOI'
+										subtitle='termination loi'
+										count={
+											statusesCnt?.completed
+												? alertCardData?.totalTimeForTerminatedSessions /
+												  statusesCnt?.completed
+												: 0
+										}
+										unit='min'
+										expectedCount={
+											(10 / 100) *
+											survey?.expected_completion_loi
+										}
+										alertMsg={"alert: HIGH LOI"}
+									/>
+								</Grid>
+							</Grid>
+
+							<div className={styles.container2}>
+								<div>
+									<AlertCard
+										title='Incidence'
+										subtitle='incidence rate'
+										count={
+											statusesCnt?.completed
+												? (
+														(statusesCnt?.completed /
+															miratsStatusesCnt?.in_client_survey) *
+														100
+												  ).toFixed(0)
+												: 0
+										}
+										unit='%'
+										expectedCount={
+											survey?.expected_incidence_rate
+										}
+										alertMsg={"alert: LOW"}
+									/>
+								</div>
+								<div>
+									<AlertCard
+										title='Drop-off'
+										subtitle='drop-off rate'
+										count={20}
+										unit='%'
+										expectedCount={20}
+										alertMsg='No alerts'
+									/>
+								</div>
+								<div>
+									<AlertCard
+										title='quota rate'
+										subtitle='quota rate'
+										count={
+											statusesCnt?.overQuota
+												? (
+														(statusesCnt?.overQuota *
+															100) /
+														miratsStatusesCnt?.in_client_survey
+												  ).toFixed(0)
+												: 0
+										}
+										unit='%'
+										expectedCount={20}
+										alertMsg={"alert: LOW"}
+									/>
+								</div>
+							</div>
+						</div>
 					</div>
 
 					<div className={styles.right}>
-						{/* data analysis  */}
-						<DataAnalysis />
+						<div className={styles.client_statuses_card}>
+							<StatusCard
+								cardTitle='Client Statuses'
+								cardData={clientStatusesData}
+								statusesCnt={statusesCnt}
+								inClientCnt={
+									miratsStatusesCnt?.in_client_survey
+								}
+							/>
+						</div>
+						<div className={styles.mirats_internal_statuses_card}>
+							<StatusCard
+								cardTitle='mirats statuses'
+								cardData={miratsStatusesData}
+								statusesCnt={miratsStatusesCnt}
+								inClientCnt={
+									miratsStatusesCnt?.in_client_survey
+								}
+							/>
+						</div>
+						<div className={styles.total_survey_cost_card}>
+							<span className={styles.legend}>
+								Total Survey Cost
+							</span>
+							<span className={styles.value}>
+								$ {clientCpiSum / statusesCnt?.completed}
+							</span>
+						</div>
+					</div>
+				</div>
+
+				<div className={styles.externalsuppliercontainer}>
+					<div>
+						<ExternalSupplier
+							tableTitle='mirats external supplier completes'
+							data={extIntSupplierData?.externalSupplersData}
+						/>
+					</div>
+					<div>
+						<ExternalSupplier
+							tableTitle='mirats external supplier completes'
+							data={extIntSupplierData?.internalSuppliresData}
+						/>
 					</div>
 				</div>
 			</div>
 		</>
 	)
 }
-
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
 const RespondantActivity = () => {
 	const [entrants, setEntrants] = useState(false)
@@ -173,18 +330,18 @@ const RespondantActivity = () => {
 				label: "Entrants",
 				data: Entrants.map(data => data),
 				backgroundColor: "#f7b438",
-				barThickness: 10,
+				barThickness: 20,
 			},
 			{
 				label: "Prescreens",
 				data: Prescreens.map(data => data),
 				backgroundColor: "rgb(127, 133, 255)",
-				barThickness: 10,
+				barThickness: 20,
 			},
 			{
 				label: "Completes",
 				data: Completes.map(data => data),
-				barThickness: 10,
+				barThickness: 20,
 				backgroundColor: "rgb(21, 222, 147)",
 			},
 		],
@@ -196,7 +353,7 @@ const RespondantActivity = () => {
 
 			<div className={styles.head}>
 				<div
-					style={{ borderBottom: entrants && "2px solid orange" }}
+					style={{ borderBottom: entrants && "5px solid orange" }}
 					className={styles.entrants}
 					onClick={() => setEntrants(!entrants)}
 				>
@@ -210,7 +367,7 @@ const RespondantActivity = () => {
 				<div
 					style={{
 						borderBottom:
-							prescreens && "2px solid rgb(127, 133, 255)",
+							prescreens && "5px solid rgb(127, 133, 255)",
 					}}
 					onClick={() => setPrescreens(!prescreens)}
 					className={styles.prescreens}
@@ -225,7 +382,7 @@ const RespondantActivity = () => {
 					className={styles.completes}
 					style={{
 						borderBottom:
-							completes && "2px solid rgb(21, 222, 147)",
+							completes && "5px solid rgb(21, 222, 147)",
 					}}
 					onClick={() => setCompletes(!completes)}
 				>
@@ -236,228 +393,121 @@ const RespondantActivity = () => {
 					<span className={styles.value}>0</span>
 				</div>
 			</div>
-			<Bar options={options} data={data} height={70} />
+			<Bar options={options} data={data} height={100} />
 		</div>
 	)
 }
 
-const rates_page_data = [
-	{
-		header: "Rates",
-		icon: <RiUserFollowLine size={20} />,
-		body_heading: "conversion rate",
-		percent: "10%",
-		points: "-10 pts",
-		goal: "Goal:",
-		above: "Above",
-		progress: "10%",
-		tooltip: "@",
-	},
-	{
-		header: "Rates",
-		icon: <RiUserFollowLine size={20} />,
-		body_heading: "conversion rate",
-		percent: "10%",
-		points: "-10 pts",
-		goal: "Goal:",
-		above: "Above",
-		progress: "10%",
-		tooltip: "@",
-	},
-	{
-		header: "Rates",
-		icon: <RiUserFollowLine size={20} />,
-		body_heading: "conversion rate",
-		percent: "10%",
-		points: "-10 pts",
-		goal: "Goal:",
-		above: "Above",
-		progress: "10%",
-		tooltip: "@",
-	},
-	{
-		header: "Rates",
-		icon: <RiUserFollowLine size={20} />,
-		body_heading: "conversion rate",
-		percent: "10%",
-		points: "-10 pts",
-		goal: "Goal:",
-		above: "Above",
-		progress: "10%",
-	},
-]
-
-const Rates = () => {
+const AlertCard = ({ title, subtitle, count, unit, expectedCount }) => {
 	return (
-		<div className={styles.rates}>
-			<p className={styles.legend}>Rates</p>
-			<div className={styles.rates_container}>
-				{rates_page_data.map((data, index) => (
-					<div className={styles.rateContainer} key={index}>
-						<div className={styles.rates_body}>
-							{/* rate */}
-							<div className={styles.quota_rate}>
-								{data.icon}
-								<span>{data.body_heading}</span>
+		<div className={styles.alert_card}>
+			<p className={styles.legend}>{title}</p>
+			<div className={styles.main_boby}>
+				<p className={styles.subtitle}>{subtitle}</p>
+				<div className={styles.cnt_and_alert_container}>
+					<p className={styles.count_and_unit}>
+						{count} {unit}
+					</p>
+					<p className={styles.alert_msg}>
+						{(count === expectedCount && "No Alerts") ||
+							(count > expectedCount && "alert: HIGH") ||
+							(count < expectedCount && "alert: LOW")}
+					</p>
+				</div>
+				<div>
+					<LinearProgressWithLabel
+						value={
+							count > expectedCount
+								? 100
+								: (count * 100) / expectedCount
+						}
+					/>
+				</div>
+				<p className={styles.expected_count}>
+					expected : {expectedCount} {unit}
+				</p>
+			</div>
+		</div>
+	)
+}
+
+const StatusCard = ({ cardTitle, cardData, inClientCnt, statusesCnt }) => {
+	return (
+		<div className={styles.clientStatus_conatiner}>
+			<h4>{cardTitle}</h4>
+			{cardData?.map(data => {
+				return (
+					<>
+						<div className={styles.clientStatus_title}>
+							<div className={styles.clientStatus_div}>
+								<h3>{data?.title}</h3>
 							</div>
-							{/* percentage and point */}
-							<div className={styles.percentage}>
-								<h1>{data.percent}</h1>
-								<span className={styles.points}>
-									{data.points}
-								</span>
-							</div>
-							{/* progress bar */}
-							<div className={styles.progress}>
-								<LinearProgressWithLabel value={10} />
-							</div>
-							{/* goal */}
-							<div className={styles.footer_data}>
+							<p>{data?.statusCode}</p>
+						</div>
+
+						<div className={styles.clientStatus_progressDiv}>
+							<p>
+								{data?.desc}
 								<span>
-									<b>{data.goal}</b>
+									{data?.value === "in_client_survey"
+										? inClientCnt
+										: statusesCnt?.[data?.value]}
 								</span>
-								<span className={styles.text_light}>
-									{data.above}
-								</span>
-								<span className={styles.text_light}>
-									{data.progress}
-								</span>
-								<span className={styles.text_light}>
-									<AiOutlineInfoCircle size={18} />
-								</span>
+							</p>
+							<div className={styles.clientStatus_progressBar}>
+								<Box
+									sx={{
+										display: "flex",
+										alignItems: "center",
+									}}
+								>
+									<Box sx={{ width: "100%", mr: 1 }}>
+										<LinearProgress
+											variant='determinate'
+											value={
+												data?.value ===
+												"in_client_survey"
+													? (
+															(inClientCnt *
+																100) /
+															statusesCnt?.hits
+													  ).toFixed(0)
+													: (
+															(statusesCnt?.[
+																data?.value
+															] *
+																100) /
+															statusesCnt?.hits
+													  ).toFixed(0)
+											}
+										/>
+									</Box>
+									<Box sx={{ minWidth: 35 }}>
+										<Typography
+											variant='body2'
+											color='text.secondary'
+										>
+											{data?.value === "in_client_survey"
+												? (
+														(inClientCnt * 100) /
+														statusesCnt?.hits
+												  ).toFixed(0)
+												: (
+														(statusesCnt?.[
+															data?.value
+														] *
+															100) /
+														statusesCnt?.hits
+												  ).toFixed(0)}
+											%
+										</Typography>
+									</Box>
+								</Box>
 							</div>
 						</div>
-					</div>
-				))}
-			</div>
-		</div>
-	)
-}
-
-const DataAnalysis = () => {
-	const [mode, setMode] = React.useState("live")
-
-	return (
-		<div className={styles.data_analysis_card}>
-			<p className={styles.legend}>Data Analysis</p>
-			<Select
-				value={mode}
-				onChange={e => setMode(e.target.value)}
-				displayEmpty
-				inputProps={{ "aria-label": "Without label" }}
-				className={styles.select_field}
-			>
-				<MenuItem value='live'>Live</MenuItem>
-				<MenuItem value='test'>Test</MenuItem>
-			</Select>
-			<div className={styles.client_codes}>
-				<Accordion className={styles.accordion}>
-					<AccordionSummary
-						expandIcon={<BiChevronDown />}
-						aria-controls='panel1a-content'
-						id='panel1a-header'
-						className={styles.accordion_summary}
-					>
-						<p className={styles.accordion_name}>client codes</p>
-						<BiInfoCircle
-							size={20}
-							style={{ marginTop: "13px", marginLeft: "10px" }}
-						/>
-					</AccordionSummary>
-					<AccordionDetails className={styles.accordion_details}>
-						<div className={styles.client_code}>
-							<span className={styles.tag}>
-								In Client Survey 1
-							</span>
-							<br />
-							<br />
-							<div className={styles.name}>
-								<span>Currently in Client Survey or Drop</span>
-								<span>93</span>
-							</div>
-							<br />
-							<div>
-								<LinearProgressWithLabel
-									value={10}
-									height={4}
-								/>
-							</div>
-						</div>
-						<div className={styles.total}>
-							Total &nbsp; &nbsp;<span>93</span>
-						</div>
-					</AccordionDetails>
-				</Accordion>
-			</div>
-			<div className={styles.marketplace_codes}>
-				<Accordion className={styles.accordion}>
-					<AccordionSummary
-						expandIcon={<BiChevronDown />}
-						aria-controls='panel2a-content'
-						id='panel2a-header'
-						className={styles.accordion_summary}
-					>
-						<p className={styles.accordion_name}>
-							marketplace codes
-						</p>
-						<BiInfoCircle
-							size={20}
-							style={{ marginTop: "13px", marginLeft: "10px" }}
-						/>
-					</AccordionSummary>
-					<AccordionDetails className={styles.accordion_details}>
-						<span className={styles.tag}>In Client Survey 1</span>
-						<br />
-						<br />
-						<div className={styles.name}>
-							<span>Currently in Client Survey or Drop</span>
-							<span>93</span>
-						</div>
-						<br />
-						<div>
-							<LinearProgressWithLabel value={10} />
-						</div>
-						<div className={styles.total}>
-							Total &nbsp; &nbsp;<span>93</span>
-						</div>
-					</AccordionDetails>
-				</Accordion>
-			</div>
-		</div>
-	)
-}
-
-const LengthOfInterview = () => {
-	return (
-		<div className={styles.LOI_card}>
-			<p className={styles.legend}>Length of Interview</p>
-			<div className={styles.left}>
-				<div className={styles.head}>
-					<span>
-						<RiTimerLine size={20} />
-					</span>
-					<span>completion loi</span>
-				</div>
-				<div className={styles.middle}>
-					<div className={styles.timing}>
-						<h1>0 min</h1>
-						<span>-20 min</span>
-					</div>
-					<LinearProgressWithLabel value={2} height={4} />
-					<span></span>
-				</div>
-				<div className={styles.bottom}>
-					<span>
-						<b>Expected: </b>
-					</span>
-					<span className={styles.text_light}>20</span>
-					<span className={styles.text_light}>min</span>
-					<span className={styles.text_light}>
-						<AiOutlineInfoCircle size={18} />
-					</span>
-				</div>
-			</div>
-			<div className={styles.right}></div>
+					</>
+				)
+			})}
 		</div>
 	)
 }

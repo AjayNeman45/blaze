@@ -27,7 +27,6 @@ const CreateNewProjectProvider = ({ children }) => {
     const allSurveys = await getAllSurveys();
     let maxSurveyId = 0;
     let maxProjectId = 0;
-
     // this loop gives the last surveyID and projectID
     allSurveys.forEach((survey) => {
       if (survey.data()?.survey_id > maxSurveyId) {
@@ -53,7 +52,7 @@ const CreateNewProjectProvider = ({ children }) => {
       return projectPreExist;
     };
 
-    if (surveyData?.existing_project_checked === "Yes") {
+    if (surveyData?.existing_project_checked) {
       if (checkProjectExistance(false)) {
         createSurvey(newSurveyId, newProjectId);
         setInsertLoading(false);
@@ -143,6 +142,7 @@ const CreateNewProjectProvider = ({ children }) => {
     const survey_id = decryptText(encryptedID.split("-")[0]);
     const project_id = decryptText(encryptedID.split("-")[1]);
     const country_id = decryptText(encryptedID.split("-")[2]);
+    console.log(survey_id)
     var docker = DOC.where("project_id", "==", parseInt(project_id))
       .where("survey_id", "==", parseInt(survey_id))
       .get();
@@ -159,6 +159,7 @@ const CreateNewProjectProvider = ({ children }) => {
               ),
               status: "bidding",
               internal_status: surveyData.internal_status,
+              device_suitability:surveyData?.device_suitability
             },
             { merge: true }
           )
@@ -210,11 +211,7 @@ const CreateNewProjectProvider = ({ children }) => {
               },
               external_project_name: "",
               survey_group: "",
-              client_info: {
-                client_pm_email: "",
-                client_project_manager: "",
-                client_cpi: "",
-              },
+              client_info:surveyData?.client_info,
               creation_date: new Date(),
             },
             { merge: true }

@@ -1,16 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaInfoCircle } from "react-icons/fa";
 import Header from "../../components/header/Header";
 import Subheader from "../../components/subheader/Subheader";
 import styles from "./Allocations.module.css";
-import ProjectInfo from "../../components/project-info/ProjectInfo";
-import Modal from "@mui/material/Modal";
-import Box from "@mui/material/Box";
-import Autocomplete from "@mui/material/Autocomplete";
-import TextField from "@mui/material/TextField";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import InputAdornment from "@mui/material/InputAdornment";
-import UseSwitchBasic from "../../components/switch";
 import { useAllocationContext } from "./AllocationContext";
 import { BiChevronDown } from "react-icons/bi";
 import Snackbar from "@mui/material/Snackbar";
@@ -19,9 +11,10 @@ import SurveyInfo from "../../components/survey-info/SurveyInfo";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import AddSupplierModal from "./AddSupplierModal";
 import InternalSupplierModal from "./InternalSupplierModal";
-import Tooltip from "@mui/material/Tooltip";
 import { v4 as uuid } from "uuid";
-
+import AddStaticRedirectsModal from "./AddStaticRedirectsModal";
+import SnackbarMsg from "../../components/Snackbar";
+import { getAllSessions } from "../../utils/firebaseQueries";
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -30,15 +23,98 @@ const Allocations = () => {
   const {
     externalSuppliers,
     internalSuppliers,
-    handleSupplierModal,
+    setSupplierModal,
     handleInternalSupplierModal,
     supplierModal,
     openSnackbar,
     handleSnackbar,
-    survey,
     internalsupplierModal,
+    staticRedirectsModal,
+    setStaticRedirectsModal,
+    snackbarData,
+    survey,
   } = useAllocationContext();
-  console.log(internalSuppliers);
+  let [sessions, setSessions] = useState([]);
+  let [externalsupplierdata, setExternalSupplierData] = useState({});
+  useEffect(() => {
+    getAllSessions(survey?.survey_id).then((querysnapshot) => {
+      querysnapshot.forEach((doc) => {
+        setSessions((prear) => [...prear, doc.data()]);
+      });
+    });
+  }, [survey]);
+  // console.log("Sessions", sessions);
+  // console.log("External suppliers", survey?.external_suppliers);
+
+  function CalculateTotalCompletes() {
+    let count = 0;
+    sessions?.map((session) => {
+      if (session?.client_status === 10) {
+        count += 1;
+      }
+    });
+    return count;
+  }
+
+  function CalculateCompletes(supplier_account_id) {
+    let count = 0;
+    sessions?.map((session) => {
+      if (session?.supplier_account_id === supplier_account_id) {
+        if (session?.client_status === 10) {
+          count += 1;
+        }
+      }
+    });
+    return count;
+  }
+  function CountConversion(supplier_account_id) {
+    let count = 0;
+    sessions?.map((session) => {
+      if (session?.supplier_account_id === supplier_account_id) {
+        if (session?.mirats_status === 3) {
+          count++;
+        }
+      }
+    });
+    return (CalculateCompletes(supplier_account_id) / count).toFixed(2);
+  }
+  function CountTotalConversion() {
+    let count = 0;
+    sessions?.map((session) => {
+      if (session?.mirats_status === 3) {
+        count++;
+      }
+    });
+    return ((CalculateTotalCompletes() / count) * 100).toFixed(2);
+  }
+  function CalculatePreScreener(supplier_account_id) {
+    let count = 0;
+    sessions?.map((session) => {
+      if (session?.supplier_account_id === supplier_account_id) {
+        if (
+          session?.mirats_status === 1 ||
+          session?.mirats_status === 120 ||
+          session?.mirats_status === 122 ||
+          session?.mirats_status === 123 ||
+          session?.mirats_status === 124 ||
+          session?.mirats_status === 125 ||
+          session?.mirats_status === 126 ||
+          session?.mirats_status === 21 ||
+          session?.mirats_status === 23 ||
+          session?.mirats_status === 237 ||
+          session?.mirats_status === 24 ||
+          session?.mirats_status === 3 ||
+          session?.mirats_status === 40
+        ) {
+          count += 1;
+        }
+      }
+    });
+    return count;
+  }
+  // function CountTotalRemaining(supplier_account_id){
+  //   return
+  // }
   return (
     <>
       <Header />
@@ -65,7 +141,7 @@ const Allocations = () => {
             </div>
             <div className={styles.allocations_info_section}>
               <label>quota</label> &nbsp;
-              <span>99</span>
+              <span>{survey?.no_of_completes}</span>
             </div>
             <div className={styles.allocations_info_section}>
               <div
@@ -81,15 +157,15 @@ const Allocations = () => {
             </div>
             <div className={styles.allocations_info_section}>
               <label>completes</label>&nbsp;
-              <span>0</span>
+              <span>{CalculateTotalCompletes()} </span>
             </div>
             <div className={styles.allocations_info_section}>
               <label>conversion</label>&nbsp;
-              <span>0%</span>
+              <span>{CountTotalConversion()}%</span>
             </div>
             <div className={styles.allocations_info_section}>
               <label>survey cpi</label>&nbsp;
-              <span>$ 0.50</span>
+              <span>$ {survey?.client_info?.client_cpi}</span>
             </div>
           </div>
         </div>
@@ -99,7 +175,7 @@ const Allocations = () => {
 
             <button
               className={styles.add_supplier_btn}
-              onClick={handleSupplierModal}
+              onClick={() => setSupplierModal(true)}
             >
               <AiOutlinePlusCircle size={25} /> &nbsp; Add Supplier
             </button>
@@ -149,12 +225,22 @@ const Allocations = () => {
                       <td>{supplier?.tcpi}</td>
                       <td></td>
                       <td>{supplier?.allocation?.number}</td>
+                      <td>
+                        {CalculatePreScreener(supplier?.supplier_account_id)}
+                      </td>
+                      <td>
+                        {CalculateCompletes(supplier?.supplier_account_id)}
+                      </td>
+                      <td>
+                        {supplier?.allocation?.number -
+                          CalculateCompletes(supplier?.supplier_account_id)}
+                      </td>
+                      <td>
+                        {survey?.no_of_completes -
+                          CalculateCompletes(supplier?.supplier_account_id)}
+                      </td>
+                      <td>{CountConversion(supplier?.supplier_account_id)}</td>
                       <td>0</td>
-                      <td>0</td>
-                      <td>0</td>
-                      <td>0</td>
-                      <td>0</td>
-                      <td>0%</td>
                     </tr>
                   );
                 })}
@@ -244,26 +330,25 @@ const Allocations = () => {
         </div>
       </div>
 
-      {/* add supplier modal  */}
-
+      {/* add external supplier modal  */}
       {supplierModal && <AddSupplierModal />}
+
+      {/* add internal supplier modal  */}
       {internalsupplierModal && <InternalSupplierModal />}
 
+      {/* global redirects modal  */}
+      <AddStaticRedirectsModal
+        addStaticRedirectsModal={staticRedirectsModal}
+        setAddStaticRedirectsModal={setStaticRedirectsModal}
+      />
+
       {/* snackbar  */}
-      <Snackbar
+      <SnackbarMsg
+        msg={snackbarData?.msg}
+        severity={snackbarData?.severity}
         open={openSnackbar}
-        autoHideDuration={6000}
-        onClose={handleSnackbar}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-      >
-        <Alert
-          onClose={handleSnackbar}
-          severity="success"
-          sx={{ width: "100%" }}
-        >
-          Supplier Added successfully
-        </Alert>
-      </Snackbar>
+        handleClose={handleSnackbar}
+      />
     </>
   );
 };

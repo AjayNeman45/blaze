@@ -1,14 +1,26 @@
 .create_survey_page {
-  padding: 2rem 10rem 5rem 4rem;
+  padding: 2rem 8rem 2rem 8rem;
   /* border: 1px solid red; */
 }
 .create_survey_page_header {
   padding: 1rem 0;
 }
 .create_survey_page_header .title {
-  font-size: 33px;
-  font-weight: bold;
-  margin-bottom: -0.5rem;
+  font-size: 38px;
+  font-weight: 600;
+  padding-bottom: 0.5em;
+}
+.create_survey_left .subtitle {
+  /* border: 1px solid blue; */
+  margin-top: 1em;
+  font-size: 22px;
+  line-height: 36px;
+  width: 20vw;
+}
+.create_survey_left .desc {
+  margin-top: 1em;
+  width: 20vw;
+  font-size: 22px;
 }
 .basic_survey_info {
   display: flex;
@@ -23,83 +35,133 @@
 }
 .create_survey_left .title {
   font-size: 30px;
-  margin: 0;
+  /* border: 1px solid red; */
+  font-weight: 500;
+  font-size: 36px;
+  line-height: 54px;
+  /* margin: 0; */
 }
 .create_survey_right {
   width: 35vw;
 }
-.create_survey_right .country_select {
-  width: 24vw;
-  margin-top: 1rem;
+.country {
+  margin-bottom: 2em;
 }
-.create_survey_right > div {
+/* .create_survey_right .country_select {
+  padding-left: 10px;
+  margin-top: 1rem;
+  width: 435.44px;
+  height: 55.19px;
+  border: 1px solid #959595;
+  border-radius: 10px;
+} */
+
+.css-1s2u09g-control {
+  padding-left: 10px;
+  /* margin-top: 1rem; */
+  width: 435.44px;
+  height: 55.19px;
+  border: 1px solid #959595;
+  border-radius: 10px;
+}
+.multiselect {
+  margin-bottom: 1em;
+}
+.country_select {
+  width: 435.44px;
+  height: 55.19px;
+  margin-bottom: 1em;
+  border-radius: 10px;
+}
+.create_survey_right .column {
   display: flex;
   flex-direction: column;
+  /* border: 1px solid red; */
   margin-bottom: 1rem;
 }
 
 .create_survey_right label {
   font-weight: 500;
   font-size: 15px;
+  font-size: 18px;
+  line-height: 138.8%;
+  color: #393939;
 }
+.create_survey_right > div > input,
 .create_survey_right > div > select {
-  height: 2.4rem;
-  width: 24vw;
-  margin-top: 1rem;
-}
-.create_survey_right > div > input {
-  height: 2rem;
-  width: 23vw;
+  /* height: 2rem;
+  width: 23vw; */
   padding-left: 10px;
   margin-top: 1rem;
+  width: 435.44px;
+  height: 55.19px;
+  border: 1px solid #959595;
+  border-radius: 10px;
+  font-size: 16px;
+  margin-bottom: 1.5em;
 }
 .project_detail_info {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  padding: 3rem 0;
+  padding: 7rem 0;
+  border-bottom: 1px solid #393939;
 }
 .radio_input label {
-  width: 25vw;
+  width: 32vw;
+  color: #393939;
 }
 .radio_btns {
   display: flex;
-  margin-top: 1rem;
+  margin: 1.5rem 0;
+  /* flex-direction: row; */
   /* border: 1px solid red; */
 }
 .radio_btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  /* border: 1px solid red; */
   width: fit-content;
-  margin-left: 1rem;
+  /* border: 1px solid red; */
+  /* margin-left: 1rem; */
 }
+.radio_btn:last-child {
+  margin-left: 1em;
+}
+
 .radio_btn input {
   width: 15px;
   height: 15px;
 }
 .radio_btn span {
-  margin-top: 0.2rem;
+  /* margin-top: 0.2rem; */
+  /* border: 1px solid blue; */
 }
 .project_name_input {
   margin-top: 2rem;
 }
 
 .next_btn_container button {
-  background-color: blue;
+  background: #146cdf;
   color: white;
-  padding: 10px 20px;
+  padding: 10px 70px;
   font-size: 17px;
+  font-weight: 600;
   border-radius: 4px;
   border: none;
   outline: none;
   float: right;
   cursor: pointer;
   text-decoration: none;
+  border: 1px solid #146cdf;
+  border-radius: 34px;
+  margin: 5em 0;
+
+  /* width: 286px;
+  height: 61px; */
 }
 .next_btn_container button:hover {
-  background-color: rgb(4, 4, 179);
+  background-color: rgb(5, 75, 206);
 }
 
 .insert_loading {
@@ -129,11 +191,17 @@
 
 .metrics_and_data,
 .peoples_info,
-.internal_status {
+.internal_status,
+.people_working_on_proj {
   display: flex;
   justify-content: space-between;
   /* border: 1px solid red; */
-  padding: 3rem 0;
+  border-bottom: 1px solid #000000;
+  padding: 5rem 0;
+}
+
+.metrics_and_data {
+  padding: 3em 0;
 }
 
 /* peoples  */
@@ -151,6 +219,46 @@
 }
 .input_helper_card .title {
   font-size: 25px;
+}
+
+.create_survey_right h2 {
+  margin-bottom: 1.2em;
+  font-weight: 600;
+}
+
+.two-column {
+  /* border: 1px solid red; */
+  display: flex;
+  margin-bottom: 2em;
+}
+.two-column label {
+  color: #393939;
+}
+.client_cpi input,
+.cost_curr input {
+  border: 1px solid #959595;
+  border-radius: 10px;
+  padding: 0.8em;
+  margin-top: 0.5em;
+  height: 55.19px;
+}
+.client_cpi input {
+  width: 174px;
+}
+.cost_curr input {
+  width: 230px;
+}
+/* checkboxes */
+.checkboxes {
+  margin-top: 1em;
+}
+
+.input-check {
+  margin: 0.3em 0;
+}
+
+.input-check input {
+  margin-right: 1em;
 }
 
 @media (max-width: 990px) {
