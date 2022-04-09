@@ -47,37 +47,14 @@
 .country {
   margin-bottom: 2em;
 }
-/* .create_survey_right .country_select {
-  padding-left: 10px;
-  margin-top: 1rem;
-  width: 435.44px;
-  height: 55.19px;
-  border: 1px solid #959595;
-  border-radius: 10px;
-} */
-
-.css-1s2u09g-control {
-  padding-left: 10px;
-  /* margin-top: 1rem; */
-  width: 435.44px;
-  height: 55.19px;
-  border: 1px solid #959595;
-  border-radius: 10px;
-}
 .multiselect {
   margin-bottom: 1em;
-}
-.country_select {
-  width: 435.44px;
-  height: 55.19px;
-  margin-bottom: 1em;
-  border-radius: 10px;
 }
 .create_survey_right .column {
   display: flex;
   flex-direction: column;
   /* border: 1px solid red; */
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
 }
 
 .create_survey_right label {
@@ -93,12 +70,16 @@
   width: 23vw; */
   padding-left: 10px;
   margin-top: 1rem;
-  width: 435.44px;
+  width: 100%;
   height: 55.19px;
   border: 1px solid #959595;
   border-radius: 10px;
   font-size: 16px;
-  margin-bottom: 1.5em;
+}
+.create_survey_right > div > input:focus,
+.create_survey_right > div > select:focus {
+  outline: 1px solid #1a73e8;
+  border-color: #1a73e8;
 }
 .project_detail_info {
   display: flex;
@@ -153,19 +134,26 @@
   float: right;
   cursor: pointer;
   text-decoration: none;
-  border: 1px solid #146cdf;
   border-radius: 34px;
   margin: 5em 0;
-
-  /* width: 286px;
-  height: 61px; */
 }
 .next_btn_container button:hover {
   background-color: rgb(5, 75, 206);
 }
+.next_btn_disable button {
+  background-color: #bed8fa;
+  cursor: not-allowed;
+}
+.next_btn_disable button:hover {
+  background-color: #bed8fa;
+}
 
 .insert_loading {
+  padding: 10px 70px;
+  font-size: 17px;
   float: right;
+  border-radius: 34px;
+  margin: 5em 0;
 }
 
 /* setup requirment  */
@@ -235,18 +223,16 @@
   color: #393939;
 }
 .client_cpi input,
-.cost_curr input {
+.cost_curr select {
   border: 1px solid #959595;
   border-radius: 10px;
   padding: 0.8em;
+  width: 100%;
   margin-top: 0.5em;
   height: 55.19px;
 }
 .client_cpi input {
-  width: 174px;
-}
-.cost_curr input {
-  width: 230px;
+  width: 90%;
 }
 /* checkboxes */
 .checkboxes {
@@ -259,6 +245,12 @@
 
 .input-check input {
   margin-right: 1em;
+}
+.hide_info {
+  display: none;
+}
+.show_info {
+  display: block;
 }
 
 @media (max-width: 990px) {

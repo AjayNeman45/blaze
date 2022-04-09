@@ -6,6 +6,7 @@ import {
   FieldValue,
   getDoc,
   getDocs,
+  orderBy,
   query,
   setDoc,
   updateDoc,
@@ -84,7 +85,15 @@ export const getAllSessions = async (surveyID, gamma) => {
   let sessionType = "Sessions";
   if (gamma === "alpha") sessionType = "TestSessions";
   return await getDocs(
-    collection(db, "mirats", "surveys", "survey", String(surveyID), sessionType)
+    collection(
+      db,
+      "mirats",
+      "surveys",
+      "survey",
+      String(surveyID),
+      sessionType
+    ),
+    orderBy("date", "desc")
   );
 };
 
@@ -438,5 +447,11 @@ export const getErrorCodesForClientStatus = async () => {
 export const getErrorCodesForMiratsStatus = async () => {
   return await getDocs(
     query(collection(db, "mirats", "error_codes", "mirats_codes"))
+  );
+};
+
+export const getClients = async () => {
+  return await getDocs(
+    query(collection(db, "mirats", "Organisations", "clients"))
   );
 };

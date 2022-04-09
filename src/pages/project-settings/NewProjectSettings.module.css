@@ -34,17 +34,15 @@
 .input_component select,
 .input_component input {
 	font-weight: 600;
-	padding: 12px 10px;
+	/* padding: 12px 10px; */
+	height: 42px;
 	font-size: 14px;
-	background: rgba(238, 238, 238, 0.75);
+	background: #eeeeeebf;
 	border-radius: 21px;
 	margin-top: 0.4rem;
 	border: none;
 	outline: none;
 	text-align: center;
-}
-.input_component .country_select {
-	margin-top: 0.7rem;
 }
 
 /***** setup requirements card  */

@@ -2,25 +2,28 @@ import React from "react";
 import styles from "./userAnalytcs.module.css";
 import { Progress } from "@nextui-org/react";
 import LinearProgress from "@mui/material/LinearProgress";
+import { v4 as uuid } from "uuid";
 
 function AnalyticsUserCountCard({
   cardTitle,
   cardSubtitle,
   data,
   inClientSessions,
+  last30MinutesCard,
 }) {
-  console.log(data);
   return (
     <div className={styles.UserAnalytics_container}>
-      <h1>{cardTitle}</h1>
+      <div className={styles.legend}>
+        <h1 className={styles.cardTitle}>{cardTitle}</h1>
+        {last30MinutesCard && <h3>users in last 30 minutes</h3>}
+      </div>
       <div className={styles.UserAnalytics_header}>
         <h4>{cardSubtitle[0]}</h4>
         <h4>{cardSubtitle[1]}</h4>
       </div>
       {Object.keys(data).map((key) => {
-        console.log(data[key], inClientSessions);
         return (
-          <>
+          <div key={uuid()}>
             <div className={styles.platform_type}>
               <p>{key}</p> <p>{data[key]}</p>
             </div>
@@ -28,10 +31,16 @@ function AnalyticsUserCountCard({
             <LinearProgress
               color="inherit"
               variant="determinate"
-              value={(data[key] / inClientSessions) * 100}
+              value={
+                (data[key] /
+                  (inClientSessions.hasOwnProperty(key)
+                    ? inClientSessions[key]
+                    : inClientSessions)) *
+                100
+              }
               // value={item.progress}
             />
-          </>
+          </div>
         );
       })}
     </div>

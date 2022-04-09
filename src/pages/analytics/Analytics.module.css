@@ -37,9 +37,14 @@
 
 /* audience page  */
 .audience_page {
-  display: flex;
   /* border: 1px solid red; */
   margin-top: 1.5rem;
+}
+.audience_page .container1 {
+  display: flex;
+}
+.audience_page .container2 {
+  display: flex;
 }
 .audience_page .right {
   margin-left: 2rem;
@@ -63,31 +68,21 @@
 .graph1_stats,
 .graph2_stats {
   display: flex;
+  align-items: center;
+  justify-content: space-around;
   margin-bottom: 1rem;
+  /* border: 1px solid red; */
 }
-.users_stat,
-.engaged_sessions_stat,
-.conversions_stat {
+.stat {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-right: 5rem;
   cursor: default;
-  padding: 1rem 2rem;
+  /* border: 1px solid red; */
+  padding: 1rem 1rem;
 }
-
-.users_stat_active {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-right: 5rem;
-  cursor: default;
-  padding: 1rem 2rem;
-}
-.users_stat:hover,
-.engaged_sessions_stat:hover,
-.conversions_stat:hover,
-.users_stat_active:hover {
+.stat:hover {
   background-color: rgb(243, 243, 243);
   transition: all 0.2s ease-in-out;
   border-radius: 20px;
@@ -96,6 +91,16 @@
   font-weight: 600;
   font-size: 16px;
   padding: 4px 8px;
+}
+.active_stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 5rem;
+  cursor: default;
+  background-color: rgb(243, 243, 243);
+  border-radius: 20px;
+  padding: 1rem 1rem;
 }
 .active_stat .stat_label {
   color: #1765dc;
@@ -151,13 +156,14 @@
 
 /* users by browsers card  */
 .users_by_browsers_card {
-  width: 50%;
+  width: 35%;
+  margin-right: 2.5em;
 }
 
 /* supplier by completes card  */
 .supplier_by_completes_card {
-  width: 100%;
-  min-height: 370px;
+  width: 60%;
+  height: 370px;
   background: #ffffff;
   border: 1px solid #e0e0e0;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
@@ -165,19 +171,39 @@
   display: flex;
   flex-direction: column;
   padding: 2.5rem 1.5rem;
-  margin-bottom: 2rem;
-  margin-top: 7rem;
 }
 .supplier_by_completes_card h1 {
   font-size: 24px;
   font-weight: 600;
 }
+
 .supplier_by_completes_table {
+  height: 100%;
   overflow: auto;
 }
 .supplier_by_completes_table table {
   border-collapse: collapse;
+  width: 100%;
+}
+.supplier_by_completes_table table th {
+  padding: 0.5rem;
+  text-align: left;
+  text-transform: uppercase;
+}
+.supplier_by_completes_table table td {
+  padding: 0.5rem;
 }
 .supplier_by_completes_table table tr {
   border-bottom: 1px solid #a6a6a6;
+}
+.gender_by_complets_and_completes_by_suppliers {
+  display: flex;
+  align-items: center;
+}
+.gender_by_complete_card {
+  width: 50%;
+}
+.completes_by_suppliers {
+  width: 50%;
+  margin-left: 2rem;
 }

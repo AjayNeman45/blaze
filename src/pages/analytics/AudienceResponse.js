@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import AnalyticsUserCountCard from "../../components/analyticsUserCountCard/AnalyticsUserCountCard";
 import styles from "./Analytics.module.css";
+import { useAanalyticsContext } from "./AnalyticsContext";
 import AudienceResponse_BarChart from "./audience-response-bar-chart/AudienceResponse_BarChart";
 
 const completes_by_employees_data = {
@@ -68,6 +69,34 @@ const users_by_country_data = [
 ];
 
 const AudienceResponse = () => {
+  const { allSessions } = useAanalyticsContext();
+
+  const [usersByGender, setUsersByGender] = useState({ Male: 0, Female: 0 });
+
+  useEffect(() => {
+    allSessions?.forEach((session) => {
+      if (session.data()?.client_status === 10) {
+        if (session.data()?.responses?.[1]?.user_response === 0) {
+          setUsersByGender((prevData) => {
+            return {
+              ...prevData,
+              Male: prevData?.Male + 1,
+            };
+          });
+        } else if (session.data()?.responses?.[1]?.user_response === 1) {
+          setUsersByGender((prevData) => {
+            return {
+              ...prevData,
+              Female: prevData?.Female + 1,
+            };
+          });
+        }
+      }
+    });
+  }, [allSessions]);
+
+  console.log(usersByGender);
+
   return (
     <>
       <div className={styles.audience_response_page}>
@@ -80,18 +109,18 @@ const AudienceResponse = () => {
             <AnalyticsUserCountCard
               cardTitle="complets by employees"
               cardSubtitle={["no of employees", "users"]}
-              data={completes_by_employees_data}
+              data={usersByGender}
               inClientSessions={3}
             />
           </div>
 
           {/* quotafull by questions card  */}
           <div className={styles.quotafull_by_questions_card}>
-            {/* <AnalyticsUserCountCard
-              cardTitle="quotafull by questions"
-              cardSubtitle={["questions", "quota full"]}
-              data={quotafull_by_questions_data}
-            /> */}
+            <AnalyticsUserCountCard
+              cardTitle="completes by gender"
+              cardSubtitle={["gender", "users"]}
+              data={{}}
+            />
           </div>
         </div>
         <div className={styles.right}>

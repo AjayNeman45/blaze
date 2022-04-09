@@ -1,8 +1,9 @@
 import { Route, Switch } from "react-router-dom";
 import Projects from "./pages/projects/Projects";
-import Dashboard from "./pages/dashboard/Dashboard";
-import Accounts from "./pages/accounts/Accounts";
-import Contacts from "./pages/contacts/Contacts";
+// import Dashboard from "./pages/dashboard/Dashboard";
+import Dashboard from "./pages/dashboard-new/Dashboard";
+import Accounts from "./pages/accounts-new/Accounts";
+import Contacts from "./pages/contacts-new/Contacts";
 import Leads from "./pages/leads/Leads";
 import CreateNewProject from "./pages/create-new-project/CreateNewProject";
 import Loader from "./components/loader/Loader";
@@ -48,13 +49,18 @@ import ReportsContextProvider from "./pages/reports/ReportsContext";
 import AnalyticsContextProvider from "./pages/analytics/AnalyticsContext";
 import SourcesContextProvider from "./pages/sources/SourcesContext";
 import { LiveSurveyLogsContextProvider } from "./pages/live-survey-logs/LiveSurveyLogsContext";
+import NewSupplier from "./pages/client_supplier/pages/new-supplier/NewSupplier";
+import NewClient from "./pages/client_supplier/pages/new-client/NewClient";
+import DashboardContextProvider from "./pages/dashboard-new/DashboardContext";
 function App() {
   return (
     <>
       <Switch>
         <BaseContextProvider>
           <Route path="/" exact>
+            <DashboardContextProvider>
             <Dashboard />
+            </DashboardContextProvider>
           </Route>
           <ProjectContextProvider>
             <Route path="/projects" exact>
@@ -216,6 +222,14 @@ function App() {
             </SourcesContextProvider>
           </Route>
           {/* source pages end  */}
+
+          {/* New Supplier and Client  */}
+          <Route path="/new-supplier">
+            <NewSupplier />
+          </Route>
+          <Route path="/new-client">
+            <NewClient />
+          </Route>
         </BaseContextProvider>
       </Switch>
     </>

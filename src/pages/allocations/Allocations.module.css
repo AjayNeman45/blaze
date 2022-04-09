@@ -218,7 +218,7 @@
   transform: translate(-50%, -50%);
   width: 850px;
   background-color: white;
-  border-radius: 30px;
+  border-radius: 10px;
   outline: none;
   padding: 2rem;
 }

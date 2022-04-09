@@ -3,7 +3,8 @@ import { useContext } from "react";
 import { createContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { db } from "../../firebase";
-import { decryptText } from "../../utils/enc-dec.utils";
+import { decryptText, encryptText } from "../../utils/enc-dec.utils";
+import { hashids } from "../../index";
 
 const ProjectSettingContext = createContext();
 
@@ -25,6 +26,8 @@ const ProejctSettingProvider = ({ children }) => {
         setSurveyData(doc.data());
       }
     );
+
+    console.log(hashids.encode([1234567899]));
   }, []);
 
   useEffect(() => {
@@ -35,7 +38,7 @@ const ProejctSettingProvider = ({ children }) => {
         surveyData?.encrypt?.pid +
         "-" +
         surveyData?.encrypt?.cid +
-        `/lightningStart?SRCID=Vv5JQoX&RID=794639`
+        `/lightningStart?SRCID=5kr34wx&RID=794639`
     );
   }, [surveyData]);
 

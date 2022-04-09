@@ -1,19 +1,52 @@
 import { Loading } from "@nextui-org/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useCreateNewProject } from "./CreateNewProjectContext";
 
 const MetricsAndData = () => {
   const { surveyData, setSurveyData, metricsData, insertLoading } =
     useCreateNewProject();
-    console.log(surveyData)
+  const [enableNextBtn, setEnableNextBtn] = useState(false);
 
-  const HandleDeviceSuitability=(e,label)=>{
-    if(e.target.checked){
-    setSurveyData({...surveyData,device_suitability:{...surveyData?.device_suitability,[label]:true}})
-    }else{
-      setSurveyData({...surveyData,device_suitability:{...surveyData?.device_suitability,[label]:false}})
+  console.log(surveyData);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  const HandleDeviceSuitability = (e, label) => {
+    if (e.target.checked) {
+      setSurveyData({
+        ...surveyData,
+        device_suitability: {
+          ...surveyData?.device_suitability,
+          [label]: true,
+        },
+      });
+    } else {
+      setSurveyData({
+        ...surveyData,
+        device_suitability: {
+          ...surveyData?.device_suitability,
+          [label]: false,
+        },
+      });
     }
-  }
+  };
+
+  useEffect(() => {
+    const s = surveyData;
+    if (
+      s?.expected_incidence_rate &&
+      s?.expected_completion_loi &&
+      s?.expected_start_date &&
+      s?.expected_end_date &&
+      s?.device_suitability
+    ) {
+      setEnableNextBtn(true);
+    } else {
+      setEnableNextBtn(false);
+    }
+  }, [surveyData]);
 
   return (
     <>
@@ -27,22 +60,28 @@ const MetricsAndData = () => {
         </div>
         <div className="create_survey_right">
           <div className="column">
-            <label>Expected Incidence Rate</label>
+            <label>
+              <span>Expected Incidence Rate</span> &nbsp;
+              <span className="required_tag">required</span>
+            </label>
             <input
               placeholder="32%"
-              type="text"
+              type="number"
               className="text_input"
               value={surveyData?.expected_incidence_rate}
               onChange={(e) =>
                 setSurveyData({
                   ...surveyData,
-                  expected_incidence_rate: e.target.value,
+                  expected_incidence_rate: parseInt(e.target.value),
                 })
               }
             />
           </div>
           <div className="column">
-            <label>Expected Completion LOI</label>
+            <label>
+              <span>Expected Completion LOI</span> &nbsp;
+              <span className="required_tag">required</span>
+            </label>
             <input
               placeholder="12m"
               type="text"
@@ -57,7 +96,10 @@ const MetricsAndData = () => {
             />
           </div>
           <div className="column">
-            <label>Expected Start Date</label>
+            <label>
+              <span>Expected Start Date</span> &nbsp;
+              <span className="required_tag">required</span>
+            </label>
             <input
               type="date"
               className="text_input"
@@ -71,8 +113,11 @@ const MetricsAndData = () => {
             />
           </div>
           <div className="column">
-            {/* <input type="date" placeholder="dd/mm/yyyy" /> */}
-            <label>Expected End Date</label>
+            <label>
+              <span>Expected End Date</span>
+              <span className="required_tag">required</span>
+            </label>
+
             <input
               type="date"
               className="text_input"
@@ -106,7 +151,10 @@ const MetricsAndData = () => {
             />
           </div>
           <div className="column">
-            <label>Survey Internal Status</label>
+            <label>
+              <span>Survey Internal Status</span> &nbsp;
+              <span className="required_tag">required</span>
+            </label>
             <select
               onChange={(e) =>
                 setSurveyData({
@@ -123,36 +171,74 @@ const MetricsAndData = () => {
             </select>
           </div>
           {/* checkboxes */}
-          <label className="check-question">Device Compability</label>
+          <label>
+            <span className="check-question">Device Compability</span> &nbsp;
+            <span className="required_tag">required</span>
+          </label>
+
           <div className="checkboxes">
             <div className="input-check">
-              <input type="checkbox" checked={surveyData?.device_suitability?.desktop} onChange={(e)=>{
-                HandleDeviceSuitability(e,'desktop')
-              }} />
+              <input
+                type="checkbox"
+                checked={surveyData?.device_suitability?.desktop}
+                onChange={(e) => {
+                  HandleDeviceSuitability(e, "desktop");
+                }}
+              />
               <label>Desktop/Laptop</label>
             </div>
             <div className="input-check">
-              <input type="checkbox" checked={surveyData?.device_suitability?.mobile} onChange={(e)=>{HandleDeviceSuitability(e,'mobile')}}/>
+              <input
+                type="checkbox"
+                checked={surveyData?.device_suitability?.mobile}
+                onChange={(e) => {
+                  HandleDeviceSuitability(e, "mobile");
+                }}
+              />
               <label>Mobile</label>
             </div>
             <div className="input-check">
-              <input type="checkbox" checked={surveyData?.device_suitability?.tablet} onChange={(e)=>{HandleDeviceSuitability(e,'tablet')}}/>
+              <input
+                type="checkbox"
+                checked={surveyData?.device_suitability?.tablet}
+                onChange={(e) => {
+                  HandleDeviceSuitability(e, "tablet");
+                }}
+              />
               <label>Tablet</label>
             </div>
             <div className="input-check">
-              <input type="checkbox" checked={surveyData?.device_suitability?.tv} onChange={(e)=>{HandleDeviceSuitability(e,'tv')}}/>
+              <input
+                type="checkbox"
+                checked={surveyData?.device_suitability?.tv}
+                onChange={(e) => {
+                  HandleDeviceSuitability(e, "tv");
+                }}
+              />
               <label>TV</label>
             </div>
             <div className="input-check">
-              <input type="checkbox" checked={surveyData?.device_suitability?.webcam} onChange={(e)=>{HandleDeviceSuitability(e,'webcam')}}/>
+              <input
+                type="checkbox"
+                checked={surveyData?.device_suitability?.webcam}
+                onChange={(e) => {
+                  HandleDeviceSuitability(e, "webcam");
+                }}
+              />
               <label>Requires Webcam</label>
             </div>
           </div>
         </div>
       </div>
-      <div className="next_btn_container">
+      <div
+        className={
+          enableNextBtn
+            ? "next_btn_container"
+            : "next_btn_container next_btn_disable"
+        }
+      >
         {!insertLoading ? (
-          <button onClick={metricsData} className="next_btn">
+          <button onClick={metricsData} disabled={!enableNextBtn}>
             Next
           </button>
         ) : (

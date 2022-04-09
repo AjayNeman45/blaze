@@ -21,6 +21,9 @@
 .subheader_link:hover {
 	border-bottom: 2px solid black;
 	transition: all 0.1s linear;
+	text-decoration: none;
+	color: black;
+
 }
 .subheader_active_link {
 	border-bottom: 2px solid black;

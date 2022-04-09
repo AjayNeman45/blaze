@@ -43,7 +43,12 @@ const Header = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
+  const checkActive = (match, location) => {
+    //some additional logic to verify you are in the home URI
+    if (!location) return false;
+    const { pathname } = location;
+    return pathname === "/";
+  };
   return (
     <div className="header">
       <div className="header_left">
@@ -52,7 +57,8 @@ const Header = () => {
           <NavLink
             activeClassName="header_active_link"
             className="header_link"
-            to=""
+            to="/"
+            isActive={checkActive}
           >
             <span>Dashboard</span>
           </NavLink>

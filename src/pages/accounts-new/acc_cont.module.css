@@ -1,0 +1,90 @@
+.accounts_contacts {
+  margin:0 2em;
+  margin-top: 3em;
+}
+
+.acc_cont_container {
+  margin: 1em 0;
+  display: flex;
+}
+
+.information {
+  margin: 0 1em;
+  border: 1px solid #c4c4c4;
+  border-radius: 5px;
+  width: 52vw;
+  height: fit-content;
+}
+
+.information a {
+  color: #2b9ff3;
+  font-size: 18px;
+}
+
+.information h1 {
+  padding: 10px 40px;
+  border-bottom: 1px solid #c4c4c4;
+}
+
+.opportunities {
+  border: 1px solid #c4c4c4;
+  border-radius: 5px;
+  width: 39vw;
+  margin-left: 1em;
+}
+
+.opportunities h3 {
+  border-bottom: 1px solid #c4c4c4;
+  padding: 10px 14px;
+  font-size: 18px;
+}
+
+.opportunities .items {
+  font-weight: lighter;
+  color: #5a5a5a;
+  margin-top: 10px;
+}
+
+.opportunity_container table {
+  border-collapse: collapse;
+  width: 100%;
+  text-align: center;
+}
+
+.opportunity_container table th {
+  border-bottom: 1px solid #c4c4c4;
+  padding: 15px 6px;
+  font-size: 15px;
+  border-left: 1px solid #c4c4c4;
+}
+
+.opportunity_container table th:first-child,
+.opportunity_container table th:last-child {
+  border-left: none;
+}
+
+.opportunity_container table td {
+  padding: 10px 5px;
+  border-bottom: 1px solid #c4c4c4;
+  font-size: 15px;
+}
+
+.link {
+  color: #2b9ff3;
+}
+
+.table_link {
+  text-align: center;
+  margin: 10px 0;
+}
+
+.table_link a {
+  color: #2b9ff3;
+}
+
+/* .MuiPaper-root-MuiPopover-paper {
+  box-shadow: none;
+} */
+.css-1poimk-MuiPaper-root-MuiMenu-paper-MuiPaper-root-MuiPopover-paper{
+  box-shadow: none;
+}

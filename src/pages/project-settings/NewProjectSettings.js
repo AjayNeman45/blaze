@@ -135,6 +135,29 @@ const NewProjectSettings = () => {
 			})
 		setShowChangesBtn(false)
 	}
+	const selectStyle = {
+		menu: (provided, state) => ({
+			...provided,
+			width: "100%",
+			borderBottom: "1px dotted pink",
+			color: state.selectProps.menuColor,
+			padding: 20,
+		}),
+		control: styles => ({
+			...styles,
+			width: "100%",
+			height: "30px",
+			border: "none",
+			borderRadius: "20px",
+			background: "#eeeeeebf",
+		}),
+		input: styles => ({
+			...styles,
+			height: "30px",
+			width: "100%",
+			textAlign: "center",
+		}),
+	}
 
 	return (
 		<>
@@ -175,37 +198,42 @@ const NewProjectSettings = () => {
 							/>
 							<div className={styles.input_component}>
 								<span>Country</span>
-								<Select
-									className={styles.country_select}
-									options={countries}
-									value={country}
-									onChange={e => {
-										console.log(e)
-										setCountry(e)
-										setShowChangesBtn(true)
-										setChanges({
-											...changes,
-											country_code: {
-												changed_to:
-													e.value.toUpperCase(),
-												previous_change:
-													surveyData?.country?.code,
-											},
-										})
-										setSData({
-											...sData,
-											country: {
-												...sData.country,
-												country: e.value.toUpperCase(),
-												country_full_name: e.label,
-												code:
-													sData?.country?.language +
-													"-" +
-													e.value,
-											},
-										})
-									}}
-								/>
+								<div style={{ marginTop: ".5rem" }}>
+									<Select
+										options={countries}
+										value={country}
+										styles={selectStyle}
+										onChange={e => {
+											console.log(e)
+											setCountry(e)
+											setShowChangesBtn(true)
+											setChanges({
+												...changes,
+												country_code: {
+													changed_to:
+														e.value.toUpperCase(),
+													previous_change:
+														surveyData?.country
+															?.code,
+												},
+											})
+											setSData({
+												...sData,
+												country: {
+													...sData.country,
+													country:
+														e.value.toUpperCase(),
+													country_full_name: e.label,
+													code:
+														sData?.country
+															?.language +
+														"-" +
+														e.value,
+												},
+											})
+										}}
+									/>
+								</div>
 							</div>
 							<div className={styles.input_component}>
 								<label>Country - Language</label>
@@ -264,7 +292,7 @@ const NewProjectSettings = () => {
 								title='external survey name'
 								value='external_project_name'
 								inputType='input'
-								defaultVal={sData?.external_project_name}
+								defaultVal={sData?.external_survey_name}
 								handleInputChange={handleInputChange}
 							/>
 						</div>
@@ -335,6 +363,7 @@ const NewProjectSettings = () => {
 								inputType='date'
 								defaultVal=''
 								handleInputChange={handleInputChange}
+								defaultVal={sData?.expected_end_date?.toDate()}
 							/>
 						</div>
 					</div>
@@ -350,12 +379,12 @@ const NewProjectSettings = () => {
 							/>
 							<InputFieldCard
 								title='expected start date'
-								inputType='input'
-								defaultVal=''
+								inputType='date'
+								defaultVal={sData?.expected_start_date?.toDate()}
 							/>
 							<InputFieldCard
 								title='insights bid number'
-								inputType='input'
+								inputType='date'
 								defaultVal=''
 							/>
 							<InputFieldCard
@@ -376,7 +405,7 @@ const NewProjectSettings = () => {
 							<InputFieldCard
 								title='PO number'
 								inputType='input'
-								defaultVal=''
+								defaultVal={sData?.client_info?.po_number}
 							/>
 						</div>
 					</div>
@@ -525,6 +554,15 @@ const InputFieldCard = ({
 		setPrevVal(defaultVal ? defaultVal : selectedData)
 	}, [defaultVal, selectedData])
 
+	let mydate = new Date(defaultVal)
+	mydate =
+		mydate.getFullYear() +
+		"-" +
+		("0" + (mydate.getMonth() + 1)).slice(-2) +
+		"-" +
+		("0" + mydate.getDate()).slice(-2)
+	console.log(mydate)
+
 	return (
 		<div className={styles.input_component}>
 			<span>{title}</span>
@@ -559,7 +597,7 @@ const InputFieldCard = ({
 							/>
 						)
 					case "date":
-						return <input type='date' />
+						return <input type='date' value={mydate} />
 				}
 			})()}
 		</div>

@@ -11,50 +11,49 @@ const Audience = () => {
     usersByDeviceTypes,
     usersByBrowsers,
     usersByDeviceBrands,
-    inClientSurveySessions,
+    statusesCnt,
     suppliers,
   } = useAanalyticsContext();
 
   return (
     <div className={styles.audience_page}>
-      <div className={styles.left}>
-        {/*  audience graph 1 */}
-        <AudienceGraph1 />
-        {/* audience graph 2 */}
-        <AudiencesGraph2 />
+      <div className={styles.container1}>
+        <div className={styles.left}>
+          <AudienceGraph1 statusesCnt={statusesCnt} />
+          <AudiencesGraph2 statusesCnt={statusesCnt} />
+        </div>
+        <div className={styles.right}>
+          <AnalyticsUserCountCard
+            cardTitle="Users by OS, with version"
+            cardSubtitle={["os with version", "users"]}
+            data={usersByOs}
+            inClientSessions={statusesCnt?.inClient}
+          />
+          <AnalyticsUserCountCard
+            cardTitle="Users by device types"
+            cardSubtitle={["device types", "users"]}
+            data={usersByDeviceTypes}
+            inClientSessions={statusesCnt?.inClient}
+          />
+          <AnalyticsUserCountCard
+            cardTitle="Users by device brands"
+            cardSubtitle={["device types", "users"]}
+            data={usersByDeviceBrands}
+            inClientSessions={statusesCnt?.inClient}
+          />
+        </div>
+      </div>
+
+      <div className={styles.container2}>
+        {/* users by browsers card */}
         <div className={styles.users_by_browsers_card}>
           <AnalyticsUserCountCard
             cardTitle="Users by Browsers"
             cardSubtitle={["Browsers", "users"]}
             data={usersByBrowsers}
-            inClientSessions={inClientSurveySessions}
+            inClientSessions={statusesCnt?.inClient}
           />
         </div>
-      </div>
-      <div className={styles.right}>
-        <AnalyticsUserCountCard
-          cardTitle="Users by OS, with version"
-          cardSubtitle={["os with version", "users"]}
-          data={usersByOs}
-          inClientSessions={inClientSurveySessions}
-        />
-        {/* <AnalyticsUserCountCard
-          cardTitle="Users by device brand"
-          cardSubtitle={["device brands", "users"]}
-          data={usersByDeviceBrand}
-        /> */}
-        <AnalyticsUserCountCard
-          cardTitle="Users by device types"
-          cardSubtitle={["device types", "users"]}
-          data={usersByDeviceTypes}
-          inClientSessions={inClientSurveySessions}
-        />
-        <AnalyticsUserCountCard
-          cardTitle="Users by device brands"
-          cardSubtitle={["device types", "users"]}
-          data={usersByDeviceBrands}
-          inClientSessions={inClientSurveySessions}
-        />
 
         {/* supplier by comlpetes by average time  */}
         <div className={styles.supplier_by_completes_card}>
@@ -63,7 +62,7 @@ const Audience = () => {
             <table>
               <thead>
                 <tr>
-                  <th>supplier</th>
+                  <th style={{ width: "420px" }}>supplier</th>
                   <th>completes</th>
                   <th>avg. complete time</th>
                 </tr>

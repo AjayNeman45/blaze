@@ -1,18 +1,24 @@
 import { Loading } from "@nextui-org/react";
 import { useEffect } from "react";
 import { useState } from "react";
+import { studyTypesData, surveyTypesData } from "../../utils/commonData";
 // import { InputHelperCard } from "./CreateNewProject"
 import { useCreateNewProject } from "./CreateNewProjectContext";
 
 const SetUpRequirments = () => {
-  const [collectUserData, setCollectUserData] = useState("no");
+  const [collectUserData, setCollectUserData] = useState(false);
+  const [enableNextBtn, setEnableNextBtn] = useState(false);
+
   const {
     surveyData,
     setSurveyData,
     insertSetupRequirementData,
     insertLoading,
   } = useCreateNewProject();
-  console.log(surveyData);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   useEffect(() => {
     setSurveyData({
@@ -20,6 +26,15 @@ const SetUpRequirments = () => {
       collect_user_data: collectUserData === "yes" ? true : false,
     });
   }, [collectUserData]);
+
+  useEffect(() => {
+    let s = surveyData;
+    if (s?.study_type && s?.survey_type && s?.business_unit && s?.industry) {
+      setEnableNextBtn(true);
+    } else {
+      setEnableNextBtn(false);
+    }
+  }, [surveyData]);
 
   return (
     <>
@@ -33,8 +48,10 @@ const SetUpRequirments = () => {
         </div>
         <div className="create_survey_right">
           <div className="column">
-            <label>Study Type</label>
-
+            <label>
+              <span>Study Type</span> &nbsp;{" "}
+              <span className="required_tag">Required</span>
+            </label>
             <select
               placeholder="Adhoc"
               value={surveyData?.study_type}
@@ -45,58 +62,37 @@ const SetUpRequirments = () => {
                 })
               }
             >
-              <option value="--">--</option>
-              <option value="Ad Effectiveness Research">Ad Effectiveness Research</option>
-              <option value="Adhoc">Adhoc</option>
-              <option value="Community Build">Community Build</option>
-              <option value="Face to Face">Face to Face</option>
-              <option value="IHUT">IHUT</option>
-              <option value="Incidence Check">Incidence Check</option>
-              <option value="Internal Use">Internal Use</option>
-              <option value="Qualitative Screening">Qualitative Screening</option>
-              <option value="Adhoc">Recontact</option>
-              <option value="Adhoc">Recruit - Panel</option>
-              <option value="Tracking - Monthly">Tracking - Monthly</option>
-              <option value="Tracking - Quaterly
-">Tracking - Quaterly
-</option>
-              <option value="Tracking - Weekly">Tracking - Weekly</option>
-              <option value="Tracking - Yearly
-">Tracking - Yearly
-</option>
-
-              <option value="Tracking - Biyearly">Tracking - Biyearly</option>
-              <option value="Wave Study">Wave Study</option>
-
-
-
-          
-
+              {studyTypesData?.map((type) => {
+                return <option>{type.label}</option>;
+              })}
             </select>
           </div>
           <div className="column">
-            <label>Survey Type</label>
-            <select placeholder="Consumers" onChange={(e) =>
+            <label>
+              <span>Survey Type</span> &nbsp;
+              <span className="required_tag">Required</span>
+            </label>
+
+            <select
+              placeholder="Consumers"
+              onChange={(e) =>
                 setSurveyData({
                   ...surveyData,
                   survey_type: e.target.value,
                 })
-              }>
-
-
-              <option value="Consumer">Consumer</option>
-              <option value="Business-To-Business">Business-To-Business</option>
-              <option value="Information Technology Decision Maker">Information Technology Decision Maker</option>
-              <option value="Healthcare">Healthcare</option>
-              <option value="Medical Professionals">Medical Professionals</option>
-              <option value="Panel Recruits">Panel Recruits</option>
-
-              
-
+              }
+            >
+              {surveyTypesData?.map((surveyType) => {
+                return <option value={surveyType}>{surveyType}</option>;
+              })}
             </select>
           </div>
           <div className="column">
-            <label>Business Units</label>
+            <label>
+              <span>Business Units</span> &nbsp;
+              <span className="required_tag">Required</span>
+            </label>
+
             <select
               placeholder="Mirats illustrate"
               value={surveyData?.business_unit}
@@ -109,10 +105,14 @@ const SetUpRequirments = () => {
             >
               <option value="--">--</option>
               <option value="mirats-api">MIRATS-API</option>
+              <option value="mirats-otc">MIRATS-OTC</option>
             </select>
           </div>
           <div className="column">
-            <label>Industry</label>
+            <label>
+              <span>Industry</span> &nbsp;
+              <span className="required_tag">Required</span>
+            </label>
             <select
               placeholder="Others"
               value={surveyData?.industry}
@@ -159,17 +159,22 @@ const SetUpRequirments = () => {
         </div>
         <div className="create_survey_right">
           <label>
-            Does your survey collect personal information that can be used to
-            identify an individual?
+            <span>
+              Does your survey collect personal information that can be used to
+              identify an individual?
+            </span>{" "}
+            &nbsp;
+            <span className="required_tag">Required</span>
           </label>
+
           <div className="radio_btns">
             <div className="radio_btn">
               <input
                 type="radio"
                 name="preexist"
-                value="yes"
-                checked={collectUserData == "yes"}
-                onChange={(e) => setCollectUserData(e.target.value)}
+                value={true}
+                checked={collectUserData}
+                onChange={(e) => setCollectUserData(true)}
                 id="yes"
               />
               <span for="yes">Yes</span>
@@ -178,44 +183,55 @@ const SetUpRequirments = () => {
               <input
                 type="radio"
                 name="preexist"
-                value="no"
-                checked={collectUserData == "no"}
-                onChange={(e) => setCollectUserData(e.target.value)}
+                value={false}
+                checked={!collectUserData}
+                onChange={(e) => setCollectUserData(false)}
                 id="no"
               />
               <span for="no">No</span>
             </div>
           </div>
           {/* checkboxes */}
-          <label>What information do you collect?</label>
-          <div className="checkboxes">
-            <div className="input-check">
-              <input type="checkbox" checked={surveyData?.collect_user_data}/>
-              <label>Name of the respondent</label>
-            </div>
-            <div className="input-check">
-              <input type="checkbox" checked={surveyData?.collect_user_data}/>
-              <label>Email of the respondent</label>
-            </div>
-            <div className="input-check">
-              <input type="checkbox" checked={surveyData?.collect_user_data}/>
-              <label>Mobile No of the respondent</label>
-            </div>
-            <div className="input-check">
-              <input type="checkbox" checked={surveyData?.collect_user_data}/>
-              <label>Physical Address of the respondent</label>
-            </div>
-            <div className="input-check">
-              <input type="checkbox" checked={surveyData?.collect_user_data}/>
-              <label>Other</label>
+          <div className={!collectUserData ? "hide_info" : "show_info"}>
+            <label>What information do you collect?</label>
+            <div className="checkboxes">
+              <div className="input-check">
+                <input type="checkbox" checked={collectUserData} />
+                <label>Name of the respondent</label>
+              </div>
+              <div className="input-check">
+                <input type="checkbox" checked={collectUserData} />
+                <label>Email of the respondent</label>
+              </div>
+              <div className="input-check">
+                <input type="checkbox" checked={collectUserData} />
+                <label>Mobile No of the respondent</label>
+              </div>
+              <div className="input-check">
+                <input type="checkbox" checked={collectUserData} />
+                <label>Physical Address of the respondent</label>
+              </div>
+              <div className="input-check">
+                <input type="checkbox" checked={collectUserData} />
+                <label>Other</label>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="next_btn_container">
+      <div
+        className={
+          enableNextBtn
+            ? "next_btn_container"
+            : "next_btn_container next_btn_disable"
+        }
+      >
         {!insertLoading ? (
-          <button onClick={insertSetupRequirementData} className="next_btn">
+          <button
+            onClick={insertSetupRequirementData}
+            disabled={!enableNextBtn}
+          >
             Next
           </button>
         ) : (

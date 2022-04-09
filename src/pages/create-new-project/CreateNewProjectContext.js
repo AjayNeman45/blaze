@@ -5,7 +5,11 @@ import { useHistory } from "react-router-dom";
 import { useParams } from "react-router-dom/cjs/react-router-dom.min";
 import { encryptText, decryptText } from "../../utils/enc-dec.utils";
 import { useLocation } from "react-router-dom";
-import { addSurvey, getAllSurveys } from "../../utils/firebaseQueries";
+import {
+  addSurvey,
+  getAllSurveys,
+  getClients,
+} from "../../utils/firebaseQueries";
 
 const CreateNewProjectContext = createContext();
 export const useCreateNewProject = () => {
@@ -15,12 +19,18 @@ export const useCreateNewProject = () => {
 const CreateNewProjectProvider = ({ children }) => {
   const [surveyData, setSurveyData] = useState({ internal_status: "ongoing" });
   const [insertLoading, setInsertLoading] = useState(false);
+  const [snackbar, setSnackbar] = useState(false);
+  const [snackbarData, setSnackbarData] = useState({});
   const [error, setError] = useState(null);
   const history = useHistory();
   const location = useLocation();
   const encryptedID = new URLSearchParams(location.search).get("id");
 
   var DOC = db.collection("mirats").doc("surveys").collection("survey");
+
+  const handleSnackbar = () => {
+    setSnackbar(!snackbar);
+  };
 
   const insertBasicData = async () => {
     setInsertLoading(true);
@@ -93,12 +103,18 @@ const CreateNewProjectProvider = ({ children }) => {
     };
     addSurvey(newSurveyId, body)
       .then(() => {
-        console.log("survey added successfully");
         history.push(
           `/create-new-project/setup-requirements?id=${encryptedText}`
         );
       })
-      .catch((err) => console.log(err.message));
+      .catch((err) => {
+        console.log("eror");
+        setSnackbar(true);
+        setSnackbarData({
+          msg: "Oops..! something went wrong. please try again",
+          severity: "error",
+        });
+      });
   };
 
   const insertSetupRequirementData = () => {
@@ -110,31 +126,34 @@ const CreateNewProjectProvider = ({ children }) => {
     var docker = DOC.where("project_id", "==", parseInt(project_id))
       .where("survey_id", "==", parseInt(survey_id))
       .get();
-    docker.then((doc) => {
-      doc.docs.forEach((data) => {
-        data.ref
-          .set(
-            {
-              study_type: surveyData.study_type,
-              business_unit: surveyData.business_unit,
-              industry: surveyData.industry,
-              collect_user_data: surveyData.collect_user_data,
-            },
-            { merge: true }
-          )
-          .then(() => {
-            console.log("moving to metrics data");
-            history.push(
-              `/create-new-project/metrics-and-surveyData?id=${encryptedID}`
-            );
-            setInsertLoading(false);
-          })
-          .catch((er) => {
-            console.log("Error in saving Setup Requirements", er);
-            setInsertLoading(false);
-          });
+    docker
+      .then((doc) => {
+        doc.docs.forEach((data) => {
+          data.ref
+            .set(
+              {
+                ...surveyData,
+              },
+              { merge: true }
+            )
+            .then(() => {
+              console.log("moving to metrics data");
+              history.push(
+                `/create-new-project/metrics-and-surveyData?id=${encryptedID}`
+              );
+              setInsertLoading(false);
+            })
+            .catch((er) => {
+              console.log("Error in saving Setup Requirements", er);
+              console.log("here..........");
+              setInsertLoading(false);
+            });
+        });
+      })
+      .catch((err) => {
+        setInsertLoading(false);
+        console.log(err.message);
       });
-    });
   };
 
   const metricsData = () => {
@@ -142,37 +161,33 @@ const CreateNewProjectProvider = ({ children }) => {
     const survey_id = decryptText(encryptedID.split("-")[0]);
     const project_id = decryptText(encryptedID.split("-")[1]);
     const country_id = decryptText(encryptedID.split("-")[2]);
-    console.log(survey_id)
     var docker = DOC.where("project_id", "==", parseInt(project_id))
       .where("survey_id", "==", parseInt(survey_id))
       .get();
-    docker.then((doc) => {
-      doc.docs.forEach((data) => {
-        data.ref
-          .set(
-            {
-              expected_incidence_rate: parseFloat(
-                surveyData.expected_incidence_rate
-              ),
-              expected_completion_loi: parseFloat(
-                surveyData.expected_completion_loi
-              ),
-              status: "bidding",
-              internal_status: surveyData.internal_status,
-              device_suitability:surveyData?.device_suitability
-            },
-            { merge: true }
-          )
-          .then(() => {
-            history.push(`/create-new-project/peoples?id=${encryptedID}`);
-            setInsertLoading(false);
-          })
-          .catch((er) => {
-            console.log("Error in saving Metrics Data", er);
-            setInsertLoading(false);
-          });
+    docker
+      .then((doc) => {
+        doc.docs.forEach((data) => {
+          data.ref
+            .set(
+              {
+                ...surveyData,
+              },
+              { merge: true }
+            )
+            .then(() => {
+              history.push(`/create-new-project/peoples?id=${encryptedID}`);
+              setInsertLoading(false);
+            })
+            .catch((er) => {
+              console.log("Error in saving Metrics Data", er);
+              setInsertLoading(false);
+            });
+        });
+      })
+      .catch((err) => {
+        console.log(err.message);
+        setInsertLoading(false);
       });
-    });
   };
 
   const insertPeoplesData = () => {
@@ -182,53 +197,47 @@ const CreateNewProjectProvider = ({ children }) => {
     var docker = DOC.where("project_id", "==", parseInt(project_id))
       .where("survey_id", "==", parseInt(survey_id))
       .get();
-    docker.then((doc) => {
-      doc.docs.forEach((data) => {
-        data.ref
-          .set(
-            {
-              project_manager: surveyData.project_manager,
-              account_executive: surveyData.account_executive,
-              alternate_project_manager: surveyData.alternate_project_manager,
-              status: "bidding",
-              changes: [],
-              blocked_ips: [],
-              blocked_rids: [],
-              blocked_countries: [],
-              security_checks: {
-                unique_ip: true,
-                unique_rid: true,
-                unique_fingerprint: true,
+    docker
+      .then((doc) => {
+        doc.docs.forEach((data) => {
+          data.ref
+            .set(
+              {
+                clients_team: surveyData?.clients_team,
+                mirats_insights_team: surveyData?.mirats_insights_team,
+                status: "bidding",
+                changes: [],
+                blocked_ips: [],
+                blocked_rids: [],
+                blocked_countries: [],
+                security_checks: {
+                  unique_ip: true,
+                  unique_rid: true,
+                  unique_fingerprint: true,
+                },
+                live_url: "",
+                test_url: "",
+                client_info: surveyData?.client_info,
+                creation_date: new Date(),
               },
-              live_url: "",
-              test_url: "",
-              device_suitability: {
-                mobile: true,
-                tablet: true,
-                desktop: true,
-                tv: false,
-                webcam: false,
-              },
-              external_project_name: "",
-              survey_group: "",
-              client_info:surveyData?.client_info,
-              creation_date: new Date(),
-            },
-            { merge: true }
-          )
-          .then(() => {
-            history.push(`/projects/settings/${survey_id}`);
-            setInsertLoading(false);
-          })
-          .catch((er) => {
-            console.log(er.message);
-            setInsertLoading(false);
-          });
+              { merge: true }
+            )
+            .then(() => {
+              history.push(`/projects/settings/${survey_id}`);
+              setInsertLoading(false);
+            })
+            .catch((er) => {
+              console.log(er.message);
+              setInsertLoading(false);
+            });
+        });
+      })
+      .catch((err) => {
+        setInsertLoading(false);
+        console.log(err.message);
       });
-    });
   };
 
-  // const insertProjectData = () => {}
   const value = {
     surveyData,
     setSurveyData,
@@ -238,6 +247,9 @@ const CreateNewProjectProvider = ({ children }) => {
     insertPeoplesData,
     error,
     insertLoading,
+    snackbar,
+    snackbarData,
+    handleSnackbar,
   };
   return (
     <CreateNewProjectContext.Provider value={value}>

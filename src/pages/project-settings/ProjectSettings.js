@@ -25,7 +25,6 @@ const ProjectSettings = () => {
 
   useEffect(() => {
     setSData(surveyData);
-    console.log(surveyData);
     setDisplayChanges(surveyData?.changes);
   }, [surveyData]);
 

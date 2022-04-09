@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { db } from "../../firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { getSurvey } from "../../utils/firebaseQueries";
+import { selectStyle } from "./BasicSurveyInfo";
 const miratsoptions = [
   { value: "Moinnudin S.", label: "Moinnudin S." },
   { value: "Mahmood A.", label: "Mahmood A." },
@@ -20,17 +21,61 @@ const gmooptions = [
 const Peoples = () => {
   const { surveyData, setSurveyData, insertPeoplesData, insertLoading } =
     useCreateNewProject();
-    const location = useLocation();
-const encryptedID = new URLSearchParams(location.search).get("id");
+  const location = useLocation();
+  const encryptedID = new URLSearchParams(location.search).get("id");
 
-let [peoplesResearchTeam,setPeoplesResearchTeam]=useState('')
-  console.log(surveyData)
-useEffect(()=>{
-  const survey_id = decryptText(encryptedID.split("-")[0]);
-  getSurvey(survey_id).then(data=>{
-    setPeoplesResearchTeam(data?.client_info?.client_name)
-  })
-},[encryptedID])
+  let [peoplesResearchTeam, setPeoplesResearchTeam] = useState("");
+  console.log(surveyData);
+  useEffect(() => {
+    const survey_id = decryptText(encryptedID.split("-")[0]);
+    getSurvey(survey_id).then((data) => {
+      setPeoplesResearchTeam(data?.client_info?.client_name);
+    });
+  }, [encryptedID]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  const handleInputChange = (e, teamName, positionInTeam) => {
+    switch (positionInTeam) {
+      case "pm":
+        let pms = [];
+        e.forEach(({ label, value }) => {
+          pms.push(value);
+        });
+        return setSurveyData((prevData) => {
+          return {
+            ...prevData,
+            [teamName]: {
+              ...prevData?.[teamName],
+              lead_project_managers: pms,
+            },
+          };
+        });
+      case "sm":
+        return setSurveyData((prevData) => {
+          return {
+            ...prevData,
+            [teamName]: {
+              ...prevData?.[teamName],
+              sales_manager: e.target.value,
+            },
+          };
+        });
+      case "am":
+        return setSurveyData((prevData) => {
+          return {
+            ...prevData,
+            [teamName]: {
+              ...prevData?.[teamName],
+              account_manager: e.target.value,
+            },
+          };
+        });
+    }
+  };
+
   return (
     <>
       <div className="peoples_info">
@@ -44,78 +89,74 @@ useEffect(()=>{
           <div className="two-column">
             <div className="client_cpi">
               <label>Client CPI</label>
-              <input type="text" placeholder="32%" onChange={(e)=>{
-                setSurveyData({...surveyData,client_info:{...surveyData?.client_info,client_cpi:e.target.value}})
-              }} value={surveyData?.client_info?.client_cpi}/>
+              <input
+                type="number"
+                placeholder="32%"
+                onChange={(e) => {
+                  setSurveyData({
+                    ...surveyData,
+                    client_info: {
+                      ...surveyData?.client_info,
+                      client_cpi: parseInt(e.target.value),
+                    },
+                  });
+                }}
+                value={surveyData?.client_info?.client_cpi}
+              />
             </div>
             <div className="cost_curr">
               <label>Client Cost Currency</label>
-              <input type="text" placeholder="United States Dollar"
-              onChange={(e)=>{
-                setSurveyData({...surveyData,client_info:{...surveyData?.client_info,client_cost_currency:e.target.value}})
-              }} 
-              value={surveyData?.client_info?.client_cost_currency}
-              />
+              <select
+                onChange={(e) => {
+                  setSurveyData({
+                    ...surveyData,
+                    client_info: {
+                      ...surveyData?.client_info,
+                      client_cost_currency: e.target.value,
+                    },
+                  });
+                }}
+                value={surveyData?.client_info?.client_cost_currency}
+              >
+                <option value="USD">USD</option>
+                <option value="INR">INR</option>
+                <option value="EURO">EURO</option>
+              </select>
             </div>
-            {/* <label>Project Manager</label>
-            <select
-              value={surveyData?.project_manager}
-              onChange={(e) =>
-                setSurveyData({
-                  ...surveyData,
-                  project_manager: e.target.value,
-                })
-              }
-            >
-              <option value="--">--</option>
-              <option value="unassigned">Unassigned</option>
-            </select> */}
           </div>
           <div className="column">
             <label>PO Number</label>
-            <input type="text" placeholder="XXXXXXXXXX" 
-            onChange={(e)=>{
-              setSurveyData({...surveyData,client_info:{...surveyData?.client_info,po_number:e.target.value}})
-            }}
-            value={surveyData?.client_info?.po_number}
-            
-            />
-            {/* <label>Account Executive</label>
-            <select
-              value={surveyData?.account_executive}
-              onChange={(e) =>
+            <input
+              type="text"
+              placeholder="XXXXXXXXXX"
+              onChange={(e) => {
                 setSurveyData({
                   ...surveyData,
-                  account_executive: e.target.value,
-                })
-              }
-            >
-              <option value="--">--</option>
-              <option value="unassigned">Unassigned</option>
-            </select> */}
+                  client_info: {
+                    ...surveyData?.client_info,
+                    po_number: e.target.value,
+                  },
+                });
+              }}
+              value={surveyData?.client_info?.po_number}
+            />
           </div>
           <div className="column">
             <label>Client's PO Number</label>
-            <input type="text" placeholder="XXXXXXXXXX" 
-            onChange={(e)=>{
-              setSurveyData({...surveyData,client_info:{...surveyData?.client_info,client_po_number:e.target.value}})
-            }}
-            value={surveyData?.client_info?.client_po_number}
-            
-            />
-            {/* <label>Alternate Project Manager</label>
-            <select
-              value={surveyData?.altername_project_manager}
-              onChange={(e) =>
+            <input
+              type="text"
+              placeholder="XXXXXXXXXX"
+              onChange={(e) => {
                 setSurveyData({
                   ...surveyData,
-                  alternate_project_manager: e.target.value,
-                })
-              }
-            >
-              <option value="--">--</option>
-              <option value="unassigned">Unassigned</option>
-            </select> */}
+                  client_info: {
+                    ...surveyData?.client_info,
+                    client_po_number: e.target.value,
+                  },
+                });
+              }}
+              value={surveyData?.client_info?.client_po_number}
+            />
           </div>
         </div>
       </div>
@@ -133,55 +174,67 @@ useEffect(()=>{
           <h2>Mirats Insights Team</h2>
           <div className="column">
             <label className="multiselect">Lead Project Manager</label>
-            {/* <select placeholder="Moinnudin S.">
-              <option>Moinnudin S.</option>
-            </select> */}
             <Select
-              value={surveyData?.project_manager}
-              onChange={(e) =>
-                setSurveyData({
-                  ...surveyData,
-                  project_manager: e,
-                })
-              }
-              className="country_select"
+              onChange={(e) => {
+                handleInputChange(e, "mirats_insights_team", "pm");
+              }}
+              styles={selectStyle}
               isMulti
               options={miratsoptions}
             />
           </div>
           <div className="column">
             <label>Sales Manager</label>
-            <input type="text" placeholder="Juhi Saini" onChange={(e)=>setSurveyData({
-                  ...surveyData,
-                  sales_manager: e.target.value,
-                })}/>
+            <input
+              type="text"
+              placeholder="Juhi Saini"
+              value={surveyData?.mirats_insights_team?.sales_manager}
+              onChange={(e) =>
+                handleInputChange(e, "mirats_insights_team", "sm")
+              }
+            />
           </div>
           <div className="column">
             <label>Account Manager</label>
-            <input type="text" placeholder="Janhavi Rajput" onChange={(e)=>setSurveyData({
-                  ...surveyData,
-                  account_manager: e.target.value,
-                })}/>
+            <input
+              type="text"
+              placeholder="Janhavi Rajput"
+              value={surveyData?.mirats_insights_team?.account_manager}
+              onChange={(e) =>
+                handleInputChange(e, "mirats_insights_team", "am")
+              }
+            />
           </div>
+
+          {/****** clients team info  */}
           <h2>{peoplesResearchTeam}</h2>
           <div className="column">
             <label className="multiselect">Lead Project Manager</label>
-            <Select className="country_select" isMulti options={gmooptions} />
+            <Select
+              styles={selectStyle}
+              isMulti
+              options={gmooptions}
+              onChange={(e) => handleInputChange(e, "clients_team", "pm")}
+            />
           </div>
           <div className="column">
             <label>Sales Manager</label>
-            <select>
+            <select
+              value={surveyData?.client_team?.sales_manager}
+              onChange={(e) => handleInputChange(e, "clients_team", "sm")}
+            >
               <option>Ashish Mathur</option>
               <option>Mayank patel</option>
-
             </select>
           </div>
           <div className="column">
             <label>Account Manager</label>
-            <select>
+            <select
+              value={surveyData?.client_team?.sales_manager}
+              onChange={(e) => handleInputChange(e, "clients_team", "am")}
+            >
               <option>Mayank patel</option>
               <option>Christopher Taylor</option>
-
             </select>
           </div>
         </div>

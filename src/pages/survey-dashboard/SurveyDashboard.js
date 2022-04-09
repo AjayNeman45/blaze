@@ -260,7 +260,8 @@ function SurveyDashboard() {
                   <div className={styles.dark}>
                     <p>AVG.CPI</p>
                     <p style={{ fontWeight: 600 }}>
-                      {getAvgCPI(completedSessions, statusesCnt?.completed)} USD
+                      {getAvgCPI(completedSessions, statusesCnt?.completed)}{" "}
+                      {survey?.client_info?.client_cost_currency}
                     </p>
                   </div>
                   <div className={styles.light}>
@@ -271,7 +272,7 @@ function SurveyDashboard() {
                           statusesCnt?.completed) /
                         statusesCnt?.hits
                       ).toFixed(2)}{" "}
-                      USD
+                      {survey?.client_info?.client_cost_currency}
                     </p>
                   </div>
                 </div>

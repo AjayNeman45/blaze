@@ -16,58 +16,83 @@ import styles from "./Project.module.css";
 import { AiOutlineSearch } from "react-icons/ai";
 import facewithmask from "../../assets/images/facewithmask.png";
 import { Switch } from "@nextui-org/react";
-const Projects = () => {
-  const hashids = new Hashids("My Project");
+import { getAvgCPI } from "../survey-dashboard/SurveyDashboardContext";
+import {
+  studyTypesData,
+  surveyTypesData,
+  projectManagersData,
+} from "../../utils/commonData";
+import countryList from "react-select-country-list";
+import { useMemo } from "react";
+import Select from "react-select";
+import { default as Muiselect } from "@mui/material/Select";
+import { FormControl, InputLabel, MenuItem } from "@mui/material";
+import { DateRangePicker } from "rsuite";
+import { addDays, subDays } from "date-fns";
 
-  var id = hashids.encodeHex("5as7f78");
-  console.log(id);
-  var hex = hashids.decodeHex(id);
-  console.log(hex);
+const selectCountryStyle = {
+  menu: (provided, state) => ({
+    ...provided,
+    width: "100%",
+    color: state.selectProps.menuColor,
+    padding: "20px",
+    zIndex: "999",
+  }),
+  control: (styles) => ({
+    ...styles,
+    width: "95%",
+    border: "1px solid lightgray",
+    boxShadow: "0px 4px 4px 0px rgba(0, 0, 0, 0.25)",
+    margin: "0.5rem 0.5rem",
+  }),
+  input: (styles) => ({
+    ...styles,
+    height: "2.8rem",
+    width: "95%",
+  }),
+};
+
+const Projects = () => {
   const [countCheckedProjects, setCountCheckProjects] = useState(0);
   const [checkRows, setCheckRows] = useState([]);
+  const [filters, setFilters] = useState({});
   const location = useLocation();
   const history = useHistory();
   const view = new URLSearchParams(location.search).get("view");
-  const [liveCnt, setLiveCnt] = useState(0);
-  const [awardedCnt, setAwardedCnt] = useState(0);
-  const [pausedCnt, setPausedCnt] = useState(0);
-  const [completedCnt, setComletedCnt] = useState(0);
-  const [billedCnt, setBilledCnt] = useState(0);
-  const [biddingCnt, setBiddingCnt] = useState(0);
+  const [statusesCnt, setStatusesCnt] = useState({});
+  const [surveys, setSurveys] = useState([]);
+  const { projects, clients } = useProjectContext();
+  const countries = useMemo(() => countryList().getData(), []);
 
-  const { projects } = useProjectContext();
   useEffect(() => {
+    setSurveys(projects);
+    let tmp = {};
     projects.map((project) => {
-      if (project?.status === "live") {
-        setLiveCnt((prevState) => prevState + 1);
-      }
-      if (project?.status === "awarded") {
-        setAwardedCnt((prevState) => prevState + 1);
-      }
-      if (project?.status === "paused") {
-        setPausedCnt((prevState) => prevState + 1);
-      }
-      if (project?.status === "completed") {
-        setComletedCnt((prevState) => prevState + 1);
-      }
-      if (project?.status === "billed") {
-        setBilledCnt((prevState) => prevState + 1);
-      }
-      if (project?.status === "bidding") {
-        setBiddingCnt((prevState) => prevState + 1);
-      }
+      tmp[project?.status] =
+        (tmp?.[project?.status] ? tmp?.[project?.status] : 0) + 1;
     });
-  }, []);
+    Object.keys(tmp).map((key) => {
+      tmp["all"] = (tmp["all"] ? tmp["all"] : 0) + tmp[key];
+    });
+    setStatusesCnt(tmp);
+
+    changedFilters();
+  }, [projects]);
 
   useEffect(() => {
-    document.querySelectorAll("li").forEach((li) => {
-      if (li.children[0].classList.contains(view)) {
-        li.children[0].style.color = "blue";
-      } else {
-        li.children[0].style.color = "";
-      }
-    });
+    changedFilters();
   }, [view]);
+
+  const changedFilters = () => {
+    if (view !== "all") {
+      setSurveys(projects);
+      filterByStatus(view);
+      filterSurveys();
+    } else {
+      setSurveys(projects);
+      filterSurveys();
+    }
+  };
 
   const handleSelect = (e) => {
     if (e.target.checked) {
@@ -80,6 +105,7 @@ const Projects = () => {
       });
     }
   };
+
   useEffect(() => {
     document.querySelectorAll("tr").forEach((tr) => {
       const first_cell = tr.querySelector("td");
@@ -95,89 +121,58 @@ const Projects = () => {
     });
   }, [checkRows]);
 
-  const tableSearchBySurveyName = (e) => {
-    console.log(e.target.value);
-    var input, filter, table, tr, td, i, txtValue;
-    input = e.target.value;
-    filter = input.toUpperCase();
-    table = document.getElementById("project_table");
-    tr = table.getElementsByTagName("tr");
-    for (i = 0; i < tr.length; i++) {
-      td = tr[i].getElementsByTagName("td")[0];
-      if (td) {
-        txtValue = td.textContent || td.innerText;
-        console.log(txtValue);
-        if (txtValue.toUpperCase().indexOf(filter) > -1) {
-          tr[i].style.display = "";
-        } else {
-          tr[i].style.display = "none";
-        }
-      }
-    }
+  //seting the surveys after filter is apply
+  useEffect(() => {
+    setSurveys(projects);
+    filterSurveys();
+  }, [filters]);
+
+  const filterByStatus = (view) => {
+    setSurveys((prevData) => {
+      console.log("filtering status");
+      return prevData.filter((survey) => {
+        if (survey.status === view) return survey;
+      });
+    });
   };
 
-  const tableSearchByStudyType = (e) => {
-    var input, filter, table, tr, td, i, txtValue;
-    input = e.target.value;
-    filter = input.toUpperCase();
-    table = document.getElementById("project_table");
-    tr = table.getElementsByTagName("tr");
-    for (i = 0; i < tr.length; i++) {
-      td = tr[i].getElementsByTagName("td")[8];
-      console.log(td);
-      if (td) {
-        txtValue = td.textContent || td.innerText;
-        console.log(txtValue);
-        if (txtValue.toUpperCase().indexOf(filter) > -1) {
-          tr[i].style.display = "";
-        } else {
-          tr[i].style.display = "none";
-        }
+  const filterSurveys = () => {
+    Object.keys(filters).forEach((key) => {
+      if (key === "study_type" || key === "survey_type") {
+        setSurveys((prevData) => {
+          return prevData.filter((survey) => {
+            if (survey?.[key] === filters[key]) return survey;
+          });
+        });
+      } else if (key === "lead_pm") {
+        setSurveys((prevData) => {
+          return prevData.filter((survey) => {
+            if (
+              survey?.mirats_insights_team?.lead_project_managers.includes(
+                filters[key]
+              )
+            )
+              return survey;
+          });
+        });
+      } else if (key === "country") {
+        setSurveys((prevData) => {
+          return prevData.filter((survey) => {
+            if (survey?.country?.country === filters[key]?.value) return survey;
+          });
+        });
+      } else if (key === "client") {
+        setSurveys((prevData) => {
+          return prevData.filter((survey) => {
+            if (survey?.client_info?.client_name === filters[key])
+              return survey;
+          });
+        });
       }
-    }
+    });
   };
 
-  const tableSearchByCountry = (e) => {
-    var input, filter, table, tr, td, i, txtValue;
-    input = e.target.value;
-    filter = input.toUpperCase();
-    table = document.getElementById("project_table");
-    tr = table.getElementsByTagName("tr");
-    for (i = 0; i < tr.length; i++) {
-      td = tr[i].getElementsByTagName("td")[9];
-      console.log(td);
-      if (td) {
-        txtValue = td.textContent || td.innerText;
-        console.log(txtValue);
-        if (txtValue.toUpperCase().indexOf(filter) > -1) {
-          tr[i].style.display = "";
-        } else {
-          tr[i].style.display = "none";
-        }
-      }
-    }
-  };
-
-  const tableSearchByMonth = (e) => {
-    var input, filter, table, tr, td, i, txtValue;
-    input = e.target.value;
-    filter = input.toUpperCase();
-    table = document.getElementById("project_table");
-    tr = table.getElementsByTagName("tr");
-    for (i = 0; i < tr.length; i++) {
-      td = tr[i].getElementsByTagName("td")[10];
-      console.log(td);
-      if (td) {
-        txtValue = td.textContent || td.innerText;
-        console.log(txtValue);
-        if (txtValue.toUpperCase().indexOf(filter) > -1) {
-          tr[i].style.display = "";
-        } else {
-          tr[i].style.display = "none";
-        }
-      }
-    }
-  };
+  console.log(clients);
 
   return (
     <>
@@ -203,36 +198,150 @@ const Projects = () => {
               </div>
             </div>
             <div className={styles.left_select_container}>
+              {/* project managers  */}
+              <FormControl fullWidth className={styles.select_input}>
+                <InputLabel id="demo-simple-select-label">
+                  Project Managers
+                </InputLabel>
+                <Muiselect
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  label="Project Managers"
+                  onChange={(e) => {
+                    setFilters((prevData) => {
+                      return { ...prevData, lead_pm: e.target.value };
+                    });
+                  }}
+                >
+                  {projectManagersData?.map((pm) => (
+                    <MenuItem value={pm}>{pm}</MenuItem>
+                  ))}
+                </Muiselect>
+              </FormControl>
+
+              {/* study type  */}
+              <FormControl fullWidth className={styles.select_input}>
+                <InputLabel id="demo-simple-select-label">
+                  Study Type
+                </InputLabel>
+                <Muiselect
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={filters?.study_type}
+                  label="Study Type"
+                  onChange={(e) =>
+                    setFilters((prevData) => {
+                      return { ...prevData, study_type: e.target.value };
+                    })
+                  }
+                >
+                  {studyTypesData?.map((type) => {
+                    return <MenuItem value={type.label}>{type.label}</MenuItem>;
+                  })}
+                </Muiselect>
+              </FormControl>
+
+              {/* country  */}
               <div>
-                <select>
-                  <option value="">Project Manager</option>
-                </select>
+                <Select
+                  styles={selectCountryStyle}
+                  options={countries}
+                  value={filters?.country}
+                  onChange={(e) => {
+                    setFilters((prevData) => {
+                      return { ...prevData, country: e };
+                    });
+                  }}
+                />
               </div>
-              <div>
-                <select>
-                  <option value="">Study Type</option>
-                </select>
-              </div>
-              <div>
-                <select>
-                  <option value="">Countries</option>
-                </select>
-              </div>
-              <div>
-                <select>
-                  <option value="">Survey Type</option>
-                </select>
-              </div>
-              <div>
-                <select>
-                  <option value="">Client</option>
-                </select>
-              </div>
-              <div>
-                <select>
-                  <option value="">This Month</option>
-                </select>
-              </div>
+
+              {/* survey type  */}
+              <FormControl fullWidth className={styles.select_input}>
+                <InputLabel id="demo-simple-select-label">
+                  Survey Type
+                </InputLabel>
+                <Muiselect
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={filters?.survey_type}
+                  label="Survey Type"
+                  onChange={(e) =>
+                    setFilters((prevData) => {
+                      return { ...prevData, survey_type: e.target.value };
+                    })
+                  }
+                >
+                  {surveyTypesData?.map((surveyType) => {
+                    return <MenuItem value={surveyType}>{surveyType}</MenuItem>;
+                  })}
+                </Muiselect>
+              </FormControl>
+
+              {/* client  */}
+              <FormControl fullWidth className={styles.select_input}>
+                <InputLabel id="demo-simple-select-label">Client</InputLabel>
+                <Muiselect
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={filters?.client}
+                  label="Client"
+                  onChange={(e) => {
+                    setFilters((prevData) => {
+                      return { ...prevData, client: e.target.value };
+                    });
+                  }}
+                >
+                  {clients?.map((client) => (
+                    <MenuItem value={client?.company_name}>
+                      {client?.company_name}
+                    </MenuItem>
+                  ))}
+                </Muiselect>
+              </FormControl>
+
+              {/* period  */}
+              <DateRangePicker
+                appearance="default"
+                placeholder="Default"
+                style={{ width: "95%", zIndex: "10", margin: ".5rem" }}
+                onChange={(e) => {
+                  console.log(e);
+                }}
+                ranges={[
+                  {
+                    label: "Last 7 days",
+                    value: [subDays(new Date(), 6), new Date()],
+                  },
+                  {
+                    label: "Last 1 Month",
+                    value: [subDays(new Date(), 30), new Date()],
+                  },
+                  {
+                    label: "Last 6 Month",
+                    value: [subDays(new Date(), 180), new Date()],
+                  },
+                  {
+                    label: "1 Year",
+                    value: [subDays(new Date(), 365), new Date()],
+                  },
+                ]}
+              />
+              {/* <FormControl fullWidth className={styles.select_input}>
+                <InputLabel id="demo-simple-select-label">Period</InputLabel>
+
+                <Muiselect
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value=""
+                  label="Period"
+                >
+                  <MenuItem value="this-week">This Week</MenuItem>
+                  <MenuItem value="this-month">This Month</MenuItem>
+                  <MenuItem value="previos-month">Previous Month</MenuItem>
+                  <MenuItem value="last-6-months">Previous 6 Month</MenuItem>
+                  <MenuItem value="previous-1-year">Previos 1 year</MenuItem>
+                </Muiselect>
+              </FormControl> */}
             </div>
           </div>
           <div className={styles.right}>
@@ -258,14 +367,48 @@ const Projects = () => {
          ----------------------------------------------------------------*/}
         <div className={styles.projectHeadingWrapper}>
           <div className="headingLinks">
-            <a href="#" className={styles.active}>
-              Live In
-            </a>
-            <a href="#">Awarded (N)</a>
-            <a href="#">Paused (N)</a>
-            <a href="#">Completed (N)</a>
-            <a href="#">Billed (N)</a>
-            <a href="#">All (N)</a>
+            <Link
+              to="/projects?view=live"
+              className={view === "live" ? styles.active : null}
+            >
+              Live ({statusesCnt?.live ? statusesCnt?.live : 0})
+            </Link>
+            <Link
+              to="/projects?view=awarded"
+              className={view === "awarded" ? styles.active : null}
+            >
+              Awarded ({statusesCnt?.awarded ? statusesCnt?.awarded : 0})
+            </Link>
+            <Link
+              to="/projects?view=paused"
+              className={view === "paused" && styles.active}
+            >
+              Paused ({statusesCnt?.paused ? statusesCnt?.paused : 0})
+            </Link>
+            <Link
+              to="/projects?view=completed"
+              className={view === "completed" ? styles.active : null}
+            >
+              Completed ({statusesCnt?.completed ? statusesCnt?.completed : 0})
+            </Link>
+            <Link
+              to="/projects?view=billed"
+              className={view === "billed" ? styles.active : null}
+            >
+              Billed ({statusesCnt?.billed ? statusesCnt?.billed : 0})
+            </Link>
+            <Link
+              to="/projects?view=bidding"
+              className={view === "bidding" ? styles.active : null}
+            >
+              Bidding ({statusesCnt?.bidding ? statusesCnt?.bidding : 0})
+            </Link>
+            <Link
+              to="/projects?view=all"
+              className={view === "all" ? styles.active : null}
+            >
+              All ({statusesCnt?.all ? statusesCnt?.all : 0})
+            </Link>
           </div>
           <div>
             <Link
@@ -298,10 +441,6 @@ const Projects = () => {
                     Progress
                     <p className="headingDescription">Completes/Hits</p>
                   </th>
-                  {/* <th>
-                    Completes
-                    <p className="headingDescription">per complete</p>
-                  </th> */}
                   <th>
                     Avg. Cost
                     <p className="headingDescription">per complete</p>
@@ -334,156 +473,174 @@ const Projects = () => {
                 </tr>
               </thead>
               <tbody>
-                {projects.map((project, index) => {
-                  if (view === "all") {
-                    return (
-                      <tr key={index} className="dataRow">
-                        <td className="project_table_first_col">
-                          <input
-                            type="checkbox"
-                            value="Bike"
-                            name={project?.survey_name}
-                            id="vehicle1"
-                            onChange={handleSelect}
-                          />
-                          <div className="coldiv">
-                            <label
+                {surveys.map((project, index) => {
+                  return (
+                    <tr key={index} className="dataRow">
+                      <td className="project_table_first_col">
+                        <input
+                          type="checkbox"
+                          value="Bike"
+                          name={project?.survey_name}
+                          id="vehicle1"
+                          onChange={handleSelect}
+                        />
+                        <div className="coldiv">
+                          <label
+                            style={{
+                              color: "black",
+                              fontWeight: 100,
+                              fontSize: "12px",
+                            }}
+                            htmlFor="vehicle1"
+                            onClick={() =>
+                              history.push(
+                                `/projects/dashboard/${project?.survey_id}`
+                              )
+                            }
+                          >
+                            {project?.survey_name}
+                          </label>
+                          <br />
+                          <div className="project_id_and_internal_status">
+                            <span>
+                              #{project?.survey_id} / {project.project_id}
+                            </span>
+
+                            <span className="client">Luc.id</span>
+
+                            <span
                               style={{
+                                fontSize: "10px",
                                 color: "black",
-                                fontWeight: 100,
-                                fontSize: "12px",
+                                fontWeight: "lighter",
                               }}
-                              htmlFor="vehicle1"
-                              onClick={() =>
-                                history.push(
-                                  `/projects/reconciliations/${project?.survey_id}`
-                                )
-                              }
+                              className={`survey_status_${project.internal_status} survey_status`}
                             >
-                              {project?.survey_name}
-                            </label>
-                            <br />
-                            <div className="project_id_and_internal_status">
-                              <span>
-                                #{project?.survey_id} / {project.project_id}
-                              </span>
-
-                              <span className="client">Luc.id</span>
-
-                              <span
-                                style={{
-                                  fontSize: "10px",
-                                  color: "black",
-                                  fontWeight: "lighter",
-                                }}
-                                className={`survey_status_${project.internal_status} survey_status`}
-                              >
-                                {project.internal_status}
-                              </span>
-                            </div>
+                              {project.internal_status}
+                            </span>
                           </div>
-                        </td>
+                        </div>
+                      </td>
 
-                        <td>
-                          {/* {project?.progress} / {project?.totalSurvey} */}
-                          <span className="tableValue">27/102</span>
+                      <td>
+                        {/* {project?.progress} / {project?.totalSurvey} */}
+                        <span className="tableValue">
+                          {project?.completes} / {project?.hits}
+                        </span>
+                        <br />
+                        <span>completes</span>
+                      </td>
+                      {/* <td>{project.completes}</td> */}
+                      <td>
+                        {/* {project.CPI} */}
+                        <span className="tableValue">{getAvgCPI()}</span>
+                        <br />
+                        <span>US Dollar</span>
+                      </td>
+                      <td>
+                        {/* {project.IR} */}
+                        <span className="tableValue">
+                          {project?.expected_incidence_rate}%
+                        </span>
+                        <br />
+                        <span>in-field</span>
+                      </td>
+                      <td>
+                        <span className="tableValue">
+                          {project?.expected_completion_loi}
+                        </span>
+                        <br />
+                        <span>mins</span>
+                      </td>
+                      <td>
+                        <span className="tableValue">
+                          {
+                            project?.mirats_insights_team
+                              ?.lead_project_managers[0]
+                          }{" "}
                           <br />
-                          <span>completes</span>
-                        </td>
-                        {/* <td>{project.completes}</td> */}
-                        <td>
-                          {/* {project.CPI} */}
-                          <span className="tableValue">1.23</span>
-                          <br />
-                          <span>US Dollar</span>
-                        </td>
-                        <td>
-                          {/* {project.IR} */}
-                          <span className="tableValue">26.47%</span>
-                          <br />
-                          <span>in-field</span>
-                        </td>
-                        <td>
-                          <span className="tableValue">
-                            {project?.expected_completion_loi}
-                          </span>
-                          <br />
-                          <span>mins</span>
-                        </td>
-                        <td>
-                          {/* {project?.project_manager} */}
-                          <span className="tableValue">JR</span>
-                          <br />
-                          <span>Janhavi </span>
-                        </td>
-                        <td>
-                          {/* {project.EPC} */}
-                          <span className="tableValue">0.35</span>
-                          <br />
-                          <span>US Dollar </span>
-                        </td>
-                        <td>
-                          {/* {project.study_type} */}
-                          <span className="tableValue">B2C</span>
-                          <br />
-                          <span>adhoc</span>
-                        </td>
-                        {/* <td>{project?.country?.country}</td> */}
-                        <td>
-                          <span className="tableValue">
-                            {project?.creation_date?.toDate().toDateString()}
-                          </span>
-                          <br />
-                          <span>5 Days ago</span>
-                        </td>
-                      </tr>
-                    );
-                  } else if (project.status === view) {
-                    return (
-                      <tr key={index}>
-                        <td className="project_table_first_col">
-                          <input
-                            type="checkbox"
-                            value="Bike"
-                            name={project.name}
-                            id="vehicle1"
-                            onChange={handleSelect}
-                          />
-                          <div>
-                            <label
-                              htmlFor="vehicle1"
-                              onClick={() =>
-                                history.push(
-                                  `/projects/dashboard/${project.name}`
-                                )
-                              }
-                            >
-                              {project.name}
-                            </label>
-                            <br />
-                            <small>{project.projectID}</small>
-                          </div>
-                        </td>
-                        <td>
-                          {project.progress} / {project.totalSurvey}
-                          <br />
-                          <span>completes</span>
-                        </td>
-                        {/* <td>
-                          {project.completes}
-                          <br />
-                          <span>completes</span>
-                        </td> */}
-                        <td>{project.CPI}</td>
-                        <td>{project.IR}</td>
-                        <td>{project.LOI}</td>
-                        <td>{project.PM}</td>
-                        <td>{project.EPC}</td>
-                        <td>{project.study_type}</td>
-                        <td>{project.creation_date}</td>
-                      </tr>
-                    );
-                  }
+                          {
+                            project?.mirats_insights_team
+                              ?.lead_project_managers[1]
+                          }
+                        </span>
+                      </td>
+                      <td>
+                        {/* {project.EPC} */}
+                        <span className="tableValue">0.35</span>
+                        <br />
+                        <span>US Dollar </span>
+                      </td>
+                      <td>
+                        <span className="tableValue">
+                          {project?.study_type}
+                        </span>
+                        <br />
+                        <span>{project?.survey_type}</span>
+                      </td>
+                      <td>
+                        <span className="tableValue">
+                          {project?.creation_date?.toDate().toDateString()}
+                        </span>
+                        <br />
+                        <span>
+                          {(
+                            (new Date().getTime() -
+                              project?.creation_date?.toDate().getTime()) /
+                            (1000 * 3600 * 24)
+                          ).toFixed(0)}{" "}
+                          Days ago
+                        </span>
+                      </td>
+                    </tr>
+                  );
+
+                  //  else if (project?.status === view) {
+                  //   return (
+                  //     <tr key={index}>
+                  //       <td className="project_table_first_col">
+                  //         <input
+                  //           type="checkbox"
+                  //           value="Bike"
+                  //           name={project?.name}
+                  //           id="vehicle1"
+                  //           onChange={handleSelect}
+                  //         />
+                  //         <div>
+                  //           <label
+                  //             htmlFor="vehicle1"
+                  //             onClick={() =>
+                  //               history.push(
+                  //                 `/projects/dashboard/${project?.name}`
+                  //               )
+                  //             }
+                  //           >
+                  //             {project?.name}
+                  //           </label>
+                  //           <br />
+                  //           <small>{project?.projectID}</small>
+                  //         </div>
+                  //       </td>
+                  //       <td>
+                  //         {project?.progress} / {project?.totalSurvey}
+                  //         <br />
+                  //         <span>completes</span>
+                  //       </td>
+                  //       {/* <td>
+                  //         {project.completes}
+                  //         <br />
+                  //         <span>completes</span>
+                  //       </td> */}
+                  //       <td>{project.CPI}</td>
+                  //       <td>{project.IR}</td>
+                  //       <td>{project.LOI}</td>
+                  //       <td>{project.PM}</td>
+                  //       <td>{project.EPC}</td>
+                  //       <td>{project.study_type}</td>
+                  //       <td>{project.creation_date}</td>
+                  //     </tr>
+                  //   );
+                  // }
                 })}
               </tbody>
             </table>

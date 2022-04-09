@@ -83,6 +83,7 @@ const AllocationContextProvider = ({ children }) => {
 
   // insert external supplier in the database
   const insertExternalSupplier = async (staticRedirects) => {
+    console.log(supplierData);
     await setDoc(
       doc(db, "mirats", "surveys", "survey", surveyID),
       { external_suppliers: arrayUnion(supplierData) },
@@ -166,6 +167,8 @@ const AllocationContextProvider = ({ children }) => {
       .then((res) => setInternalSuppliers(res.data().internal_suppliers))
       .catch((err) => console.log(err.message));
   };
+
+  console.log(supplierData);
   const value = {
     externalSuppliers,
     internalSuppliers,

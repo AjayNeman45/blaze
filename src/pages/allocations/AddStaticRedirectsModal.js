@@ -1,4 +1,4 @@
-import { Modal } from "@mui/material";
+import { Modal, TextField } from "@mui/material";
 import React, { useState } from "react";
 import { addStaticRedirects } from "../../utils/firebaseQueries";
 import { useAllocationContext } from "./AllocationContext";
@@ -46,31 +46,39 @@ const AddStaticRedirectsModal = ({
         <div className={styles.global_redirects_modal}>
           <h3>Set Static Redirect for the survey</h3>
           <div className={styles.inputs}>
-            <textarea
-              type="text"
-              placeholder="Complete"
-              value={supplierData?.static_redirects?.complete}
+            <br />
+            <TextField
+              id="outlined-basic"
+              label="Complete"
               name="complete"
+              variant="outlined"
+              value={supplierData?.static_redirects?.complete}
               onChange={handleStaticRedirectsChange}
-            />
-            <textarea
-              type="text"
-              placeholder="Quality Terminate"
+            />{" "}
+            <br />
+            <TextField
+              id="outlined-basic"
+              label="Quality Terminate"
               name="quality_terminate"
+              variant="outlined"
               value={supplierData?.static_redirects?.quality_terminate}
               onChange={handleStaticRedirectsChange}
             />
-            <textarea
-              type="text"
-              placeholder="Quata Full"
+            <br />
+            <TextField
+              id="outlined-basic"
+              label="Quata Full"
               name="quota_full"
+              variant="outlined"
               value={supplierData?.static_redirects?.quota_full}
               onChange={handleStaticRedirectsChange}
             />
-            <textarea
-              type="text"
-              placeholder="Terminate"
+            <br />
+            <TextField
+              id="outlined-basic"
+              label="terminate"
               name="terminate"
+              variant="outlined"
               value={supplierData?.static_redirects?.terminate}
               onChange={handleStaticRedirectsChange}
             />
