@@ -15,6 +15,7 @@ import { addQuota, getQuestion } from "../../utils/firebaseQueries";
 import { v4 as uuid } from "uuid";
 import SnackbarMsg from "../../components/Snackbar";
 import { toNumber } from "lodash";
+import { Radio } from "@nextui-org/react";
 
 const tableHeadData = {
   field_target: 200,
@@ -64,7 +65,6 @@ const Quotas = () => {
     };
     func();
   }, []);
-  console.log(qualifications, quotas);
 
   return (
     <>
@@ -271,7 +271,6 @@ const Quotas = () => {
                                   value={data?.conditions?.quotas[indx]}
                                 />
                               </td>
-
                               <td>{data.prescreens}</td>
                               <td>{data.completes}</td>
                               <td>{data.total_remaining}</td>
@@ -319,24 +318,27 @@ const QuotaModal = ({ showQuotaModal, setShowQuotaModal, qualifications }) => {
         <div className={styles.quotas_modal}>
           <h3>Change Quota of Qualifications</h3>
           <div className={styles.qualifications_list}>
-            {qualifications?.map((question) => {
-              let questionType = question?.question_type;
-              if (
-                questionType === "Numeric - Open-end" ||
-                questionType === "Single Punch"
-              )
-                return (
-                  <div className={styles.qualification}>
-                    <input
-                      type="radio"
-                      name="qualification_que"
-                      id={question?.question_text}
-                      onChange={() => setSelectQuestion(question)}
-                    />
-                    &nbsp; <label>{question?.question_name}</label>
-                  </div>
-                );
-            })}
+            <Radio.Group onChange={(e) => setSelectQuestion(e)}>
+              {qualifications?.map((question) => {
+                let questionType = question?.question_type;
+                if (
+                  questionType === "Numeric - Open-end" ||
+                  questionType === "Single Punch"
+                )
+                  return (
+                    <Radio value={question}>{question?.question_name}</Radio>
+                    // <div className={styles.qualification}>
+                    //   <input
+                    //     type="radio"
+                    //     name="qualification_que"
+                    //     id={question?.question_text}
+                    //     onChange={() => setSelectQuestion(question)}
+                    //   />
+                    //   &nbsp; <label>{question?.question_name}</label>
+                    // </div>
+                  );
+              })}
+            </Radio.Group>
           </div>
           <div className={styles.change_btn}>
             <button onClick={handleBtnChange}>Change</button>

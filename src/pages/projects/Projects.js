@@ -136,6 +136,24 @@ const Projects = () => {
     });
   };
 
+  function handleTableInputSearch(e) {
+    var filter, table, tr, td, i, txtValue;
+    filter = e.target.value.toUpperCase();
+    table = document.getElementById("project_table");
+    tr = table.getElementsByTagName("tr");
+    for (i = 0; i < tr.length; i++) {
+      td = tr[i].getElementsByTagName("td")[0];
+      if (td) {
+        txtValue = td.textContent || td.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          tr[i].style.display = "";
+        } else {
+          tr[i].style.display = "none";
+        }
+      }
+    }
+  }
+
   const filterSurveys = () => {
     Object.keys(filters).forEach((key) => {
       if (key === "study_type" || key === "survey_type") {
@@ -168,11 +186,21 @@ const Projects = () => {
               return survey;
           });
         });
+      } else if (key === "dateRange") {
+        setSurveys((prevData) => {
+          return prevData?.filter((survey) => {
+            if (
+              filters?.[key]?.["0"] <= survey?.creation_date?.toDate() &&
+              survey?.creation_date?.toDate() <= filters?.[key]["1"]
+            )
+              return survey;
+          });
+        });
       }
     });
   };
 
-  console.log(clients);
+  console.log(surveys);
 
   return (
     <>
@@ -191,10 +219,11 @@ const Projects = () => {
                 {/* Search bar comes here  */}
                 <input
                   type="search"
-                  placeholder="Search Project, Surveys and much more."
+                  placeholder="Search By Project Number, Name and much more."
                   className={styles.searchbar}
+                  onChange={handleTableInputSearch}
                 />
-                <AiOutlineSearch className="searchIcon" />
+                {/* <AiOutlineSearch className="searchIcon" size="20" /> */}
               </div>
             </div>
             <div className={styles.left_select_container}>
@@ -302,10 +331,17 @@ const Projects = () => {
               {/* period  */}
               <DateRangePicker
                 appearance="default"
-                placeholder="Default"
-                style={{ width: "95%", zIndex: "10", margin: ".5rem" }}
+                placeholder="Date Range"
+                size="lg"
+                style={{
+                  width: "95%",
+                  zIndex: "10",
+                  margin: ".5rem",
+                }}
                 onChange={(e) => {
-                  console.log(e);
+                  setFilters((prevData) => {
+                    return { ...prevData, dateRange: e };
+                  });
                 }}
                 ranges={[
                   {
@@ -326,22 +362,6 @@ const Projects = () => {
                   },
                 ]}
               />
-              {/* <FormControl fullWidth className={styles.select_input}>
-                <InputLabel id="demo-simple-select-label">Period</InputLabel>
-
-                <Muiselect
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value=""
-                  label="Period"
-                >
-                  <MenuItem value="this-week">This Week</MenuItem>
-                  <MenuItem value="this-month">This Month</MenuItem>
-                  <MenuItem value="previos-month">Previous Month</MenuItem>
-                  <MenuItem value="last-6-months">Previous 6 Month</MenuItem>
-                  <MenuItem value="previous-1-year">Previos 1 year</MenuItem>
-                </Muiselect>
-              </FormControl> */}
             </div>
           </div>
           <div className={styles.right}>
@@ -533,7 +553,11 @@ const Projects = () => {
                       {/* <td>{project.completes}</td> */}
                       <td>
                         {/* {project.CPI} */}
-                        <span className="tableValue">{getAvgCPI()}</span>
+                        <span className="tableValue">
+                          {project?.avg_cpi === "NaN"
+                            ? project?.client_info?.client_cpi
+                            : project?.avg_cpi}
+                        </span>
                         <br />
                         <span>US Dollar</span>
                       </td>

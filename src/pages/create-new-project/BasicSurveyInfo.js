@@ -198,7 +198,7 @@ const BasicSurveyInfo = () => {
           <div className="column">
             <label>
               <span>Country</span> &nbsp;
-              <span className="required_tag">Country</span>
+              <span className="required_tag">required</span>
             </label>
             <div style={{ marginTop: "1rem" }}>
               <Select

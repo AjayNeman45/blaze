@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./Reports.module.css";
 import Header from "../../components/header/Header";
 import Subheader from "../../components/subheader/Subheader";
@@ -147,7 +147,6 @@ const Reports = () => {
     clientCpiSum,
   } = useReportsContext();
 
-  console.log(statusesCnt, miratsStatusesCnt);
   return (
     <>
       <Header />
@@ -290,6 +289,42 @@ const RespondantActivity = () => {
   const [entrants, setEntrants] = useState(false);
   const [prescreens, setPrescreens] = useState(false);
   const [completes, setCompletes] = useState(false);
+  const [labels, setLabels] = useState([]);
+  const [barData, setBarData] = useState({
+    entrants: [],
+    prescreens: [],
+    completed: [],
+  });
+
+  const { graphData, statusesCnt, miratsStatusesCnt } = useReportsContext();
+
+  useEffect(() => {
+    if (graphData) {
+      setLabels([]);
+      setBarData({ entrants: [], prescreens: [], completed: [] });
+      Object?.keys(graphData)?.map((key) => {
+        console.log(graphData?.[key]?.entrants);
+        setLabels((prevData) => [...prevData, key]);
+        setBarData((prevData) => {
+          return {
+            ...prevData,
+            entrants: [
+              ...prevData?.entrants,
+              graphData?.[key]?.entrants ? graphData?.[key]?.entrants : 0,
+            ],
+            prescreens: [
+              ...prevData?.prescreens,
+              graphData?.[key]?.prescreens ? graphData?.[key]?.prescreens : 0,
+            ],
+            completed: [
+              ...prevData?.completed,
+              graphData?.[key]?.completed ? graphData?.[key]?.completed : 0,
+            ],
+          };
+        });
+      });
+    }
+  }, [graphData]);
 
   const options = {
     responsive: true,
@@ -302,16 +337,6 @@ const RespondantActivity = () => {
       },
     },
   };
-
-  const labels = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-  ];
   const Entrants = entrants ? [39, 47, 26, 36, 59, 10, 30] : [];
   const Prescreens = prescreens ? [50, 50, 50, 60, 30, 70, 40] : [];
   const Completes = completes ? [40, 30, 10, 80, 40, 65, 67] : [];
@@ -321,19 +346,19 @@ const RespondantActivity = () => {
     datasets: [
       {
         label: "Entrants",
-        data: Entrants.map((data) => data),
+        data: entrants ? barData?.entrants?.map((data) => data) : [],
         backgroundColor: "#f7b438",
         barThickness: 20,
       },
       {
         label: "Prescreens",
-        data: Prescreens.map((data) => data),
+        data: prescreens ? barData?.prescreens?.map((data) => data) : [],
         backgroundColor: "rgb(127, 133, 255)",
         barThickness: 20,
       },
       {
         label: "Completes",
-        data: Completes.map((data) => data),
+        data: completes ? barData?.completed?.map((data) => data) : [],
         barThickness: 20,
         backgroundColor: "rgb(21, 222, 147)",
       },
@@ -355,7 +380,7 @@ const RespondantActivity = () => {
             <span>entrants</span>
           </div>
 
-          <span className={styles.value}>511</span>
+          <span className={styles.value}>{statusesCnt?.hits}</span>
         </div>
         <div
           style={{
@@ -368,7 +393,9 @@ const RespondantActivity = () => {
             <RiFullscreenExitFill size={24} />
             <span>prescreens</span>
           </div>
-          <span className={styles.value}>458</span>
+          <span className={styles.value}>
+            {miratsStatusesCnt?.in_client_survey}
+          </span>
         </div>
         <div
           className={styles.completes}
@@ -381,7 +408,7 @@ const RespondantActivity = () => {
             <AiOutlineCheck size={24} />
             <span>completes</span>
           </div>
-          <span className={styles.value}>0</span>
+          <span className={styles.value}>{statusesCnt?.completed}</span>
         </div>
       </div>
       <Bar options={options} data={data} height={100} />

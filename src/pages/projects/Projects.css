@@ -291,3 +291,26 @@
   font-weight: 100 !important;
   color: rgb(50, 50, 50) !important;
 }
+
+/* date range picker  */
+.rs-picker-default .rs-picker-toggle.rs-btn {
+  height: 3.5rem;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  border: 1px solid lightgray;
+  border-radius: 5px;
+}
+
+/* picked date align */
+.rs-picker-default .rs-picker-toggle {
+}
+/* calander align */
+.rs-picker-toggle-caret {
+}
+
+/* ok button style */
+.rs-picker-toolbar-right-btn-ok {
+}
+
+/* range style */
+.rs-picker-menu .rs-calendar .rs-calendar-table-cell-content {
+}

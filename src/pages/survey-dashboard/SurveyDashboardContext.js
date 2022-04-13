@@ -30,7 +30,6 @@ const SurveyDashboardContextProvider = ({ children }) => {
     setSnackbar(!snackbar);
   };
   useEffect(() => {
-    console.log("in useEffect");
     getSurvey(surveyID)
       .then((data) => {
         let copyData = data;
@@ -182,6 +181,7 @@ export const getAvgLOI = (completedSessions, total) => {
 export const getAvgCPI = (completedSessions, total) => {
   let sum = 0;
   completedSessions?.forEach((session) => {
+    console.log(session?.client_cpi);
     sum += parseInt(session?.client_cpi);
   });
   return (sum / total).toFixed(2);
@@ -201,7 +201,6 @@ export const getFinancialOverview = (
   completedSessions,
   setFinancialOverview
 ) => {
-  console.log("herer", financialOverviewFor);
   switch (financialOverviewFor) {
     case "actual":
       return setFinancialOverview({

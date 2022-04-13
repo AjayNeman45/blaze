@@ -153,25 +153,23 @@
   text-align: end;
   margin: 3rem 0;
 }
-.btns .change_btn {
-  background: rgb(58, 135, 250);
-  color: white;
+.btns button {
   border: none;
   border-radius: 3px;
   cursor: pointer;
+  width: 8rem;
+  height: 3rem;
+  font-size: 15px;
+  letter-spacing: 1px;
+}
+.btns .change_btn {
+  background: rgb(58, 135, 250);
+  color: white;
 }
 .btns .deactivate_btn {
   background-color: rgb(170, 204, 255);
   color: white;
-  border: none;
-  border-radius: 3px;
   cursor: not-allowed;
-}
-.btns button {
-  width: 5rem;
-  height: 2.5rem;
-  font-size: 15px;
-  letter-spacing: 1px;
 }
 .btns .change_btn:hover {
   background-color: rgb(39, 117, 235);

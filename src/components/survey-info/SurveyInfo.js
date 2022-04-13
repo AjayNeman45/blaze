@@ -31,7 +31,7 @@ const style = {
   bgcolor: "white",
   border: "none",
   outline: "none",
-  borderRadius: "30px",
+  borderRadius: "10px",
   boxShadow: 24,
   p: 4,
 };

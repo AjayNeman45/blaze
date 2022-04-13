@@ -27,18 +27,20 @@ const ProjectContextProvider = ({ children }) => {
       );
       querySnapshot.docs.reverse().forEach(async (doc) => {
         let completes = 0;
-
         let survey = doc.data();
         let sid = survey?.survey_id;
-
+        let cpiSum = 0;
         const result = await getAllSessions(sid);
         result.forEach((res) => {
           if (res.data()?.client_status === 10) {
+            cpiSum += parseInt(res.data()?.client_cpi);
             completes++;
           }
         });
+
         survey["completes"] = completes;
         survey["hits"] = result.docs.length;
+        survey["avg_cpi"] = (cpiSum / completes).toFixed(2);
         setProjects((prevData) => {
           return [...prevData, survey];
         });

@@ -12,8 +12,8 @@ function ExternalSupplier({ tableTitle, data }) {
     data?.map((d) => {
       completes_total += d?.completed;
       avg_cpi_total += d?.avg_cpi;
-      amount_total += d?.completed * d?.avg_cpi;
     });
+    amount_total = completes_total * avg_cpi_total;
     setTotal({ completes_total, avg_cpi_total, amount_total });
   }, [data]);
 

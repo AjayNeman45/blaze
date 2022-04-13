@@ -141,8 +141,10 @@ function SurveyDashboard() {
                   <p>
                     {" "}
                     <span style={{ fontWeight: 600 }}>
-                      {(statusesCnt?.completed / statusesCnt?.hits).toFixed(2) *
-                        100}{" "}
+                      {(
+                        (statusesCnt?.completed / statusesCnt?.hits) *
+                        100
+                      ).toFixed(2)}{" "}
                       %
                     </span>{" "}
                     <span>conversion</span>{" "}

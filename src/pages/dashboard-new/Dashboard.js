@@ -171,7 +171,8 @@ const state = {
 //   },
 // ];
 const Dashboard = () => {
-  let { allSurveys,FetchTodaySurveyCreated } = useContext(DashboardContext);
+  let { allSurveys, FetchTodaySurveyCreated, basicStats } =
+    useContext(DashboardContext);
   function CountProject() {
     let project = new Set();
     allSurveys?.map((survey) => project.add(survey?.project_id));
@@ -180,17 +181,17 @@ const Dashboard = () => {
   const big_bar_status = [
     {
       name: "Surveys Created",
-      value: "surveyscreated",
+      value: "surveys_created",
       count: allSurveys?.length,
     },
     {
       name: "projects created",
-      value: "projectscreated",
+      value: "projects_created",
       count: CountProject(),
     },
     {
       name: "your live projects",
-      value: "liveproj",
+      value: "live_projects",
       count: 34,
     },
     {
@@ -219,7 +220,7 @@ const Dashboard = () => {
                     <p className={styles.b_title}>{name}</p>
                     <p className={styles.b_count}>
                       {/* {statusesCnt?.[value] ? statusesCnt?.[value] : "-"} */}{" "}
-                      {count}
+                      {basicStats?.[value] ? basicStats?.[value] : "-"}
                     </p>
                   </div>
                 );
@@ -369,12 +370,13 @@ const Dashboard = () => {
               <p>Survey Created Today </p>
               <div className={styles.survey_numbers}>
                 <h1>
-                  <span>1.34%</span>{FetchTodaySurveyCreated()}
+                  <span>1.34%</span>
+                  {FetchTodaySurveyCreated()}
                 </h1>
               </div>
             </div>
             <div className={styles.surveyCreaetedToday_container}>
-              <p>Client Onboarded  </p>
+              <p>Client Onboarded </p>
               <div className={styles.survey_numbers}>
                 <h1>
                   <span>1.34%</span>122
