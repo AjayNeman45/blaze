@@ -7,70 +7,6 @@ import cardStyle from "../../components/analyticsUserCountCard/userAnalytcs.modu
 import { v4 as uuid } from "uuid";
 import { LinearProgress } from "@mui/material";
 
-const completes_by_employees_data = {
-  "1-100": 20,
-  "500-1000": 30,
-  "1000+": 24,
-};
-
-const quotafull_by_questions_data = [
-  {
-    name: "AGE",
-    count: "201/300",
-    progress: "56",
-  },
-  {
-    name: "GENDER",
-    count: "201/300",
-    progress: "56",
-  },
-  {
-    name: "CITY",
-    count: "201/300",
-    progress: "56",
-  },
-];
-
-const completes_by_gender_data = [
-  {
-    name: "Male",
-    count: "210/300",
-    progress: "56",
-  },
-  {
-    name: "Female",
-    count: "210/300",
-    progress: "56",
-  },
-  {
-    name: "Other",
-    count: "210/300",
-    progress: "56",
-  },
-];
-
-const quality_terminate_by_supplier_data = [
-  {
-    name: "lucid ab",
-    count: "210/300",
-    progress: "67",
-  },
-  {
-    name: "lucid ab",
-    count: "210/300",
-    progress: "67",
-  },
-  {
-    name: "lucid ab",
-    count: "210/300",
-    progress: "67",
-  },
-];
-
-const users_by_country_data = [
-  { name: "INDIA", count: "100%", progress: "87" },
-];
-
 const AudienceResponse = () => {
   const { allSessions, survey, completesByEmployees } = useAanalyticsContext();
 
@@ -133,8 +69,6 @@ const AudienceResponse = () => {
         }
       });
     });
-
-    const noOfSessions = 8;
     allSessions?.forEach((session) => {
       const sd = session.data();
 
@@ -167,8 +101,6 @@ const AudienceResponse = () => {
       }
     });
   }, [allSessions, survey]);
-
-  console.log(usersByCountry);
 
   return (
     <>

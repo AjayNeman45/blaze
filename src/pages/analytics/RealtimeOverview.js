@@ -4,26 +4,8 @@ import styles from "./Analytics.module.css";
 import { useAanalyticsContext } from "./AnalyticsContext";
 import RealTimeOverViewDoughnutChart from "./realtime-overview-doughnut-chart/RealtimeOverviewDoughnutChart";
 
-const drop_by_suppliers = [
-  {
-    name: "Cint AB",
-    count: "222",
-    progress: "45",
-  },
-  {
-    name: "PureSpectrum",
-    count: "222",
-    progress: "45",
-  },
-  {
-    name: "Prodege",
-    count: "222",
-    progress: "45",
-  },
-];
-
 const RealtimeOverview = () => {
-  const [last30MinutesSessions, setLast30MinutesSession] = useState([]);
+  const [lastTimeSessions, setLastTimeSessions] = useState([]);
   const [usersBySuppliersData, setUsersBySuppliersData] = useState({});
   const [usersByGender, setUsersByGender] = useState({
     Male: 0,
@@ -46,8 +28,11 @@ const RealtimeOverview = () => {
     "30-Quality Terminated": 0,
     "40-Quota Full": 0,
   });
-  const { allSessions, survey, statusesCnt } = useAanalyticsContext();
+  const { allSessions, survey, statusesCnt, lastPresentTime } =
+    useAanalyticsContext();
+
   useEffect(() => {
+    setLastTimeSessions([]);
     allSessions?.forEach((session) => {
       let diff =
         (session.data()?.date?.toDate()?.getTime() - new Date().getTime()) /
@@ -55,10 +40,13 @@ const RealtimeOverview = () => {
       diff = Math.abs(Math.round(diff / 60));
       if (
         session.data()?.date.toDate().getDate() === new Date().getDate() &&
-        diff < 30 &&
+        diff < parseInt(lastPresentTime) &&
         session.data()?.mirats_status === 3
       ) {
-        setLast30MinutesSession((prevData) => [...prevData, session.data()]);
+        setLastTimeSessions((prevData) => [...prevData, session.data()]);
+        if (session?.mirats_status === 3) {
+          setInClientAcLast30Minutes((prevData) => prevData + 1);
+        }
       }
 
       const handleUsersByGender = (gender) => {
@@ -80,7 +68,7 @@ const RealtimeOverview = () => {
         }
       }
     });
-  }, [allSessions]);
+  }, [allSessions, lastPresentTime]);
 
   useEffect(() => {
     setUsersBySuppliersData({});
@@ -89,7 +77,7 @@ const RealtimeOverview = () => {
     // for users by supliers card
     survey?.external_suppliers?.map((supp) => {
       // if no sessions are there for last 30 minutes then set every suppliers as zero
-      if (!last30MinutesSessions.length) {
+      if (!lastTimeSessions.length) {
         setUsersBySuppliersData((prevData) => {
           return {
             ...prevData,
@@ -97,7 +85,7 @@ const RealtimeOverview = () => {
           };
         });
       } else
-        last30MinutesSessions?.map((session) => {
+        lastTimeSessions?.map((session) => {
           setUsersBySuppliersData((prevData) => {
             if (supp?.supplier_account_id === session?.supplier_account_id) {
               return {
@@ -149,7 +137,7 @@ const RealtimeOverview = () => {
     });
 
     // for users by client status card
-    last30MinutesSessions?.map((session) => {
+    lastTimeSessions?.map((session) => {
       const handleUsersByClientStatus = (status) => {
         setUsersByClientStatusData((prevData) => {
           return {
@@ -159,9 +147,6 @@ const RealtimeOverview = () => {
         });
       };
 
-      if (session?.mirats_status === 3) {
-        setInClientAcLast30Minutes((prevData) => prevData + 1);
-      }
       if (session?.client_status === 10) {
         handleUsersByClientStatus("10-Complete");
       } else if (session?.client_status === 20) {
@@ -189,9 +174,9 @@ const RealtimeOverview = () => {
         });
       }
     });
-  }, [last30MinutesSessions, survey, allSessions]);
+  }, [lastTimeSessions, survey, allSessions]);
 
-  console.log(dropsBySuppliersData);
+  console.log(lastTimeSessions);
 
   return (
     <>

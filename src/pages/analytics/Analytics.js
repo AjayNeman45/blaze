@@ -5,6 +5,7 @@ import Header from "../../components/header/Header";
 import Subheader from "../../components/subheader/Subheader";
 import SurveyInfo from "../../components/survey-info/SurveyInfo";
 import styles from "./Analytics.module.css";
+import { useAanalyticsContext } from "./AnalyticsContext";
 import Audience from "./Audience";
 import AudienceResponse from "./AudienceResponse";
 import RealtimeOverview from "./RealtimeOverview";
@@ -13,6 +14,7 @@ import SupplierOverviewContextProvider from "./supplier-overview/SupplierOvervie
 
 const Analytics = () => {
   const { navigationTab, surveyID } = useParams();
+  const { setLastPresentTime } = useAanalyticsContext();
   return (
     <>
       <Header />
@@ -72,6 +74,14 @@ const Analytics = () => {
               <span className={styles.border_bottom}></span>
             </NavLink>
           </div>
+
+          <select onChange={(e) => setLastPresentTime(e.target.value)}>
+            <option value="30">last 30 minutes</option>
+            <option value="60">last 60 minutes</option>
+            <option value="180">last 3 hours</option>
+            <option value="360">last 6 hour</option>
+            <option value="720">last 12 hour</option>
+          </select>
         </div>
 
         {(() => {

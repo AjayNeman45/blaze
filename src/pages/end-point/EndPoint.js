@@ -95,7 +95,7 @@ const EndPoint = () => {
       .catch((err) => console.log(err.message));
   }, [decodedID]);
 
-  return <div>EndPoint</div>;
+  return <h1>EndPoint</h1>;
 };
 
 export default EndPoint;

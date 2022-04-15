@@ -32,6 +32,8 @@ const AnalyticsContextProvider = ({ children }) => {
     quotaFull: 0,
   });
 
+  const [lastPresentTime, setLastPresentTime] = useState("30");
+
   const [completesByEmployees, setCompletesByEmployees] = useState({});
 
   useEffect(() => {
@@ -286,6 +288,8 @@ const AnalyticsContextProvider = ({ children }) => {
     sessionsDate,
     graphData,
     completesByEmployees,
+    lastPresentTime,
+    setLastPresentTime,
   };
   return (
     <analyticsContext.Provider value={value}>

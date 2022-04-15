@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import { db } from "../../firebase";
 import { decryptText, encryptText } from "../../utils/enc-dec.utils";
 import { hashids } from "../../index";
+import { getClients } from "../../utils/firebaseQueries";
 
 const ProjectSettingContext = createContext();
 
@@ -17,6 +18,7 @@ const ProejctSettingProvider = ({ children }) => {
 
   let [surveyData, setSurveyData] = useState({});
   const [changes, setChanges] = useState({ updated_date: new Date() });
+  const [clients, setClients] = useState([]);
 
   useEffect(() => {
     const DB = db.collection("mirats").doc("surveys").collection("survey");
@@ -26,6 +28,18 @@ const ProejctSettingProvider = ({ children }) => {
         setSurveyData(doc.data());
       }
     );
+
+    getClients().then((clients) => {
+      clients.docs.forEach((client) => {
+        setClients((prevData) => [
+          ...prevData,
+          {
+            label: client.data()?.company_name,
+            value: client.data()?.company_name,
+          },
+        ]);
+      });
+    });
 
     console.log(hashids.encode([1234567899]));
   }, []);
@@ -44,7 +58,14 @@ const ProejctSettingProvider = ({ children }) => {
 
   return (
     <ProjectSettingContext.Provider
-      value={{ surveyData, setSurveyData, surveyID, changes, setChanges }}
+      value={{
+        surveyData,
+        setSurveyData,
+        surveyID,
+        changes,
+        setChanges,
+        clients,
+      }}
     >
       {children}
     </ProjectSettingContext.Provider>
