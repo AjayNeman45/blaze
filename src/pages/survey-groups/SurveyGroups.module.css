@@ -1,0 +1,32 @@
+.survey_groups_page {
+  padding: 4rem 2rem;
+}
+.survey_groups_page .header_container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.page_title {
+  font-size: 33px;
+  font-weight: bold;
+}
+.header_container_right button {
+  background-color: black;
+  color: white;
+  padding: 10px 15px;
+  height: 3rem;
+  border: none;
+  border-radius: 9px;
+  outline: none;
+  font-weight: bold;
+  font-size: 16px;
+  letter-spacing: 0.4px;
+}
+.header_container_right input {
+  border: 1px solid #898989;
+  border-radius: 9px;
+  width: 20rem;
+  height: 3rem;
+  padding: 0 10px;
+  margin-left: 10px;
+}

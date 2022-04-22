@@ -1,11 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import {
-  getAllSessions,
-  getQuestion,
-  getQuestions,
-  getSurvey,
-} from "../../utils/firebaseQueries";
+import { getAllSessions, getSurvey } from "../../utils/firebaseQueries";
 
 const analyticsContext = createContext();
 export const useAanalyticsContext = () => {
@@ -33,8 +28,6 @@ const AnalyticsContextProvider = ({ children }) => {
   });
 
   const [lastPresentTime, setLastPresentTime] = useState("30");
-
-  const [completesByEmployees, setCompletesByEmployees] = useState({});
 
   useEffect(() => {
     getSurvey(surveyID).then((data) => setSurvey(data));
@@ -102,50 +95,6 @@ const AnalyticsContextProvider = ({ children }) => {
           handleGraphData(creationDate, "quotaFull");
         }
       }
-
-      //******** for completes by employees card
-      let userResp = null;
-
-      session.data()?.responses?.map((resp) => {
-        if (resp?.question_id === "22467") {
-          userResp = resp?.user_response;
-        }
-      });
-
-      let totalSessionsByEmployeesRange = 0;
-      let totalCompletedByEmployeesRange = 0;
-      getQuestion("22467").then((res) => {
-        const employeeRange = res.data()?.lang?.["ENG-IN"]?.options[userResp];
-        totalSessionsByEmployeesRange++;
-
-        setCompletesByEmployees((prevData) => {
-          return {
-            ...prevData,
-            [employeeRange]: {
-              ...prevData?.[employeeRange],
-              denominator:
-                (prevData?.[employeeRange]?.denominator
-                  ? prevData?.[employeeRange]?.denominator
-                  : 0) + 1,
-            },
-          };
-        });
-        if (session.data()?.client_status === 10) {
-          setCompletesByEmployees((prevData) => {
-            return {
-              ...prevData,
-              [employeeRange]: {
-                ...prevData?.[employeeRange],
-                numerator:
-                  (prevData?.[employeeRange]?.numerator
-                    ? prevData?.[employeeRange]?.numerator
-                    : 0) + 1,
-              },
-            };
-          });
-        }
-      });
-      //******** end of completes by employees card
     });
     dates.forEach((date) => {
       allSessions?.forEach((session) => {
@@ -169,6 +118,7 @@ const AnalyticsContextProvider = ({ children }) => {
         ?.date.toDate(),
     });
 
+    // ---->>>> users by os card
     os.forEach((os) => {
       let cnt = 0;
       allSessions?.forEach((session) => {
@@ -185,6 +135,7 @@ const AnalyticsContextProvider = ({ children }) => {
       });
     });
 
+    // ---->>>> users by browsers card
     browsers.forEach((browser) => {
       let cnt = 0;
       allSessions?.forEach((session) => {
@@ -201,6 +152,7 @@ const AnalyticsContextProvider = ({ children }) => {
       });
     });
 
+    // --->>> users by device types card
     deviceTypes?.forEach((deviceType) => {
       let cnt = 0;
       allSessions?.forEach((session) => {
@@ -217,6 +169,7 @@ const AnalyticsContextProvider = ({ children }) => {
       });
     });
 
+    // ---->>> users by device brand card
     deviceBrand?.forEach((deviceBrand) => {
       let cnt = 0;
       allSessions?.forEach((session) => {
@@ -287,7 +240,6 @@ const AnalyticsContextProvider = ({ children }) => {
     statusesCnt,
     sessionsDate,
     graphData,
-    completesByEmployees,
     lastPresentTime,
     setLastPresentTime,
   };

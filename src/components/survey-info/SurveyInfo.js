@@ -21,6 +21,7 @@ import SnackbarMsg from "../Snackbar";
 import { encryptText } from "../../utils/enc-dec.utils";
 import { BsCheckCircle } from "react-icons/bs";
 import { useHistory } from "react-router-dom";
+import { statusOptions } from "../../utils/commonData";
 
 const style = {
   position: "absolute",
@@ -51,65 +52,6 @@ const clonedMsgModalStyle = {
   p: 4,
 };
 
-export const options = [
-  {
-    label: "Archieved",
-    value: "awarded",
-  },
-  {
-    label: "Awarded",
-    value: "awarded",
-  },
-  {
-    label: "Bidding",
-    value: "bidding",
-  },
-  {
-    label: "Canceled Non charged",
-    value: "canceled_non_charged",
-  },
-  {
-    label: "Canceled with charge",
-    value: "canceled_with_charge",
-  },
-  {
-    label: "Complete",
-    value: "complete",
-  },
-  {
-    label: "Live",
-    value: "live",
-  },
-  {
-    label: "Paid",
-    value: "paid",
-  },
-  {
-    label: "Pending",
-    value: "pending",
-  },
-  {
-    label: "Ready to Invoice",
-    value: " ready_to_invoice",
-  },
-  {
-    label: "Invoiced",
-    value: "invoiced",
-  },
-  {
-    label: "Titanic",
-    value: "titanic",
-  },
-  {
-    label: "Triton",
-    value: "triton",
-  },
-  {
-    label: "Umbriel",
-    value: "umbriel",
-  },
-];
-
 function SurveyInfo() {
   const history = useHistory();
   const [surveyNameEditModal, setSurveyNameEditModal] = useState(false);
@@ -121,7 +63,8 @@ function SurveyInfo() {
   const [snackbarMsg, setSnackbarMsg] = useState("");
   const [surveyCloneModal, setSurveyCloneModal] = useState(false);
   const [surveyExterNameModal, setSurveyExterNameModal] = useState(false);
-
+  const [snackbar, setSnackbar] = useState(false);
+  const [snackbarData, setSnackbarData] = useState({});
   const [newSurveyID, setNewSurveyID] = useState("");
 
   const handleSnackbar = () => {
@@ -166,11 +109,17 @@ function SurveyInfo() {
     updateSurvey(surveyID, body)
       .then(() => {
         console.log("survey name updated");
-        setSnackbarMsg("survey name is updated");
-        handleSnackbar();
+        setSnackbar(true);
+        setSnackbarData({ msg: "survey name is updated", severity: "success" });
         setNewSurveyName(changedSurveyName);
       })
-      .catch((err) => console.log(err.message));
+      .catch((err) => {
+        setSnackbar(false);
+        setSnackbarData({
+          msg: "Oops! something went wrong try again..",
+          severity: "error",
+        });
+      });
   };
   const handleSetExternalSurveyNameBtn = (e) => {
     e.preventDefault();
@@ -180,8 +129,11 @@ function SurveyInfo() {
     };
     updateSurvey(surveyID, body)
       .then(() => {
-        setSnackbarMsg("External Name for the survey is updated");
-        handleSnackbar();
+        setSnackbar(true);
+        setSnackbarData({
+          msg: "External Name for the survey is updated",
+          severity: "success",
+        });
         console.log("external project name updated");
       })
       .catch((err) => console.log(err.message));
@@ -228,14 +180,36 @@ function SurveyInfo() {
     }
   };
 
+  // ---->>> handle when the status of the survey changes
+  const handleStatusChange = (e) => {
+    setSurveyStatus(e.target.value);
+    updateSurvey(surveyID, { status: e.target.value })
+      .then(() => {
+        setSnackbar(true);
+        setSnackbarData({
+          msg: "survey status updated successfully.",
+          severity: "success",
+        });
+        console.log("survey stauts updated successfully....");
+      })
+      .catch((err) => {
+        setSnackbar(true);
+        setSnackbarData({
+          msg: "survey status updated successfully.",
+          severity: "error",
+        });
+      });
+  };
+
   return (
     <>
       <SnackbarMsg
-        msg={snackbarMsg}
-        severity="success"
-        open={openSnackbar}
-        handleClose={handleSnackbar}
+        msg={snackbarData?.msg}
+        open={snackbar}
+        severity={snackbarData?.severity}
+        setSnackbar={setSnackbar}
       />
+
       <div className={styles.survey_info_container}>
         <div className={styles.survey_name_and_btns}>
           <div className={styles.survey_info_name}>
@@ -253,12 +227,12 @@ function SurveyInfo() {
           <div className={styles.btns}>
             <FormControl sx={{ m: 1, minWidth: 120 }}>
               <Select
-                onChange={(e) => setSurveyStatus(e.target.value)}
+                onChange={handleStatusChange}
                 inputProps={{ "aria-label": "Without label" }}
                 className={styles.status_select_field}
                 value={surveyStatus}
               >
-                {options?.map((option) => (
+                {statusOptions?.map((option) => (
                   <MenuItem value={option.value} key={uuid()}>
                     <span>
                       <GoPrimitiveDot size={20} /> &nbsp;

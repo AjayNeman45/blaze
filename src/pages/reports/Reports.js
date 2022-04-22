@@ -165,8 +165,10 @@ const Reports = () => {
                     subtitle="completion loi"
                     count={
                       statusesCnt?.completed
-                        ? alertCardData?.totalTimeForCompletedSessions /
-                          statusesCnt?.completed
+                        ? (
+                            alertCardData?.totalTimeForCompletedSessions /
+                            statusesCnt?.completed
+                          ).toFixed(0)
                         : 0
                     }
                     unit="min"
@@ -179,8 +181,10 @@ const Reports = () => {
                     subtitle="termination loi"
                     count={
                       statusesCnt?.completed
-                        ? alertCardData?.totalTimeForTerminatedSessions /
-                          statusesCnt?.completed
+                        ? (
+                            alertCardData?.totalTimeForTerminatedSessions /
+                            statusesCnt?.completed
+                          ).toFixed(0)
                         : 0
                     }
                     unit="min"
@@ -260,7 +264,7 @@ const Reports = () => {
             <div className={styles.total_survey_cost_card}>
               <span className={styles.legend}>Total Survey Cost</span>
               <span className={styles.value}>
-                $ {clientCpiSum / statusesCnt?.completed}
+                $ {(clientCpiSum / statusesCnt?.completed).toFixed(0)}
               </span>
             </div>
           </div>

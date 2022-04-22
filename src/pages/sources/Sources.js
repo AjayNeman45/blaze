@@ -20,7 +20,6 @@ function Sources() {
 
     setOpenSnackbar({});
   };
-  console.log(surveydata);
   return (
     <>
       {opensnackbar?.show && (
@@ -53,6 +52,7 @@ function Sources() {
                 <Card
                   data={data}
                   title={data?.supplier_account}
+                  supplier_id={data?.supplier_account_id}
                   surveyid={surveyID}
                   index={index}
                   surveydata={surveydata}

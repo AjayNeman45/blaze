@@ -3,13 +3,21 @@ import styles from "./realtimeoverviewdoughnutchart.module.css";
 import ReactApexChart from "react-apexcharts";
 import { useState } from "react";
 
-const RealtimeOverviewDoughnutChart = ({ data, inClientAcLast30Minutes }) => {
-  const [deviceTypeUser, setDeviceTypeUsers] = useState([]);
+const RealtimeOverviewDoughnutChart = ({
+  data,
+  inClientAcLast30Minutes,
+  lastPresentTime,
+}) => {
+  const [deviceTypeUser, setDeviceTypeUsers] = useState([0, 0]);
+
+  console.log(data, inClientAcLast30Minutes);
   useEffect(() => {
-    setDeviceTypeUsers([
-      (data?.desktop * 100) / inClientAcLast30Minutes,
-      (data?.mobile * 100) / inClientAcLast30Minutes,
-    ]);
+    if (inClientAcLast30Minutes) {
+      setDeviceTypeUsers([
+        (data?.desktop * 100) / inClientAcLast30Minutes,
+        (data?.mobile * 100) / inClientAcLast30Minutes,
+      ]);
+    }
   }, [data, inClientAcLast30Minutes]);
   const chartData = {
     series: deviceTypeUser,
@@ -54,7 +62,13 @@ const RealtimeOverviewDoughnutChart = ({ data, inClientAcLast30Minutes }) => {
   return (
     <>
       <div className={styles.card_container}>
-        <h2>USERS IN LAST 30 MINUTES</h2>
+        <h2>users by device types</h2>
+        <h3>
+          users in last{"   "}
+          {lastPresentTime === "30"
+            ? `${lastPresentTime} minutes`
+            : ` ${parseInt(lastPresentTime) / 60}  hrs`}
+        </h3>
         <h1>{data?.desktop + data?.mobile}</h1>
 
         {/* <div>
@@ -68,7 +82,7 @@ const RealtimeOverviewDoughnutChart = ({ data, inClientAcLast30Minutes }) => {
             </Chart>
         </div> */}
 
-        <div className="App">
+        <div>
           <ReactApexChart
             className={styles.chart}
             options={chartData.options}
@@ -82,14 +96,14 @@ const RealtimeOverviewDoughnutChart = ({ data, inClientAcLast30Minutes }) => {
             <h4>
               <span className={styles.black_dot}>.</span> DESKTOP
             </h4>
-            <h2>{(data?.desktop * 100) / inClientAcLast30Minutes}%</h2>
+            <h2>{deviceTypeUser[0]}%</h2>
           </div>
 
           <div className={styles.gray_circle}>
             <h4>
               <span className={styles.grat_dot}>.</span> MOBILE
             </h4>
-            <h2>{(data?.mobile * 100) / inClientAcLast30Minutes}%</h2>
+            <h2>{deviceTypeUser[1]}%</h2>
           </div>
         </div>
       </div>

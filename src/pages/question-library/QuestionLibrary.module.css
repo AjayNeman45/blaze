@@ -1,0 +1,56 @@
+.question_library_page {
+  /* border: 1px solid red; */
+  padding: 4rem 2rem;
+}
+.question_library_page .header_container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.page_title {
+  font-size: 33px;
+  font-weight: bold;
+}
+.create_new_quali_btn {
+  background-color: black;
+  color: white;
+  padding: 10px 15px;
+  height: 3rem;
+  border: none;
+  border-radius: 9px;
+  outline: none;
+  font-weight: bold;
+  font-size: 16px;
+  letter-spacing: 0.4px;
+}
+.question_search_input {
+  border: 1px solid #898989;
+  border-radius: 9px;
+  width: 20rem;
+  height: 3rem;
+  padding: 0 10px;
+  margin-left: 10px;
+}
+
+.cell_large {
+  padding: 10px 0px;
+  height: 40px;
+}
+.project_table_div table {
+  border-collapse: separate;
+  border-spacing: 0 1em;
+  width: 100%;
+}
+.active_question_tag {
+  background: #cdffd2;
+  padding: 4px;
+  border-radius: 5px;
+  margin-left: 10px;
+}
+
+.project_table_div table tbody tr {
+  border-radius: 25px;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  font-size: 12px;
+  border: 1px solid #dcdcdc;
+}

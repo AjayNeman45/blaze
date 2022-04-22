@@ -20,6 +20,11 @@ import {
 } from "./SurveyDashboardContext";
 import SnackbarMsg from "../../components/Snackbar";
 import { getAvgLOI } from "./SurveyDashboardContext";
+import { statusOptions } from "../../utils/commonData";
+import { useParams } from "react-router-dom";
+import { useHistory } from "react-router-dom";
+import { updateSurvey } from "../../utils/firebaseQueries";
+
 const big_bar_status = [
   {
     name: "hits",
@@ -53,6 +58,7 @@ function SurveyDashboard() {
     setChangeSurveyName,
     newSurveyName,
     snackbarData,
+    setSnackbarData,
     snackbar,
     handleSnackbar,
     completedSessions,
@@ -61,8 +67,9 @@ function SurveyDashboard() {
 
   const [financialOverview, setFinancialOverview] = useState({});
   const [batti, setBatti] = useState();
-  console.log(statusesCnt);
-
+  const { surveyID } = useParams();
+  const history = useHistory();
+  const [surveyStatus, setSurveyStatus] = useState();
   useEffect(() => {
     getFinancialOverview(
       "actual",
@@ -73,6 +80,7 @@ function SurveyDashboard() {
   }, [statusesCnt, completedSessions]);
 
   useEffect(() => {
+    setSurveyStatus(survey?.status);
     if (survey?.status?.toLowerCase() === "bidding") {
       setBatti(1);
     } else if (survey?.status?.toLowerCase() === "testing") {
@@ -88,8 +96,36 @@ function SurveyDashboard() {
     }
   }, [survey]);
 
+  // ---->>> updates the status of the survey
+  const handleStatusChange = (e) => {
+    setSurveyStatus(e.target.value);
+    updateSurvey(surveyID, { status: e.target.value })
+      .then(() => {
+        handleSnackbar(true);
+        setSnackbarData({
+          msg: "survey status updated successfully...",
+          severity: "success",
+        });
+        console.log("status updated...!");
+      })
+      .catch((err) => {
+        handleSnackbar(true);
+        setSnackbarData({
+          msg: "Oops! something went wrong",
+          severity: "error",
+        });
+        console.log(err.message);
+      });
+  };
+
   return (
     <>
+      <SnackbarMsg
+        msg={snackbarData?.msg}
+        open={snackbar}
+        severity={snackbarData.severity}
+      />
+
       <Header />
       <Subheader />
 
@@ -102,11 +138,15 @@ function SurveyDashboard() {
                 <p onClick={() => setSurveyNameEditModal(true)}>edit</p>
               </div>
               <div className={styles.status_conatainer}>
-                <select>
-                  <option style={{ color: "green" }}> Live</option>
+                <select value={surveyStatus} onChange={handleStatusChange}>
+                  {statusOptions?.map((option) => (
+                    <option value={option?.value} style={{ color: "green" }}>
+                      {option?.label}
+                    </option>
+                  ))}
+                  {/* <option style={{ color: "green" }}>Live</option>
                   <option style={{ color: "green" }}>Live</option>
-                  <option style={{ color: "green" }}>Live</option>
-                  <option style={{ color: "green" }}>Live</option>
+                  <option style={{ color: "green" }}>Live</option> */}
                 </select>
               </div>
             </div>
@@ -144,7 +184,7 @@ function SurveyDashboard() {
                       {(
                         (statusesCnt?.completed / statusesCnt?.hits) *
                         100
-                      ).toFixed(2)}{" "}
+                      ).toFixed(0)}{" "}
                       %
                     </span>{" "}
                     <span>conversion</span>{" "}
@@ -159,7 +199,7 @@ function SurveyDashboard() {
                         (
                           (statusesCnt?.completed / inClientSurveySessions) *
                           100
-                        ).toFixed(2)
+                        ).toFixed(0)
                       }{" "}
                       %
                     </span>{" "}
@@ -185,7 +225,7 @@ function SurveyDashboard() {
                         (
                           (statusesCnt?.overQuota / inClientSurveySessions) *
                           100
-                        ).toFixed(2)
+                        ).toFixed(0)
                       }{" "}
                       %
                     </span>{" "}
@@ -209,7 +249,7 @@ function SurveyDashboard() {
                     {(
                       (statusesCnt?.completed * 100) /
                       survey?.no_of_completes
-                    ).toFixed(2)}{" "}
+                    ).toFixed(0)}{" "}
                     %
                   </span>{" "}
                 </p>
@@ -286,7 +326,13 @@ function SurveyDashboard() {
             <div className={styles.supply_overview_header}>
               <h1>Supply Overview</h1>
               <button className={styles.add_icon}>
-                <IoAdd color="white" size={20} />
+                <IoAdd
+                  color="white"
+                  size={20}
+                  onClick={() =>
+                    history.push(`/surveys/allocations/${surveyID}`)
+                  }
+                />
               </button>
             </div>
             <div className={styles.big_card_container}>
@@ -415,15 +461,13 @@ function SurveyDashboard() {
 
         <div className={styles.right_container}>
           <TeamCards
-            title="mirats team"
-            co_ordinators={[
-              {
-                title: "project cordinator",
-                members: ["mahmood", "shruti"],
-              },
-            ]}
+            title="Mirats Insights team"
+            co_ordinators={survey?.mirats_insights_team}
           />
-          <TeamCards />
+          <TeamCards
+            title="Clients Team"
+            co_ordinators={survey?.clients_team}
+          />
           <NerdySpecs />
           <div className={styles.small_cards}>
             <div className={styles.cpi_and_required}>

@@ -15,6 +15,7 @@
   font-weight: 600;
   font-size: 30px;
   line-height: 45px;
+  padding-bottom: 25px;
 }
 .Teamcard h2 {
   font-size: 16px;
@@ -22,12 +23,11 @@
   color: #484848;
   line-height: 24px;
 }
-.subMenuBtn {
+.names {
   display: flex;
   gap: 15px;
-  align-items: center;
 }
-.subMenuBtn h3 {
+.name h3 {
   display: flex;
   align-items: center;
   justify-content: center;

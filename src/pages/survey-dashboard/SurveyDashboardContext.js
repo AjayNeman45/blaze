@@ -144,7 +144,6 @@ const SurveyDashboardContextProvider = ({ children }) => {
         })
       );
   };
-  console.log(inClientSurveySessions);
 
   const value = {
     survey: surveyData,
@@ -158,6 +157,7 @@ const SurveyDashboardContextProvider = ({ children }) => {
     setChangeSurveyName,
     newSurveyName,
     snackbarData,
+    setSnackbarData,
     snackbar,
     handleSnackbar,
     completedSessions,
@@ -181,10 +181,9 @@ export const getAvgLOI = (completedSessions, total) => {
 export const getAvgCPI = (completedSessions, total) => {
   let sum = 0;
   completedSessions?.forEach((session) => {
-    console.log(session?.client_cpi);
     sum += parseInt(session?.client_cpi);
   });
-  return (sum / total).toFixed(2);
+  return (sum / total).toFixed(0);
 };
 
 export const getSupplAvgCPI = (completedSessions, total) => {
@@ -192,7 +191,7 @@ export const getSupplAvgCPI = (completedSessions, total) => {
   completedSessions?.forEach((session) => {
     sum += parseInt(session?.vendor_cpi);
   });
-  return (sum / total).toFixed(2);
+  return (sum / total).toFixed(0);
 };
 
 export const getFinancialOverview = (

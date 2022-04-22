@@ -6,9 +6,10 @@ import AudienceResponse_BarChart from "./audience-response-bar-chart/AudienceRes
 import cardStyle from "../../components/analyticsUserCountCard/userAnalytcs.module.css";
 import { v4 as uuid } from "uuid";
 import { LinearProgress } from "@mui/material";
+import { getQuestion } from "../../utils/firebaseQueries";
 
 const AudienceResponse = () => {
-  const { allSessions, survey, completesByEmployees } = useAanalyticsContext();
+  const { allSessions, survey } = useAanalyticsContext();
 
   const [usersByGender, setUsersByGender] = useState({
     Male: { numerator: 0, denominator: 0 },
@@ -17,6 +18,7 @@ const AudienceResponse = () => {
 
   const [usersByQTBySupp, setUsersByQTBySupp] = useState({});
   const [usersByCountry, setUsersByCountry] = useState({});
+  const [completesByEmployees, setCompletesByEmployees] = useState({});
 
   const handleUsersByGenderCard = (gender, forStatus) => {
     setUsersByGender((prevData) => {
@@ -34,7 +36,6 @@ const AudienceResponse = () => {
     survey?.external_suppliers?.map((supp) => {
       allSessions?.forEach((session) => {
         const sd = session.data();
-        const sid = supp?.supplier_account_id;
         const suppName = supp?.supplier_account;
         // condition for quality terminate by supplier
         if (supp?.supplier_account_id === sd?.supplier_account_id) {
@@ -99,6 +100,48 @@ const AudienceResponse = () => {
       });
       if (sd?.geo_data?.country_code) {
       }
+
+      //******** for completes by employees card
+      let userResp = null;
+
+      sd?.responses?.map((resp) => {
+        if (resp?.question_id === "22467") {
+          userResp = resp?.user_response;
+        }
+      });
+      console.log(sd?.date.toDate(), userResp);
+
+      userResp &&
+        getQuestion("22467").then((res) => {
+          const employeeRange = res.data()?.lang?.["ENG-IN"]?.options[userResp];
+          setCompletesByEmployees((prevData) => {
+            return {
+              ...prevData,
+              [employeeRange]: {
+                ...prevData?.[employeeRange],
+                denominator:
+                  (prevData?.[employeeRange]?.denominator
+                    ? prevData?.[employeeRange]?.denominator
+                    : 0) + 1,
+              },
+            };
+          });
+          if (sd?.client_status === 10) {
+            setCompletesByEmployees((prevData) => {
+              return {
+                ...prevData,
+                [employeeRange]: {
+                  ...prevData?.[employeeRange],
+                  numerator:
+                    (prevData?.[employeeRange]?.numerator
+                      ? prevData?.[employeeRange]?.numerator
+                      : 0) + 1,
+                },
+              };
+            });
+          }
+        });
+      //******** end of completes by employees card
     });
   }, [allSessions, survey]);
 
@@ -182,7 +225,7 @@ const AudienceResponse = () => {
 
 export default AudienceResponse;
 
-const AudienceResponseCard = ({ data, cardTitle, cardSubtitle }) => {
+export const AudienceResponseCard = ({ data, cardTitle, cardSubtitle }) => {
   return (
     <div className={cardStyle.UserAnalytics_container}>
       <div className={cardStyle.legend}>

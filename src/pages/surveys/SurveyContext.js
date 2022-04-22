@@ -8,16 +8,23 @@ import {
   setDoc,
 } from "firebase/firestore";
 import { db } from "../../firebase";
-import { getAllSessions, getClients } from "../../utils/firebaseQueries";
+import {
+  getAllSessions,
+  getAllSurveys,
+  getClients,
+} from "../../utils/firebaseQueries";
+import { useParams } from "react-router-dom";
 
-const ProjectContext = createContext();
+const SurveyContext = createContext();
 
-export const useProjectContext = () => {
-  return useContext(ProjectContext);
+export const useSurveyContext = () => {
+  return useContext(SurveyContext);
 };
 
-const ProjectContextProvider = ({ children }) => {
-  const [projects, setProjects] = useState([]);
+const SurveyContextProvider = ({ children }) => {
+  const { activity } = useParams();
+  console.log(activity);
+  const [surveys, setSurveys] = useState([]);
   const [clients, setClients] = useState([]);
   const [completedSessions, setCompletedSessions] = useState([]);
   useEffect(() => {
@@ -25,6 +32,7 @@ const ProjectContextProvider = ({ children }) => {
       const querySnapshot = await getDocs(
         collection(db, "mirats", "surveys", "survey")
       );
+
       querySnapshot.docs.reverse().forEach(async (doc) => {
         let completes = 0;
         let survey = doc.data();
@@ -41,7 +49,7 @@ const ProjectContextProvider = ({ children }) => {
         survey["completes"] = completes;
         survey["hits"] = result.docs.length;
         survey["avg_cpi"] = (cpiSum / completes).toFixed(2);
-        setProjects((prevData) => {
+        setSurveys((prevData) => {
           return [...prevData, survey];
         });
       });
@@ -66,14 +74,14 @@ const ProjectContextProvider = ({ children }) => {
   };
 
   const value = {
-    projects,
+    surveys,
     clients,
     getCompletedSessions,
     completedSessions,
   };
   return (
-    <ProjectContext.Provider value={value}>{children}</ProjectContext.Provider>
+    <SurveyContext.Provider value={value}>{children}</SurveyContext.Provider>
   );
 };
 
-export default ProjectContextProvider;
+export default SurveyContextProvider;

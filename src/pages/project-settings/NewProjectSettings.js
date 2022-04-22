@@ -5,7 +5,6 @@ import SurveyInfo from "../../components/survey-info/SurveyInfo";
 import styles from "./NewProjectSettings.module.css";
 import { useProjectSettingsContext } from "./ProjectSettingContext";
 import { v4 as uuid } from "uuid";
-import { options } from "../../components/survey-info/SurveyInfo";
 import { Switch } from "@nextui-org/react";
 import ChangeLogComponent from "./ChangeLog";
 import Select from "react-select";
@@ -14,6 +13,7 @@ import { display } from "@mui/system";
 import { useParams } from "react-router-dom/cjs/react-router-dom.min";
 import { updateSurveyData } from "../../utils/firebaseQueries";
 import SnackbarMsg from "../../components/Snackbar";
+import { statusOptions } from "../../utils/commonData";
 
 const studyTypeData = [
   {
@@ -48,7 +48,7 @@ const industryData = [
   },
 ];
 
-const surveyStatusData = options;
+const surveyStatusData = statusOptions;
 const surveyInternStatusData = [
   {
     label: "Ongoing",

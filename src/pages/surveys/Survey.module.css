@@ -27,6 +27,7 @@
   font-size: 2rem;
   font-weight: 600;
   margin-right: 10px;
+  text-transform: capitalize;
 }
 
 .projectHead .left {

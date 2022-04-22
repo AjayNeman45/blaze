@@ -13,6 +13,7 @@ import copy from "copy-to-clipboard";
 function Card({
   data,
   title,
+  supplier_id,
   surveyid,
   index,
   surveydata,
@@ -288,7 +289,9 @@ function Card({
         <button
           className={styles.source_btn}
           onClick={() => {
-            history.push(`/projects/analytics/supplier-overview/${surveyid}`);
+            history.push(
+              `/surveys/analytics/supplier-overview/${surveyid}/${supplier_id}`
+            );
           }}
         >
           View Stats

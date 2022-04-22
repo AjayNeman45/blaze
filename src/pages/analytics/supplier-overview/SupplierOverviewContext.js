@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { useParams } from "react-router-dom/cjs/react-router-dom.min";
 import { useAanalyticsContext } from "../AnalyticsContext";
 
 const supplierOverviewContext = createContext();
@@ -14,28 +15,19 @@ const SupplierOverviewContextProvider = ({ children }) => {
   const [completedSessionOfSupplier, setCompletedSessionsOfSupplier] = useState(
     []
   );
-  const [selectedSupplier, setSelectedSupplier] = useState();
+  const { supplierID } = useParams();
   const [supplierData, setSupplierData] = useState({});
-  console.log(selectedSupplier);
 
   useEffect(() => {
-    setSelectedSupplier(survey?.external_suppliers?.[0].supplier_account_id);
-  }, [survey]);
-
-  useEffect(() => {
-    getStatusesCntAccordingSupplier(
-      allSessions,
-      setStatusesCnt,
-      selectedSupplier
-    );
-  }, [allSessions, survey, selectedSupplier]);
+    getStatusesCntAccordingSupplier(allSessions, setStatusesCnt, supplierID);
+  }, [allSessions, survey, supplierID]);
 
   const getStatusesCntAccordingSupplier = (
     allSessions,
     setStatusesCnt,
     supplier
   ) => {
-    console.log(supplier);
+    const supplierID = parseInt(supplier);
     let completed = 0,
       overQuota = 0,
       term = 0,
@@ -48,7 +40,7 @@ const SupplierOverviewContextProvider = ({ children }) => {
       const miratsStatus = session.data()?.mirats_status;
 
       if (
-        session.data()?.supplier_account_id === supplier &&
+        session.data()?.supplier_account_id === supplierID &&
         miratsStatus === 3
       ) {
         hits++;
@@ -56,20 +48,20 @@ const SupplierOverviewContextProvider = ({ children }) => {
       }
 
       setInClientSurveySessions(inClientSessionsCnt);
-      if (session.data()?.supplier_account_id === supplier && status === 40) {
+      if (session.data()?.supplier_account_id === supplierID && status === 40) {
         overQuota++;
       } else if (
-        session.data()?.supplier_account_id === supplier &&
+        session.data()?.supplier_account_id === supplierID &&
         status === 30
       ) {
         securityTerm++;
       } else if (
-        session.data()?.supplier_account_id === supplier &&
+        session.data()?.supplier_account_id === supplierID &&
         status === 20
       ) {
         term++;
       } else if (
-        session.data()?.supplier_account_id === supplier &&
+        session.data()?.supplier_account_id === supplierID &&
         status === 10
       ) {
         completed += 1;
@@ -93,19 +85,18 @@ const SupplierOverviewContextProvider = ({ children }) => {
 
   useEffect(() => {
     survey?.external_suppliers?.map((supp) => {
-      if (supp?.supplier_account_id === selectedSupplier) {
+      if (supp?.supplier_account_id === parseInt(supplierID)) {
         setSupplierData(supp);
       }
     });
-  }, [selectedSupplier]);
+  }, [supplierID]);
 
   const value = {
     statusesCnt,
     completedSessionOfSupplier,
     inClientSurveySessions,
-    selectedSupplier,
     supplierData,
-    setSelectedSupplier,
+    allSessions,
   };
 
   return (

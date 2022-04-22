@@ -33,18 +33,18 @@ const RealtimeOverview = () => {
 
   useEffect(() => {
     setLastTimeSessions([]);
+    setInClientAcLast30Minutes(0);
     allSessions?.forEach((session) => {
-      let diff =
-        (session.data()?.date?.toDate()?.getTime() - new Date().getTime()) /
-        1000;
+      const sd = session.data();
+      let diff = (sd?.date?.toDate()?.getTime() - new Date().getTime()) / 1000;
       diff = Math.abs(Math.round(diff / 60));
       if (
-        session.data()?.date.toDate().getDate() === new Date().getDate() &&
+        sd?.date.toDate().getDate() === new Date().getDate() &&
         diff < parseInt(lastPresentTime) &&
-        session.data()?.mirats_status === 3
+        sd?.mirats_status === 3
       ) {
-        setLastTimeSessions((prevData) => [...prevData, session.data()]);
-        if (session?.mirats_status === 3) {
+        setLastTimeSessions((prevData) => [...prevData, sd]);
+        if (sd?.mirats_status === 3) {
           setInClientAcLast30Minutes((prevData) => prevData + 1);
         }
       }
@@ -74,37 +74,30 @@ const RealtimeOverview = () => {
     setUsersBySuppliersData({});
     setUsersByCompletesSuppliersData({});
     setInClientAcSupplier({});
+    setUsersByClientStatusData({});
+    setUsersByDeviceTypes({ desktop: 0, mobile: 0 });
     // for users by supliers card
     survey?.external_suppliers?.map((supp) => {
-      // if no sessions are there for last 30 minutes then set every suppliers as zero
-      if (!lastTimeSessions.length) {
+      lastTimeSessions?.map((session) => {
         setUsersBySuppliersData((prevData) => {
-          return {
-            ...prevData,
-            [supp?.supplier_account]: 0,
-          };
+          if (supp?.supplier_account_id === session?.supplier_account_id) {
+            return {
+              ...prevData,
+              [supp?.supplier_account]:
+                (prevData?.[supp?.supplier_account]
+                  ? prevData?.[supp?.supplier_account]
+                  : 0) + 1,
+            };
+          } else {
+            return {
+              ...prevData,
+              [supp?.supplier_account]: 0,
+            };
+          }
         });
-      } else
-        lastTimeSessions?.map((session) => {
-          setUsersBySuppliersData((prevData) => {
-            if (supp?.supplier_account_id === session?.supplier_account_id) {
-              return {
-                ...prevData,
-                [supp?.supplier_account]:
-                  (prevData?.[supp?.supplier_account]
-                    ? prevData?.[supp?.supplier_account]
-                    : 0) + 1,
-              };
-            } else {
-              return {
-                ...prevData,
-                [supp?.supplier_account]: 0,
-              };
-            }
-          });
-        });
+      });
+      // condition for calculating the suppliers by completes
       allSessions?.forEach((session) => {
-        // condition for calculating the suppliers by completes
         if (
           supp?.supplier_account_id === session.data()?.supplier_account_id &&
           session.data()?.client_status === 10
@@ -136,13 +129,13 @@ const RealtimeOverview = () => {
       });
     });
 
-    // for users by client status card
     lastTimeSessions?.map((session) => {
+      // for users by client status card
       const handleUsersByClientStatus = (status) => {
         setUsersByClientStatusData((prevData) => {
           return {
             ...prevData,
-            [status]: prevData?.[status] + 1,
+            [status]: (prevData?.[status] ? prevData?.[status] : 0) + 1,
           };
         });
       };
@@ -176,7 +169,7 @@ const RealtimeOverview = () => {
     });
   }, [lastTimeSessions, survey, allSessions]);
 
-  console.log(lastTimeSessions);
+  console.log(inClientAcLast30Minutes);
 
   return (
     <>
@@ -186,6 +179,7 @@ const RealtimeOverview = () => {
             <RealTimeOverViewDoughnutChart
               data={usersByDeviceTypes}
               inClientAcLast30Minutes={inClientAcLast30Minutes}
+              lastPresentTime={lastPresentTime}
             />
           </div>
           <div className={styles.drops_by_suppliers_card}>
@@ -204,6 +198,7 @@ const RealtimeOverview = () => {
               data={usersBySuppliersData}
               inClientSessions={statusesCnt?.inClient}
               last30MinutesCard={true}
+              lastPresentTime={lastPresentTime}
             />
           </div>
           <div className={styles.users_by_client_status_card}>
@@ -213,6 +208,7 @@ const RealtimeOverview = () => {
               data={usersByClientStatusData}
               inClientSessions={statusesCnt?.inClient}
               last30MinutesCard={true}
+              lastPresentTime={lastPresentTime}
             />
           </div>
 

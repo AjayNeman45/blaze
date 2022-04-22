@@ -107,7 +107,7 @@ const AllocationContextProvider = ({ children }) => {
     setSupplierData({});
   };
 
-  // insert external supplier in database
+  // insert internal supplier in database
   const AddInternalSupplierDetails = async () => {
     if (
       !internalSupplierState?.allocation?.number ||

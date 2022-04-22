@@ -1,5 +1,5 @@
 import { Route, Switch } from "react-router-dom";
-import Projects from "./pages/projects/Projects";
+import Surveys from "./pages/surveys/Surveys";
 // import Dashboard from "./pages/dashboard/Dashboard";
 import Dashboard from "./pages/dashboard-new/Dashboard";
 import Accounts from "./pages/accounts-new/Accounts";
@@ -18,7 +18,6 @@ import Reconciliations from "./pages/reconciliation/Reconciliations";
 import Blaze from "./pages/blaze/Blaze";
 import BaseContextProvider from "./context/BaseContext";
 import CreateNewProjectProvider from "./pages/create-new-project/CreateNewProjectContext";
-import ProjectContextProvider from "./pages/projects/ProjectContext";
 import ProejctSettingProvider from "./pages/project-settings/ProjectSettingContext";
 import BlazeContextProvider from "./pages/blaze/BlazeContext";
 import SurveyQuestions from "./pages/survey-questions/SurveyQuestions";
@@ -52,6 +51,13 @@ import { LiveSurveyLogsContextProvider } from "./pages/live-survey-logs/LiveSurv
 import NewSupplier from "./pages/client_supplier/pages/new-supplier/NewSupplier";
 import NewClient from "./pages/client_supplier/pages/new-client/NewClient";
 import DashboardContextProvider from "./pages/dashboard-new/DashboardContext";
+import QuestionLibrary from "./pages/question-library/QuestionLibrary";
+import QualificationLibraryContextProvider from "./pages/question-library/QuestionLibraryContext";
+import SurveyGroups from "./pages/survey-groups/SurveyGroups";
+import SurveyContextProvider from "./pages/surveys/SurveyContext";
+import ProjectContextProvider from "./pages/surveys/ProjectContext";
+import SupplierOverview from "./pages/analytics/supplier-overview/SupplierOverview";
+import SupplierOverviewContextProvider from "./pages/analytics/supplier-overview/SupplierOverviewContext";
 function App() {
   return (
     <>
@@ -59,14 +65,21 @@ function App() {
         <BaseContextProvider>
           <Route path="/" exact>
             <DashboardContextProvider>
-            <Dashboard />
+              <Dashboard />
             </DashboardContextProvider>
           </Route>
-          <ProjectContextProvider>
-            <Route path="/projects" exact>
-              <Projects />
-            </Route>
-          </ProjectContextProvider>
+
+          <Route path="/survey-groups" exact>
+            <SurveyGroups />
+          </Route>
+
+          <Route path="/:activity" exact>
+            <SurveyContextProvider>
+              <ProjectContextProvider>
+                <Surveys />
+              </ProjectContextProvider>
+            </SurveyContextProvider>
+          </Route>
 
           <Route path="/accounts">
             <Accounts />
@@ -89,42 +102,49 @@ function App() {
             </CreateNewProjectProvider>
           </Route>
 
-          <Route path="/projects/dashboard/:surveyID">
+          <Route path="/surveys/dashboard/:surveyID">
             <SurveyDashboardContextProvider>
               <SurveyDashboard />
             </SurveyDashboardContextProvider>
           </Route>
 
-          <Route path="/projects/settings/:surveyID" exact>
+          <Route path="/surveys/settings/:surveyID" exact>
             <ProejctSettingProvider>
               <NewProjectSettings />
             </ProejctSettingProvider>
           </Route>
 
-          <Route path="/projects/questions/:surveyID" exact>
+          <Route path="/surveys/questions/:surveyID" exact>
             <QualificationContextProvider>
               <Qualifications />
             </QualificationContextProvider>
           </Route>
-          <Route path="/projects/quotas/:surveyID" exact>
+          <Route path="/surveys/quotas/:surveyID" exact>
             <QuotasContextProvider>
               <Quotas />
             </QuotasContextProvider>
           </Route>
-          <Route path="/projects/allocations/:surveyID" exact>
+          <Route path="/surveys/allocations/:surveyID" exact>
             <AllocationContextProvider>
               <Allocations />
             </AllocationContextProvider>
           </Route>
-          <Route path="/projects/reports/:surveyID" exact>
+          <Route path="/surveys/reports/:surveyID" exact>
             <ReportsContextProvider>
               <Reports />
             </ReportsContextProvider>
           </Route>
-          <Route path="/projects/documents/:surveyID" exact>
+          <Route path="/surveys/documents/:surveyID" exact>
             <Documents />
           </Route>
-          <Route path="/projects/security/:surveyID" exact>
+
+          <Route path="/question-library" exact>
+            <QualificationLibraryContextProvider>
+              <QuestionLibrary />
+            </QualificationLibraryContextProvider>
+          </Route>
+
+          <Route path="/surveys/security/:surveyID" exact>
             <Security />
           </Route>
           <Route path="/question-preview/:surveyID/:questionNumber" exact>
@@ -132,14 +152,24 @@ function App() {
               <QuestionPreview />
             </QualificationContextProvider>
           </Route>
-          <Route path="/projects/reconciliations/:surveyID" exact>
+          <Route path="/surveys/reconciliations/:surveyID" exact>
             <ReconciliationContextProvider>
               <Reconciliations />
             </ReconciliationContextProvider>
           </Route>
-          <Route path="/projects/analytics/:navigationTab/:surveyID">
+          <Route path="/surveys/analytics/:navigationTab/:surveyID" exact>
             <AnalyticsContextProvider>
               <Analytics />
+            </AnalyticsContextProvider>
+          </Route>
+          <Route
+            path="/surveys/analytics/supplier-overview/:surveyID/:supplierID"
+            exact
+          >
+            <AnalyticsContextProvider>
+              <SupplierOverviewContextProvider>
+                <SupplierOverview />
+              </SupplierOverviewContextProvider>
             </AnalyticsContextProvider>
           </Route>
 
@@ -216,7 +246,7 @@ function App() {
             </LiveSurveyLogsContextProvider>
           </Route>
 
-          <Route path="/projects/sources/:surveyID" exact>
+          <Route path="/surveys/sources/:surveyID" exact>
             <SourcesContextProvider>
               <Sources />{" "}
             </SourcesContextProvider>

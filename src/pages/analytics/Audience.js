@@ -14,7 +14,6 @@ const Audience = () => {
     statusesCnt,
     suppliers,
   } = useAanalyticsContext();
-
   return (
     <div className={styles.audience_page}>
       <div className={styles.container1}>
@@ -27,19 +26,19 @@ const Audience = () => {
             cardTitle="Users by OS, with version"
             cardSubtitle={["os with version", "users"]}
             data={usersByOs}
-            inClientSessions={statusesCnt?.inClient}
+            inClientSessions={statusesCnt?.hits}
           />
           <AnalyticsUserCountCard
             cardTitle="Users by device types"
             cardSubtitle={["device types", "users"]}
             data={usersByDeviceTypes}
-            inClientSessions={statusesCnt?.inClient}
+            inClientSessions={statusesCnt?.hits}
           />
           <AnalyticsUserCountCard
             cardTitle="Users by device brands"
             cardSubtitle={["device types", "users"]}
             data={usersByDeviceBrands}
-            inClientSessions={statusesCnt?.inClient}
+            inClientSessions={statusesCnt?.hits}
           />
         </div>
       </div>
@@ -51,7 +50,7 @@ const Audience = () => {
             cardTitle="Users by Browsers"
             cardSubtitle={["Browsers", "users"]}
             data={usersByBrowsers}
-            inClientSessions={statusesCnt?.inClient}
+            inClientSessions={statusesCnt?.hits}
           />
         </div>
 
