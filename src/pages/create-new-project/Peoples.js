@@ -108,11 +108,19 @@ const Peoples = () => {
               <label>Client Cost Currency</label>
               <select
                 onChange={(e) => {
+                  let client_cost_currency_symbol;
+                  if (e.target.value === "USD")
+                    client_cost_currency_symbol = "$";
+                  else if (e.target.value === "INR")
+                    client_cost_currency_symbol = "₹";
+                  else if (e.target.value === "EURO")
+                    client_cost_currency_symbol = "€";
                   setSurveyData({
                     ...surveyData,
                     client_info: {
                       ...surveyData?.client_info,
                       client_cost_currency: e.target.value,
+                      client_cost_currency_symbol,
                     },
                   });
                 }}

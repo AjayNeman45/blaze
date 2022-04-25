@@ -73,26 +73,18 @@ function App() {
             <SurveyGroups />
           </Route>
 
-          <Route path="/:activity" exact>
-            <SurveyContextProvider>
-              <ProjectContextProvider>
-                <Surveys />
-              </ProjectContextProvider>
-            </SurveyContextProvider>
-          </Route>
-
-          <Route path="/accounts">
+          <Route path="/accounts" exact>
             <Accounts />
           </Route>
-          <Route path="/contacts">
+          <Route path="/contacts" exact>
             <Contacts />
           </Route>
-          <Route path="/leads">
+          <Route path="/leads" exact>
             <Leads />
           </Route>
 
           {/* Login */}
-          <Route path="/login">
+          <Route path="/login" exact>
             <Login />
           </Route>
 
@@ -259,6 +251,14 @@ function App() {
           </Route>
           <Route path="/new-client">
             <NewClient />
+          </Route>
+
+          <Route path="/:activity" exact>
+            <SurveyContextProvider>
+              <ProjectContextProvider>
+                <Surveys />
+              </ProjectContextProvider>
+            </SurveyContextProvider>
           </Route>
         </BaseContextProvider>
       </Switch>

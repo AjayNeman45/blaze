@@ -88,9 +88,9 @@ function SupplierOverview() {
   const [completsByQuestionResponses, setCompletesByQuestionResponses] =
     useState({});
 
-  // useEffect(() => {
-  //   setSelectedSupplier(supplierID);
-  // }, [supplierID]);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   useEffect(() => {
     getFinancialOverview(
@@ -204,6 +204,13 @@ function SupplierOverview() {
                         {supp?.supplier_account}
                       </option>
                     ))}
+                    {survey?.internal_suppliers?.map((supp) => {
+                      return (
+                        <option value={supp?.supplier_account_id}>
+                          {supp?.supplier_account}
+                        </option>
+                      );
+                    })}
                   </select>
                 </div>
                 <div className={styles.status_conatainer}>
@@ -238,7 +245,7 @@ function SupplierOverview() {
                       {" "}
                       <span style={{ fontWeight: 600 }}>
                         {(statusesCnt?.completed / statusesCnt?.hits).toFixed(
-                          2
+                          0
                         ) * 100}{" "}
                         %
                       </span>{" "}
@@ -252,7 +259,7 @@ function SupplierOverview() {
                         {(
                           (statusesCnt?.completed / inClientSurveySessions) *
                           100
-                        ).toFixed(2)}{" "}
+                        ).toFixed(0)}{" "}
                         %
                       </span>{" "}
                       <span>incidence</span>{" "}
@@ -278,7 +285,7 @@ function SupplierOverview() {
                         {(
                           (statusesCnt?.overQuota / inClientSurveySessions) *
                           100
-                        ).toFixed(2)}{" "}
+                        ).toFixed(0)}{" "}
                         %
                       </span>{" "}
                       <span>overquota</span>{" "}
@@ -332,13 +339,13 @@ function SupplierOverview() {
                     placeholder="Default"
                     style={{ width: 230 }}
                   /> */}
-                    <button className={styles.predicted_btn}>
+                    {/* <button className={styles.predicted_btn}>
                       Last 7 days
-                    </button>
+                    </button> */}
                   </div>
-                  <div>
+                  {/* <div>
                     <button className={styles.predicted_btn}>Prediced</button>
-                  </div>
+                  </div> */}
                   <div>
                     <button className={styles.actual_btn}>Actual</button>
                   </div>
@@ -348,37 +355,44 @@ function SupplierOverview() {
                 <div className={styles.big_card}>
                   <h1 className={styles.title}>Total Rev</h1>
                   <h3 className={styles.count}>
-                    ${financialOverview?.total_rev}
+                    {survey?.client_info?.client_cost_currency_symbol}{" "}
+                    {financialOverview?.total_rev}
                   </h3>
                 </div>
                 <div className={styles.big_card}>
                   <h1 className={styles.title}>Supply Cost</h1>
                   <h3 className={styles.count}>
-                    ${financialOverview?.supply_cost}
+                    {survey?.client_info?.client_cost_currency_symbol}{" "}
+                    {financialOverview?.supply_cost}
                   </h3>
                 </div>
                 <div className={styles.big_card}>
                   <h1 className={styles.title}>Profit</h1>
-                  <h3 className={styles.count}>${financialOverview?.profit}</h3>
+                  <h3 className={styles.count}>
+                    {survey?.client_info?.client_cost_currency_symbol}{" "}
+                    {financialOverview?.profit}
+                  </h3>
                 </div>
               </div>
               <div className={styles.financial_data_container_smallcard}>
                 <div className={styles.small_card}>
                   <p className={styles.title}>Avg Supply CPI</p>
                   <p className={styles.count}>
-                    ${financialOverview?.avg_supply_cpi}
+                    {survey?.client_info?.client_cost_currency_symbol}{" "}
+                    {financialOverview?.avg_supply_cpi}
                   </p>
                 </div>
                 <div className={styles.small_card}>
                   <p className={styles.title}>Avg Client CPI</p>
                   <p className={styles.count}>
-                    ${financialOverview?.avg_client_cpi}
+                    {survey?.client_info?.client_cost_currency_symbol}{" "}
+                    {financialOverview?.avg_client_cpi}
                   </p>
                 </div>
                 <div className={styles.small_card}>
                   <p className={styles.title}>EPC Vendor</p>
                   <p className={styles.count}>
-                    $
+                    {survey?.client_info?.client_cost_currency_symbol}{" "}
                     {(
                       (getAvgCPI(
                         completedSessionOfSupplier,
@@ -403,7 +417,7 @@ function SupplierOverview() {
                 <div className={styles.right_small_cards}>
                   <p className={styles.title}>Avg. CPI</p>
                   <p className={styles.count}>
-                    $
+                    {survey?.client_info?.client_cost_currency_symbol}{" "}
                     {getAvgCPI(
                       completedSessionOfSupplier,
                       statusesCnt?.completed
@@ -467,7 +481,10 @@ function SupplierOverview() {
             <div className={styles.qualification_by_suppliers_cards}>
               {Object.keys(completsByQuestionResponses).map((key) => {
                 return (
-                  <div className={styles.qualification_by_suppliers_card}>
+                  <div
+                    className={styles.qualification_by_suppliers_card}
+                    key={uuid()}
+                  >
                     <AudienceResponseCard
                       cardTitle={`complets by ${key}`}
                       cardSubtitle={[key, "completes"]}

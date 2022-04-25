@@ -73,11 +73,13 @@ const NewProjectSettings = () => {
   const [sData, setSData] = useState();
   const [country, setCountry] = useState("");
   const countries = useMemo(() => countryList().getData(), []);
+  const [collectUserData, setCollectUserData] = useState();
   const [showSaveChangesBtn, setShowChangesBtn] = useState(false);
   const [snackbarData, setSnackbarData] = useState("");
   const [snackbar, setSnackbar] = useState(false);
 
   useEffect(() => {
+    setCollectUserData(surveyData?.collect_user_data);
     setSData(surveyData);
     setCountry({
       label: surveyData?.country?.country_full_name,
@@ -86,17 +88,37 @@ const NewProjectSettings = () => {
   }, [surveyData]);
 
   const handleInputChange = (e, changingEle, prevVal) => {
+    let resp = e.target.value;
+    if (resp === "true") resp = true;
+    else if (resp === "false") resp = false; // ---->>> this is just becoz input type radio giving value in string format
     setShowChangesBtn(true);
     setChanges({
       ...changes,
       [changingEle]: {
-        changed_to: e.target.value,
+        changed_to: resp,
         previous_change: prevVal,
       },
     });
     setSData({
       ...sData,
-      [changingEle]: e.target.value,
+      [changingEle]: resp,
+    });
+  };
+
+  const handleDeviceCompatibilityChange = (changingEle, value) => {
+    setShowChangesBtn(true);
+    setChanges({
+      ...changes,
+      device_suitability: {
+        [changingEle]: value,
+      },
+    });
+    setSData({
+      ...sData,
+      device_suitability: {
+        ...sData?.device_suitability,
+        [changingEle]: value,
+      },
     });
   };
 
@@ -439,9 +461,13 @@ const NewProjectSettings = () => {
               <input
                 type="radio"
                 id="yes"
-                value="yes"
+                defaultValue={true}
                 name="pii_collection"
-                checked={surveyData?.collect_user_data ? true : false}
+                checked={collectUserData ? true : false}
+                onChange={(e) => {
+                  setCollectUserData(true);
+                  handleInputChange(e, "collect_user_data", false);
+                }}
               />
               <label htmlFor="yes">Yes</label>
             </span>
@@ -449,9 +475,13 @@ const NewProjectSettings = () => {
               <input
                 type="radio"
                 id="no"
-                value="no"
+                defaultValue={false}
                 name="pii_collection"
-                checked={!surveyData?.collect_user_data ? true : false}
+                checked={!collectUserData ? true : false}
+                onChange={(e) => {
+                  setCollectUserData(false);
+                  handleInputChange(e, "collect_user_data", true);
+                }}
               />
               <label htmlFor="no">No</label>
             </span>
@@ -470,23 +500,48 @@ const NewProjectSettings = () => {
             <h2>Device Compatibility</h2>
             <div className={styles.device_compatibility_switch}>
               <p> Suitable for Mobile</p>
-              <Switch checked={sData?.device_suitability?.mobile} />
+              <Switch
+                checked={sData?.device_suitability?.mobile}
+                onChange={(e) =>
+                  handleDeviceCompatibilityChange("mobile", e.target.checked)
+                }
+              />
             </div>
             <div className={styles.device_compatibility_switch}>
               <p> Suitable for Desktop/Laptop</p>
-              <Switch checked={sData?.device_suitability?.desktop} />
+              <Switch
+                checked={sData?.device_suitability?.desktop}
+                onChange={(e) =>
+                  handleDeviceCompatibilityChange("dektop", e.target.checked)
+                }
+              />
             </div>
             <div className={styles.device_compatibility_switch}>
               <p> Suitable for Tablets</p>
-              <Switch checked={sData?.device_suitability?.tablet} />
+              <Switch
+                checked={sData?.device_suitability?.tablet}
+                onChange={(e) =>
+                  handleDeviceCompatibilityChange("tablet", e.target.checked)
+                }
+              />
             </div>
             <div className={styles.device_compatibility_switch}>
               <p> Suitable for Smart TV</p>
-              <Switch checked={sData?.device_suitability?.tv} />
+              <Switch
+                checked={sData?.device_suitability?.tv}
+                onChange={(e) =>
+                  handleDeviceCompatibilityChange("tv", e.target.checked)
+                }
+              />
             </div>
             <div className={styles.device_compatibility_switch}>
               <p>Requires Webcam</p>
-              <Switch checked={sData?.device_suitability?.webcam} />
+              <Switch
+                checked={sData?.device_suitability?.webcam}
+                onChange={(e) =>
+                  handleDeviceCompatibilityChange("webcam", e.target.checked)
+                }
+              />
             </div>
           </div>
           {/* ******* createdBy_container */}

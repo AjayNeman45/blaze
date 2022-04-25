@@ -245,7 +245,7 @@ function SurveyInfo() {
 
             <button
               className={styles.get_resports_btn}
-              onClick={() => history.push(`/projects/reports/${surveyID}`)}
+              onClick={() => history.push(`/surveys/reports/${surveyID}`)}
             >
               Get Reports
             </button>

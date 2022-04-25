@@ -118,6 +118,10 @@ function SurveyDashboard() {
       });
   };
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <>
       <SnackbarMsg
@@ -362,29 +366,27 @@ function SurveyDashboard() {
                 <h1 className={styles.title}>Financial Overview</h1>
               </div>
               <div className={styles.right_container}>
-                <div>
-                  {/* <DateRangePicker
-                    appearance="default"
-                    placeholder="Default"
-                    style={{ width: 230 }}
-                  /> */}
-                  <button className={styles.predicted_btn}>Last 7 days</button>
-                </div>
-                <div>
-                  <button
-                    className={styles.predicted_btn}
-                    onClick={() =>
-                      getFinancialOverview(
-                        "predicted",
-                        statusesCnt,
-                        completedSessions,
-                        setFinancialOverview
-                      )
-                    }
-                  >
-                    Predicted
-                  </button>
-                </div>
+                {/* <div>
+									<DateRangePicker
+										appearance='default'
+										placeholder='Default'
+									/>
+								</div> */}
+                {/* <div>
+									<button
+										className={styles.predicted_btn}
+										onClick={() =>
+											getFinancialOverview(
+												"predicted",
+												statusesCnt,
+												completedSessions,
+												setFinancialOverview
+											)
+										}
+									>
+										Predicted
+									</button>
+								</div> */}
                 <div>
                   <button
                     className={styles.actual_btn}
@@ -406,13 +408,14 @@ function SurveyDashboard() {
               <div className={styles.big_card}>
                 <h1 className={styles.title}>Total Rev</h1>
                 <h3 className={styles.count}>
-                  ${financialOverview?.total_rev}
+                  {survey?.client_info?.client_cost_currency_symbol}{" "}
+                  {financialOverview?.total_rev}
                 </h3>
               </div>
               <div className={styles.big_card}>
                 <h1 className={styles.title}>Supply Cost</h1>
                 <h3 className={styles.count}>
-                  $
+                  {survey?.client_info?.client_cost_currency_symbol}{" "}
                   {statusesCnt?.completed *
                     getSupplAvgCPI(completedSessions, statusesCnt?.completed)}
                 </h3>
@@ -420,7 +423,7 @@ function SurveyDashboard() {
               <div className={styles.big_card}>
                 <h1 className={styles.title}>Profit</h1>
                 <h3 className={styles.count}>
-                  $
+                  {survey?.client_info?.client_cost_currency_symbol}{" "}
                   {statusesCnt?.completed *
                     getAvgCPI(completedSessions, statusesCnt?.completed) -
                     statusesCnt?.completed *
@@ -432,19 +435,21 @@ function SurveyDashboard() {
               <div className={styles.small_card}>
                 <p className={styles.title}>Avg Supply CPI</p>
                 <p className={styles.count}>
-                  ${getSupplAvgCPI(completedSessions, statusesCnt?.completed)}
+                  {survey?.client_info?.client_cost_currency_symbol}{" "}
+                  {getSupplAvgCPI(completedSessions, statusesCnt?.completed)}
                 </p>
               </div>
               <div className={styles.small_card}>
                 <p className={styles.title}>Avg Client CPI</p>
                 <p className={styles.count}>
-                  ${getAvgCPI(completedSessions, statusesCnt?.completed)}
+                  {survey?.client_info?.client_cost_currency_symbol}{" "}
+                  {getAvgCPI(completedSessions, statusesCnt?.completed)}
                 </p>
               </div>
               <div className={styles.small_card}>
                 <p className={styles.title}>EPC Vendor</p>
                 <p className={styles.count}>
-                  ${" "}
+                  {survey?.client_info?.client_cost_currency_symbol}{" "}
                   {(
                     (statusesCnt?.completed *
                       getSupplAvgCPI(

@@ -131,10 +131,20 @@ const AllocationContextProvider = ({ children }) => {
       )
         .then((res) => {
           getAllTheInternalSuppliers();
-          handleSnackbar();
+          setOpenSnackbar(true);
+          setSnackbarData({
+            msg: "Internal supplier added successfully...",
+            severity: "success",
+          });
           console.log("Internal supply added in database");
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          setOpenSnackbar(false);
+          setSnackbarData({
+            msg: "Oops! something went wrong",
+            severity: "error",
+          });
+        });
     }
   };
 

@@ -21,16 +21,11 @@ function Card({
   setOpenSnackbar,
   supplier_type,
 }) {
-  // console.log(surveydata);
-  // console.log(data);
   const history = useHistory();
   const [redirectsopenDialog, setRedirectsOpenDialog] = useState(false);
   const [viewLinkopenDialog, setViewLinkOpenDialog] = useState(false);
   const [copyText, setCopyText] = useState({});
 
-  //  const handleCopyText = (e) => {
-  //    setCopyText(e.target.value);
-  //  };
   useEffect(() => {
     setCopyText({
       // live_url: surveydata?.live_url,
@@ -85,6 +80,7 @@ function Card({
       setRedirectsOpenDialog(false);
     });
   }
+
   return (
     <>
       {/* Redirects Dialog box */}
@@ -290,13 +286,12 @@ function Card({
           className={styles.source_btn}
           onClick={() => {
             history.push(
-              `/surveys/analytics/supplier-overview/${surveyid}/${supplier_id}`
+              `/surveys/analytics/supplier-overview/${surveyid}/${data?.supplier_account_id}`
             );
           }}
         >
           View Stats
         </button>
-
         <select className={styles.status_select} value={data?.vendor_status}>
           <option value="active">Active</option>
           <option value="paused">Paused</option>

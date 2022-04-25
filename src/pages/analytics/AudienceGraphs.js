@@ -31,7 +31,7 @@ export const AudienceGraph1 = ({ statusesCnt }) => {
     labels: labels,
     datasets: [
       {
-        label: "First dataset",
+        label: graphTab,
         data: yAxixData,
         fill: false,
         borderColor: "#1765DC",
@@ -121,7 +121,7 @@ export const AudiencesGraph2 = ({ statusesCnt }) => {
     labels: labels,
     datasets: [
       {
-        label: "First dataset",
+        label: graphTab,
         data: yAxixData,
         fill: false,
         borderColor: "#1765DC",
@@ -149,6 +149,8 @@ export const AudiencesGraph2 = ({ statusesCnt }) => {
       },
     },
   };
+
+  console.log(yAxixData);
   return (
     <div className={styles.graph2}>
       <div className={styles.graph1_stats}>

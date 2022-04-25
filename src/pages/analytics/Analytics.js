@@ -16,7 +16,6 @@ const Analytics = () => {
   const { navigationTab, surveyID } = useParams();
   const { setLastPresentTime, survey } = useAanalyticsContext();
 
-  console.log(survey);
   return (
     <>
       <Header />

@@ -254,21 +254,13 @@ const Allocations = () => {
           <div className={styles.top}>
             <p className={styles.title}>Internal Supply Sources</p>
 
-            {internalSuppliers?.length ? (
-              <button
-                className={styles.add_supplier_btn}
-                onClick={handleInternalSupplierModal}
-              >
-                <AiOutlinePlusCircle size={25} /> &nbsp; Add Internal Supply
-              </button>
-            ) : (
-              <button
-                className={styles.add_supplier_btn}
-                onClick={handleInternalSupplierModal}
-              >
-                <AiOutlinePlusCircle size={25} /> &nbsp; Add Internal Supply
-              </button>
-            )}
+            <button
+              className={styles.add_supplier_btn}
+              onClick={handleInternalSupplierModal}
+              disabled={internalSuppliers?.length}
+            >
+              <AiOutlinePlusCircle size={25} /> &nbsp; Add Internal Supply
+            </button>
           </div>
           <div style={{ overflow: "auto" }}>
             <table className={styles.external_supply_sources_table}>

@@ -34,6 +34,7 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import ExternalSupplier from "../../components/miratsExternalSupplier/ExternalSupplier";
 import { useReportsContext } from "./ReportsContext";
+import "chartjs-adapter-moment";
 
 ChartJS.register(
   CategoryScale,
@@ -332,6 +333,14 @@ const RespondantActivity = () => {
 
   const options = {
     responsive: true,
+    // scales: {
+    //   x: {
+    //     type: "time",
+    //     time: {
+    //       unit: "day",
+    //     },
+    //   },
+    // },
     plugins: {
       legend: {
         display: false,
@@ -341,9 +350,6 @@ const RespondantActivity = () => {
       },
     },
   };
-  const Entrants = entrants ? [39, 47, 26, 36, 59, 10, 30] : [];
-  const Prescreens = prescreens ? [50, 50, 50, 60, 30, 70, 40] : [];
-  const Completes = completes ? [40, 30, 10, 80, 40, 65, 67] : [];
 
   const data = {
     labels,

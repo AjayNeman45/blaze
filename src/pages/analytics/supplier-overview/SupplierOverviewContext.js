@@ -25,9 +25,9 @@ const SupplierOverviewContextProvider = ({ children }) => {
   const getStatusesCntAccordingSupplier = (
     allSessions,
     setStatusesCnt,
-    supplier
+    supplier_id
   ) => {
-    const supplierID = parseInt(supplier);
+    const supplierID = parseInt(supplier_id);
     let completed = 0,
       overQuota = 0,
       term = 0,
@@ -84,12 +84,22 @@ const SupplierOverviewContextProvider = ({ children }) => {
   };
 
   useEffect(() => {
+    setSupplierData({});
+    let supplierExist = false;
     survey?.external_suppliers?.map((supp) => {
       if (supp?.supplier_account_id === parseInt(supplierID)) {
         setSupplierData(supp);
+        supplierExist = true;
       }
     });
-  }, [supplierID]);
+    if (!supplierExist) {
+      survey?.internal_suppliers?.map((supp) => {
+        if (supp?.supplier_account_id === parseInt(supplierID)) {
+          setSupplierData(supp);
+        }
+      });
+    }
+  }, [survey, supplierID]);
 
   const value = {
     statusesCnt,

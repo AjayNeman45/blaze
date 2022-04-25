@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import styles from "./supply_overviewbigcard.module.css";
 function SupplyOverViewBigCard({ supp }) {
   const [vendorSessionStatusesCnt, setVendorSessionStatusesCnt] = useState({
@@ -6,12 +8,15 @@ function SupplyOverViewBigCard({ supp }) {
     quotaFull: 0,
   });
 
+  const { surveyID } = useParams();
   const [timeDetails, setTimeDetails] = useState({
     sum_of_completed_time: 0,
     sum_of_terminated_time: 0,
   });
   const [completedSessionsTotalTime, setCompletedSessionsTotalTime] =
     useState(0);
+
+  const history = useHistory();
   useEffect(() => {
     supp?.sessions?.forEach((session) => {
       if (session?.client_status === 40) {
@@ -53,8 +58,17 @@ function SupplyOverViewBigCard({ supp }) {
     });
   }, []);
 
+  console.log(supp);
+
   return (
-    <div className={styles.container}>
+    <div
+      className={styles.container}
+      onClick={() =>
+        history.push(
+          `/surveys/analytics/supplier-overview/${surveyID}/${supp?.supplier?.supplier_account_id}`
+        )
+      }
+    >
       <h1 className={styles.title}>{supp?.supplier?.supplier_account}</h1>
       <h1 className={styles.count}>
         {supp?.completed}/{supp?.supplier?.allocation?.number}

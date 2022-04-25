@@ -302,7 +302,7 @@
 .financial_data_container_bigcard .big_card {
   height: 159px;
   width: auto;
-  border: 1px solid rgba(130, 130, 130, 1);
+  border: 1px solid lightgray;
   border-radius: 21px;
   display: flex;
   align-items: center;
@@ -332,7 +332,7 @@
 .financial_data_container_smallcard .small_card {
   height: 68px;
   width: auto;
-  border: 1px solid rgba(130, 130, 130, 1);
+  border: 1px solid lightgray;
   border-radius: 21px;
   display: flex;
   align-items: center;
@@ -361,7 +361,7 @@
 .right_small_cards {
   min-height: 120px;
   width: auto;
-  border: 1px solid rgba(130, 130, 130, 1);
+  border: 1px solid lightgray;
   border-radius: 21px;
   display: flex;
   align-items: center;

@@ -2,7 +2,6 @@ import React from "react";
 import styles from "./teamcards.module.css";
 import { v4 as uuid } from "uuid";
 const TeamCards = ({ title, co_ordinators }) => {
-  console.log(co_ordinators);
   return (
     <>
       <div className={styles.Teamcard}>
