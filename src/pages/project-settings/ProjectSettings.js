@@ -1,994 +1,709 @@
+import React, { useEffect, useMemo, useState } from "react";
 import Header from "../../components/header/Header";
 import Subheader from "../../components/subheader/Subheader";
-import ToggleSwitch from "../../components/toogleSwitch/ToggleSwitch";
-import { GoSettings } from "react-icons/go";
-import "./ProjectSettings.css";
+import SurveyInfo from "../../components/survey-info/SurveyInfo";
+import styles from "./ProjectSettings.module.css";
+import { useProjectSettingsContext } from "./ProjectSettingContext";
+import { v4 as uuid } from "uuid";
+import { Switch } from "@nextui-org/react";
+import ChangeLogComponent from "./ChangeLog";
+import Select from "react-select";
+import countryList from "react-select-country-list";
 import { useParams } from "react-router-dom/cjs/react-router-dom.min";
-import { useContext, useEffect, useState } from "react";
-import {
-  ProjectSettingContext,
-  useProjectSettingsContext,
-} from "./ProjectSettingContext";
-import Stack from "@mui/material/Stack";
-import Button from "@mui/material/Button";
-import { db } from "../../firebase";
-import { arrayUnion } from "firebase/firestore";
+import { updateSurveyData } from "../../utils/firebaseQueries";
+import SnackbarMsg from "../../components/Snackbar";
+import { statusOptions } from "../../utils/commonData";
+import BuildUrlModal from "./build-url-modal/BuildUrlModal";
 
-const ProjectSettings = () => {
-  const DB = db.collection("mirats").doc("surveys").collection("survey");
+const studyTypeData = [
+  {
+    label: "Adhoc",
+    value: "adhoc",
+  },
+  {
+    label: "Another",
+    value: "another",
+  },
+];
+
+const businessUnitData = [
+  {
+    label: "mirats-api",
+    value: "mirats_api",
+  },
+  {
+    label: "another-api",
+    value: "another_api",
+  },
+];
+
+const industryData = [
+  {
+    label: "others",
+    value: "others",
+  },
+  {
+    label: "another",
+    value: "another",
+  },
+];
+
+const surveyStatusData = statusOptions;
+const surveyInternStatusData = [
+  {
+    label: "Ongoing",
+    value: "ongoing",
+  },
+  {
+    label: "Full Launch",
+    value: "full_launch",
+  },
+];
+const projectCoordinatorsData = [
+  "Mahmood Alam",
+  "Shruit s",
+  "abc abc",
+  "xyz xyx",
+];
+
+const NewProjectSettings = () => {
   const { surveyID } = useParams();
-  const { surveyData, setSurveyData } = useProjectSettingsContext();
-
-  let [sdata, setSData] = useState({});
-  let [changes, setChanges] = useState({});
-  let [displaychanges, setDisplayChanges] = useState([]);
+  const { surveyData, changes, setChanges, clients } =
+    useProjectSettingsContext();
+  const [sData, setSData] = useState();
+  const [country, setCountry] = useState("");
+  const countries = useMemo(() => countryList().getData(), []);
+  const [collectUserData, setCollectUserData] = useState();
+  const [showSaveChangesBtn, setShowChangesBtn] = useState(false);
+  const [snackbarData, setSnackbarData] = useState("");
+  const [snackbar, setSnackbar] = useState(false);
+  const [buildUrlModal, setBuildUrlModal] = useState(false);
 
   useEffect(() => {
+    setCollectUserData(surveyData?.collect_user_data);
     setSData(surveyData);
-    setDisplayChanges(surveyData?.changes);
+    setCountry({
+      label: surveyData?.country?.country_full_name,
+      value: surveyData?.country?.country,
+    });
   }, [surveyData]);
 
-  useEffect(() => {
-    if (Object.keys(changes).length !== 0 && !("updated_date" in changes)) {
-      setChanges({ ...changes, updated_date: new Date() });
-    }
-  }, [changes]);
-
-  function SaveChanges() {
-    DB.where("survey_id", "==", parseInt(surveyID))
-      .get()
-      .then((querysnapshot) => {
-        querysnapshot.forEach((doc) => {
-          doc.ref.set(
-            {
-              ...sdata,
-              changes: arrayUnion(changes),
-            },
-            { merge: true }
-          );
-        });
-      })
-      .then(() => {
-        setChanges({});
-        console.log("Saved to database successfully");
-      });
-  }
-  function CancelChanges() {
-    setChanges({});
-    window.location.reload();
-  }
-
-  const handleDeviceSuitability = (type, value) => {
+  const handleInputChange = (e, changingEle, prevVal) => {
+    let resp = e.target.value;
+    if (resp === "true") resp = true;
+    else if (resp === "false") resp = false; // ---->>> this is just becoz input type radio giving value in string format
+    setShowChangesBtn(true);
     setChanges({
       ...changes,
-      devices_allowed: {
-        changed_to: `${type} - ${value ? "Allowed" : "Not Allowed"}`,
-        previous_change: `${type} - ${!value ? "Allowed" : "Not Allowed"} `,
+      [changingEle]: {
+        changed_to: resp,
+        previous_change: prevVal,
       },
     });
-    switch (type) {
-      case "mobile":
-        return setSData({
-          ...sdata,
-          device_suitability: {
-            ...sdata?.device_suitability,
-            mobile: value,
-          },
-        });
-      case "tablet":
-        return setSData({
-          ...sdata,
-          device_suitability: {
-            ...sdata?.device_suitability,
-            tablet: value,
-          },
-        });
-      case "desktop":
-        return setSData({
-          ...sdata,
-          device_suitability: {
-            ...sdata?.device_suitability,
-            desktop: value,
-          },
-        });
-      case "tv":
-        return setSData({
-          ...sdata,
-          device_suitability: {
-            ...sdata?.device_suitability,
-            tv: value,
-          },
-        });
-      case "webcam":
-        return setSData({
-          ...sdata,
-          device_suitability: {
-            ...sdata?.device_suitability,
-            webcam: value,
-          },
-        });
-    }
+    setSData({
+      ...sData,
+      [changingEle]: resp,
+    });
   };
 
-  console.log(sdata);
+  const handleDeviceCompatibilityChange = (changingEle, value) => {
+    setShowChangesBtn(true);
+    setChanges({
+      ...changes,
+      device_suitability: {
+        [changingEle]: value,
+      },
+    });
+    setSData({
+      ...sData,
+      device_suitability: {
+        ...sData?.device_suitability,
+        [changingEle]: value,
+      },
+    });
+  };
 
-  const handleUrlChange = (type, e) => {
-    switch (type) {
-      case "live_url":
-        setSData(() => {
-          return {
-            ...sdata,
-            live_url: e.target.value,
-          };
+  const handleCancleChangesBtn = () => {
+    setChanges({});
+    setSData(surveyData);
+    setShowChangesBtn(false);
+  };
+
+  const handleSaveChangesBtn = () => {
+    updateSurveyData(surveyID, sData, changes)
+      .then(() => {
+        setSnackbar(true);
+        setSnackbarData({
+          msg: "Project settings changed successfully",
+          severity: "success",
         });
-        setChanges({
-          ...changes,
-          live_url: {
-            changed_to: e.target.value,
-            previous_change: surveyData?.live_url,
-          },
+      })
+      .catch((err) => {
+        setSnackbar(true);
+        console.log(err.message);
+        setSnackbarData({
+          msg: "Oops! somethig went wrong try again later",
+          severity: "error",
         });
-        break;
-      case "test_url":
-        setSData(() => {
-          return {
-            ...sdata,
-            test_url: e.target.value,
-          };
-        });
-        setChanges({
-          ...changes,
-          test_url: {
-            changed_to: e.target.value,
-            previous_change: surveyData?.live_url,
-          },
-        });
-        break;
-    }
+      });
+    setShowChangesBtn(false);
+  };
+  const selectStyle = {
+    menu: (provided, state) => ({
+      ...provided,
+      width: "100%",
+      borderBottom: "1px dotted pink",
+      color: state.selectProps.menuColor,
+      padding: 20,
+    }),
+    control: (styles) => ({
+      ...styles,
+      width: "100%",
+      height: "30px",
+      border: "none",
+      borderRadius: "20px",
+      background: "#eeeeeebf",
+    }),
+    input: (styles) => ({
+      ...styles,
+      height: "30px",
+      width: "100%",
+      textAlign: "center",
+    }),
   };
 
   return (
     <>
+      <BuildUrlModal
+        openModal={buildUrlModal}
+        setOpenModal={setBuildUrlModal}
+      />
+
       <Header />
       <Subheader />
-      {/* style={{display:SaveContainer?"block":"none"}} */}
+      <SurveyInfo />
+      <div className={styles.project_settings_container}>
+        <div className={styles.left}>
+          {/* ***** setup requirements card  */}
+          <div className={styles.setup_requirements_card}>
+            <p className={styles.legend}>Setup Requirements</p>
+            <div className={styles.input_components}>
+              <InputFieldCard
+                title="study type"
+                value="study_type"
+                inputType="select"
+                dropDownData={studyTypeData}
+                selectedData={sData?.study_type}
+                handleInputChange={handleInputChange}
+              />
 
-      <div className="project_name_input_field">
-        <input
-          type="text"
-          value={sdata.project}
-          onChange={(e) => {
-            setChanges({
-              ...changes,
-              project: {
-                changed_to: e.target.value,
-                previous_change: surveyData?.project,
-              },
-            });
-            setSData({
-              ...sdata,
-              project: e.target.value,
-            });
-          }}
-        />
-      </div>
+              <InputFieldCard
+                title="business unit"
+                value="business_unit"
+                inputType="select"
+                dropDownData={businessUnitData}
+                selectedData={sData?.business_unit}
+                handleInputChange={handleInputChange}
+              />
 
-      <div className="project_settings_page">
-        {/* setup requrement card  */}
-        <div className="card">
-          <p className="title">Setup Requirements</p>
-          <div>
-            <label>Study Type</label>
-            <select>
-              <option selected>{sdata.study_type}</option>
-              <option></option>
-              <option></option>
-              <option></option>
-            </select>
-            <small>
-              Study Type specifies what kind of survey you are running, which
-              helps suppliers send the right respondents
-            </small>
-          </div>
-          <div>
-            <label>Buisiness unit</label>
-            <select>
-              <option selected>{sdata.business_unit}</option>
-              <option></option>
-              <option></option>
-            </select>
-            <small>
-              Buisiness unit determines the currency and group within your
-              organization that will be billed for this study
-            </small>
-          </div>
-          <div>
-            <label>Industry</label>
-            <select>
-              <option selected>{sdata.industry}</option>
-              <option></option>
-              <option></option>
-            </select>
-            <small>
-              Industry specifies the genre of survey, which helps suppliers send
-              the right respodents.
-            </small>
-          </div>
-          <div>
-            <label>Country - Language</label>
-            <select>
-              <option selected>{sdata.country_language}</option>
-              <option></option>
-              <option></option>
-            </select>
-            <small>
-              This tells Suppliers where your sample should come from and in
-              what language
-            </small>
-          </div>
-
-          <div>
-            <label>
-              Does your survey collect personal information that can be used to
-              identify am individual?
-            </label>
-            <div className="radio_btns">
-              {sdata?.collect_user_data}
-              <div>
-                <input
-                  type="radio"
-                  id="yes"
-                  name="fav_language"
-                  value="Yes"
-                  checked={sdata?.collect_user_data}
+              <InputFieldCard
+                title="industry"
+                value="industry"
+                inputType="select"
+                dropDownData={industryData}
+                selectedData={sData?.industry}
+                handleInputChange={handleInputChange}
+              />
+              <div className={styles.input_component}>
+                <span>Country</span>
+                <div style={{ marginTop: ".5rem" }}>
+                  <Select
+                    options={countries}
+                    value={country}
+                    styles={selectStyle}
+                    onChange={(e) => {
+                      setCountry(e);
+                      setShowChangesBtn(true);
+                      setChanges({
+                        ...changes,
+                        country_code: {
+                          changed_to: e.value.toUpperCase(),
+                          previous_change: surveyData?.country?.code,
+                        },
+                      });
+                      setSData({
+                        ...sData,
+                        country: {
+                          ...sData.country,
+                          country: e.value.toUpperCase(),
+                          country_full_name: e.label,
+                          code: sData?.country?.language + "-" + e.value,
+                        },
+                      });
+                    }}
+                  />
+                </div>
+              </div>
+              <div className={styles.input_component}>
+                <label>Country - Language</label>
+                <select
+                  value={sData?.country?.language}
                   onChange={(e) => {
+                    setShowChangesBtn(true);
                     setChanges({
                       ...changes,
-                      collect_user_data: {
-                        changed_to: true,
-                        previous_change: surveyData?.collect_user_data,
+                      country_code: {
+                        changed_to: e.target.value,
+                        previous_change: surveyData?.country?.code,
                       },
                     });
                     setSData({
-                      ...sdata,
-                      collect_user_data: true,
+                      ...sData,
+                      country: {
+                        ...sData.country,
+                        code: e.target.value + "-" + sData?.country?.country,
+                        language: e.target.value,
+                      },
                     });
                   }}
-                />
-                <label htmlFor="yes">Yes</label>
+                >
+                  <option value="_">Select the country and Language</option>
+                  <option value="FRA">French</option>
+                  <option value="ENG">English</option>
+                  <option value="GER">German</option>
+                  <option value="JPN">Japanese</option>
+                  <option value="ESP">Spanish</option>
+                </select>
               </div>
-              <div>
-                <input
-                  type="radio"
-                  id="no"
-                  name="fav_language"
-                  value="No"
-                  checked={!sdata?.collect_user_data}
+              <InputFieldCard
+                title="survey status"
+                value="status"
+                inputType="select"
+                dropDownData={surveyStatusData}
+                selectedData={sData?.status}
+                handleInputChange={handleInputChange}
+              />
+              <InputFieldCard
+                title="internal status"
+                value="internal_status"
+                inputType="select"
+                dropDownData={surveyInternStatusData}
+                selectedData={sData?.internal_status}
+                handleInputChange={handleInputChange}
+              />
+              <InputFieldCard
+                title="external survey name"
+                value="external_project_name"
+                inputType="input"
+                defaultVal={sData?.external_survey_name}
+                handleInputChange={handleInputChange}
+              />
+            </div>
+          </div>
+
+          {/* ***** url setup & cost  */}
+          <div className={styles.url_setup_cost_card}>
+            <p className={styles.legend}>URL Setup & Costs</p>
+            <div className={styles.input_components}>
+              {/* <InputFieldCard
+                title="client"
+                inputType="select"
+                dropDownData={clients}
+                selectedData={sData?.client_info?.client_name}
+                handleInputChange={handleInputChange}
+              /> */}
+              <div className={styles.input_component}>
+                <label>client</label>
+                <select
+                  value={sData?.client_info?.client_name}
                   onChange={(e) => {
+                    setShowChangesBtn(true);
                     setChanges({
                       ...changes,
-                      collect_user_data: {
-                        changed_to: false,
-                        previous_change: surveyData?.collect_user_data,
+                      client_name: {
+                        changed_to: e.target.value,
+                        previous_change: surveyData?.client_info?.client_name,
                       },
                     });
                     setSData({
-                      ...sdata,
-                      collect_user_data: false,
+                      ...sData,
+                      client_info: {
+                        ...sData.client_info,
+                        client_name: e.target.value,
+                      },
                     });
                   }}
-                />
-                <label htmlFor="no">No</label>
+                >
+                  {clients?.map((client) => (
+                    <option value={client?.value}>{client.label}</option>
+                  ))}
+                </select>
               </div>
+              <InputFieldCard
+                title="client avg cost"
+                inputType="input"
+                defaultVal={sData?.client_info?.client_cpi}
+              />
+              <InputFieldCard title="supply avg cost" inputType="input" />
+              <InputFieldCard
+                title="client coverage email"
+                inputType="select"
+              />
+              <InputFieldCard
+                title="live url"
+                value="live_url"
+                inputType="input"
+                handleInputChange={handleInputChange}
+                defaultVal={sData?.live_url}
+              />
+              <InputFieldCard
+                title="text url"
+                value="test_url"
+                handleInputChange={handleInputChange}
+                inputType="input"
+                defaultVal={sData?.test_url}
+              />
+            </div>
+          </div>
+
+          {/* ***** expected metrics  */}
+          <div className={styles.expected_metrics_card}>
+            <p className={styles.legend}>Expected Metrics</p>
+            <div className={styles.input_components}>
+              <InputFieldCard
+                title="required N"
+                value="no_of_completes"
+                inputType="input"
+                defaultVal={sData?.no_of_completes}
+                handleInputChange={handleInputChange}
+              />
+              <InputFieldCard
+                title="expected IR"
+                value="expected_incidence_rate"
+                inputType="input"
+                defaultVal={sData?.expected_incidence_rate}
+                handleInputChange={handleInputChange}
+              />
+              <InputFieldCard
+                title="expected loi"
+                value="expected_completion_loi"
+                inputType="input"
+                defaultVal={sData?.expected_completion_loi}
+                handleInputChange={handleInputChange}
+              />
+              <InputFieldCard
+                title="expected end date"
+                value="expected_end_date"
+                inputType="date"
+                defaultVal=""
+                handleInputChange={handleInputChange}
+                defaultVal={sData?.expected_end_date?.toDate()}
+              />
+            </div>
+          </div>
+
+          {/*****  survey basics  */}
+          <div className={styles.survey_basics_card}>
+            <p className={styles.legend}>Survey Basics</p>
+            <div className={styles.input_components}>
+              <InputFieldCard
+                title="survey name"
+                inputType="input"
+                defaultVal={sData?.survey_name}
+              />
+              <InputFieldCard
+                title="expected start date"
+                inputType="date"
+                defaultVal={sData?.expected_start_date?.toDate()}
+              />
+              <InputFieldCard
+                title="insights bid number"
+                inputType="date"
+                defaultVal=""
+              />
+              <InputFieldCard
+                title="survey number"
+                inputType="input"
+                defaultVal={sData?.survey_id}
+              />
+              <InputFieldCard
+                title="project number"
+                inputType="input"
+                defaultVal={sData?.survey_id}
+              />
+              <InputFieldCard
+                title="survey group number"
+                inputType="input"
+                defaultVal={sData?.survey_group}
+              />
+              <InputFieldCard
+                title="PO number"
+                inputType="input"
+                defaultVal={sData?.client_info?.po_number}
+              />
             </div>
           </div>
         </div>
 
-        {/* url setup and cost card  */}
-        <div className="card">
-          <p className="title">URL Setup & Costs</p>
-          <div>
-            <label>Live URL</label>
-            <textarea
-              value={sdata?.live_url}
-              onChange={(e) => handleUrlChange("live_url", e)}
-              className="project_setting_textarea"
-            ></textarea>
-            <small>
-              We use this link to direct respondents to your survey after they
-              complete a prescreener, when applicable. Please enter a valid url,
-              e.g. https://www.now.mirats.in
-            </small>
+        {/******** mirats team and client team card  */}
+        <div className={styles.right}>
+          <TeamCard
+            title="mirats team"
+            projectCoo={projectCoordinatorsData}
+            salesCoo={["Juhi Saini"]}
+            accountManager={["Janhavi R"]}
+          />
+          <TeamCard
+            title="clients team"
+            projectCoo={surveyData?.clients_team?.lead_project_managers}
+            salesCoo={surveyData?.clients_team?.sales_managers}
+            accountManager={surveyData?.clients_team?.account_managers}
+          />
+          {/* ****** PII Collection  */}
+          <div className={styles.personal_info_collection_input}>
+            <h2 className={styles.legend}>PII Collection</h2>
+            <span>
+              <input
+                type="radio"
+                id="yes"
+                defaultValue={true}
+                name="pii_collection"
+                checked={collectUserData ? true : false}
+                onChange={(e) => {
+                  setCollectUserData(true);
+                  handleInputChange(e, "collect_user_data", false);
+                }}
+              />
+              <label htmlFor="yes">Yes</label>
+            </span>
+            <span>
+              <input
+                type="radio"
+                id="no"
+                defaultValue={false}
+                name="pii_collection"
+                checked={!collectUserData ? true : false}
+                onChange={(e) => {
+                  setCollectUserData(false);
+                  handleInputChange(e, "collect_user_data", true);
+                }}
+              />
+              <label htmlFor="no">No</label>
+            </span>
           </div>
-          <div>
-            <label>Test URL</label>
-            <textarea
-              value={sdata?.test_url}
-              className="project_setting_textarea"
-              onChange={(e) => handleUrlChange("test_url", e)}
-            ></textarea>
-            <small>We Use this link when testing your survey.</small>
+          {/* ******* build client url and view redirect buttons  */}
+          <div className={styles.black_btns}>
+            <button
+              className={styles.black_btn}
+              onClick={() => setBuildUrlModal(true)}
+            >
+              Build Client's URL
+            </button>{" "}
+            <br />
+            <button className={styles.black_btn}>
+              View Redirect/Endpoints
+            </button>
           </div>
-          <button className="build_url_btn">
-            <GoSettings /> &nbsp; Build Your URL
-          </button>
-          <div>
-            <label>Client CPI</label>
-            <input
-              placeholder="$USD input in integers"
-              value={sdata?.client_info?.client_cpi}
-              onChange={(e) => {
-                {
-                  setChanges({
-                    ...changes,
-                    client_cpi: {
-                      changed_to: parseInt(e.target.value),
-                      previous_change: surveyData?.client_info?.client_cpi,
-                    },
-                  });
-                  setSData({
-                    ...sdata,
-                    client_info: {
-                      ...sdata?.client_info,
-                      client_cpi: parseInt(e.target.value),
-                    },
-                  });
+
+          {/* ******** device suitability  Collection  */}
+          <div className={styles.device_compatibility_card}>
+            <h2>Device Compatibility</h2>
+            <div className={styles.device_compatibility_switch}>
+              <p> Suitable for Mobile</p>
+              <Switch
+                checked={sData?.device_suitability?.mobile}
+                onChange={(e) =>
+                  handleDeviceCompatibilityChange("mobile", e.target.checked)
                 }
-              }}
-            />
-            <small>Notes the price a client is paying for completes</small>
-          </div>
-          <div>
-            <label>Average Supply CPI</label>
-            <input placeholder="$USD " />
-            <small>
-              Tracks the price for completes. This is average supply costs
-            </small>
-          </div>
-        </div>
-
-        {/* expected metrics and data  */}
-        <div className="card">
-          <p className="title">Expected Metrics & Data</p>
-          <div>
-            <label>Number of completes</label>
-
-            <input
-              type="text"
-              value={sdata.no_of_completes}
-              onChange={(e) => {
-                setChanges({
-                  ...changes,
-                  no_of_completes: {
-                    changed_to: e.target.value,
-                    previous_change: surveyData.no_of_completes,
-                  },
-                });
-                console.log(e.target.value);
-                setSData({
-                  ...sdata,
-                  no_of_completes: e.target.value,
-                });
-              }}
-            />
-
-            <small>
-              Notes the number of survey completely required by the client on
-              this project. Suppliers use this to reference initial estimates
-              for total completes required for a survey
-            </small>
-          </div>
-          <div>
-            <label>Expected incidence Rate</label>
-            <input
-              type="text"
-              placeholder="Excpected LOI"
-              value={sdata.expected_incidence_rate}
-              onChange={(e) => {
-                setChanges({
-                  ...changes,
-                  expected_incidence_rate: {
-                    changed_to: e.target.value,
-                    previous_change: surveyData?.expected_incidence_rate,
-                  },
-                });
-                setSData({
-                  ...sdata,
-                  expected_incidence_rate: e.target.value,
-                });
-              }}
-            />
-            <small>
-              Suppliers use this to determine how to best send to your survey
-              before the in-field incidence Rate is calculated
-            </small>
-          </div>
-          <div>
-            <label>Expected Completion LOI</label>
-            <input
-              type="text"
-              placeholder="Excpected LOI"
-              value={sdata.expected_completion_loi}
-              onChange={(e) => {
-                setChanges({
-                  ...changes,
-                  expected_completion_loi: {
-                    changed_to: e.target.value,
-                    previous_change: surveyData?.expected_completion_loi,
-                  },
-                });
-                setSData({
-                  ...sdata,
-                  expected_completion_loi: e.target.value,
-                });
-              }}
-            />
-            <small>
-              Suppliers use this for initial expenctation of time to complete a
-              survey before the in-field data is available.
-            </small>
-          </div>
-        </div>
-
-        {/* survey basics  */}
-        <div className="card">
-          <p className="title">Survey Basics</p>
-          <div>
-            <label>Survey Current status</label>
-            <select>
-              <option selected>{sdata.status}</option>
-              <option></option>
-            </select>
-            <small>This determines the current state of the survey</small>
-          </div>
-          <div>
-            <label>In-field Date</label>
-            <input
-              placeholder="Start Date"
-              class="textbox-n"
-              type="date"
-              onfocus="(this.type='date')"
-              id="date"
-            />
-            <small>This determines the current state of the survey</small>
-          </div>
-          <div>
-            <label>Expected End Date</label>
-            <input
-              placeholder="out-field Date"
-              class="textbox-n"
-              type="date"
-              onfocus="(this.type='date')"
-              id="date"
-            />
-            <small>The date this project launched in-field</small>
-          </div>
-          <div>
-            <div className="device_suitability">
-              <div className="suitable_for_container">
-                <p>Suitable for Mobile</p>
-                <input
-                  type="radio"
-                  name="mobile"
-                  id="yes"
-                  checked={sdata?.device_suitability?.mobile}
-                  onChange={() => {
-                    handleDeviceSuitability("mobile", true);
-                  }}
-                />{" "}
-                &nbsp;
-                <lable htmlFor="yes">Yes</lable> &nbsp; &nbsp; &nbsp;
-                <input
-                  type="radio"
-                  name="mobile"
-                  id="no"
-                  checked={!sdata?.device_suitability?.mobile}
-                  onChange={() => {
-                    handleDeviceSuitability("mobile", false);
-                  }}
-                />
-                &nbsp;
-                <lable htmlFor="no">No</lable>
-              </div>
-              <div className="suitable_for_container">
-                <p>Suitable for tablet</p>
-                <input
-                  type="radio"
-                  name="tablet"
-                  id="yes"
-                  checked={sdata?.device_suitability?.tablet}
-                  onChange={() => {
-                    handleDeviceSuitability("tablet", true);
-                  }}
-                />
-                &nbsp;
-                <lable htmlFor="yes">Yes</lable> &nbsp; &nbsp; &nbsp;
-                <input
-                  type="radio"
-                  name="tablet"
-                  id="no"
-                  checked={!sdata?.device_suitability?.tablet}
-                  onChange={() => {
-                    handleDeviceSuitability("tablet", false);
-                  }}
-                />{" "}
-                &nbsp;
-                <lable htmlFor="no">No</lable>
-              </div>
-              <div className="suitable_for_container">
-                <p>Suitable for desktops/laptops</p>
-                <input
-                  type="radio"
-                  name="desktop"
-                  id="yes"
-                  checked={sdata?.device_suitability?.desktop}
-                  onChange={() => {
-                    handleDeviceSuitability("desktop", true);
-                  }}
-                />{" "}
-                &nbsp;
-                <lable htmlFor="yes">Yes</lable> &nbsp; &nbsp; &nbsp;
-                <input
-                  type="radio"
-                  name="desktop"
-                  id="no"
-                  checked={!sdata?.device_suitability?.desktop}
-                  onChange={() => {
-                    handleDeviceSuitability("desktop", false);
-                  }}
-                />{" "}
-                &nbsp;
-                <lable htmlFor="no">No</lable>
-              </div>
-              <div className="suitable_for_container">
-                <p>Suitable for TV</p>
-                <input
-                  type="radio"
-                  name="tv"
-                  id="yes"
-                  checked={sdata?.device_suitability?.tv}
-                  onChange={() => {
-                    handleDeviceSuitability("tv", true);
-                  }}
-                />{" "}
-                &nbsp;
-                <lable htmlFor="yes">Yes</lable> &nbsp; &nbsp; &nbsp;
-                <input
-                  type="radio"
-                  name="tv"
-                  id="no"
-                  checked={!sdata?.device_suitability?.tv}
-                  onChange={() => {
-                    handleDeviceSuitability("tv", false);
-                  }}
-                />{" "}
-                &nbsp;
-                <lable htmlFor="no">No</lable>
-              </div>
-              <div className="suitable_for_container">
-                <p>Requires webcam</p>
-                <input
-                  type="radio"
-                  name="webcam"
-                  id="yes"
-                  checked={sdata?.device_suitability?.webcam}
-                  onChange={() => {
-                    handleDeviceSuitability("webcam", true);
-                  }}
-                />{" "}
-                &nbsp;
-                <lable htmlFor="yes">Yes</lable> &nbsp; &nbsp; &nbsp;
-                <input
-                  type="radio"
-                  name="webcam"
-                  id="no"
-                  checked={!sdata?.device_suitability?.webcam}
-                  onChange={() => {
-                    handleDeviceSuitability("webcam", false);
-                  }}
-                />{" "}
-                &nbsp;
-                <lable htmlFor="no">No</lable>
-              </div>
+              />
+            </div>
+            <div className={styles.device_compatibility_switch}>
+              <p> Suitable for Desktop/Laptop</p>
+              <Switch
+                checked={sData?.device_suitability?.desktop}
+                onChange={(e) =>
+                  handleDeviceCompatibilityChange("dektop", e.target.checked)
+                }
+              />
+            </div>
+            <div className={styles.device_compatibility_switch}>
+              <p> Suitable for Tablets</p>
+              <Switch
+                checked={sData?.device_suitability?.tablet}
+                onChange={(e) =>
+                  handleDeviceCompatibilityChange("tablet", e.target.checked)
+                }
+              />
+            </div>
+            <div className={styles.device_compatibility_switch}>
+              <p> Suitable for Smart TV</p>
+              <Switch
+                checked={sData?.device_suitability?.tv}
+                onChange={(e) =>
+                  handleDeviceCompatibilityChange("tv", e.target.checked)
+                }
+              />
+            </div>
+            <div className={styles.device_compatibility_switch}>
+              <p>Requires Webcam</p>
+              <Switch
+                checked={sData?.device_suitability?.webcam}
+                onChange={(e) =>
+                  handleDeviceCompatibilityChange("webcam", e.target.checked)
+                }
+              />
             </div>
           </div>
-        </div>
-
-        {/* Peoples and Refs */}
-        <div className="card">
-          <p className="title">People's & Refs'</p>
-
-          <div>
-            <label>Account Executive / Sales Coordinator</label>
-            <select>
-              <option selected>{sdata.account_executive}</option>
-            </select>
-            <small>
-              Manages owenership of the survey for reporting and communication
-            </small>
-          </div>
-          <div>
-            <label>Lead Project Manager</label>
-            <select>
-              <option selected>{sdata.project_manager}</option>
-            </select>
-            <small>
-              Manages the field of the survey for reporting and communication
-            </small>
-          </div>
-          <div>
-            <label>Alternative Project Manager</label>
-            <select>
-              <option selected>{sdata.alternate_project_manager}</option>
-            </select>
-            <small>
-              Manages the field of the survey for reporting and communication
-            </small>
-          </div>
-          <div>
-            <label>Created by</label>
-            <input
-              type="text"
-              placeholder="Created by"
-              value={sdata?.created_by}
-              onChange={(e) => {
-                setChanges({
-                  ...changes,
-                  created_by: {
-                    changed_to: e.target.value,
-                    previous_change: surveyData?.created_by
-                      ? surveyData?.created_by
-                      : null,
-                  },
-                });
-                setSData({
-                  ...sdata,
-                  created_by: e.target.value,
-                });
-              }}
-            />
-            <small>The person who created the survey in this project</small>
-          </div>
-          <div>
-            <label>Contact Email</label>
-            <input
-              type="email"
-              placeholder="Contact Email"
-              value={sdata?.contact_email}
-              onChange={(e) => {
-                setChanges({
-                  ...changes,
-                  contact_email: {
-                    changed_to: e.target.value,
-                    previous_change: surveyData?.contact_email
-                      ? surveyData?.contact_email
-                      : null,
-                  },
-                });
-                setSData({
-                  ...sdata,
-                  contact_email: e.target.value,
-                });
-              }}
-            />
-            <small>The person who created the survey in this project</small>
-          </div>
-          <div>
-            <label>PO Number</label>
-            <input
-              type="text"
-              placeholder="PO Number"
-              value={sdata?.po_number}
-              onChange={(e) => {
-                setChanges({
-                  ...changes,
-                  po_number: {
-                    changed_to: e.target.value,
-                    previous_change: surveyData?.po_number
-                      ? surveyData?.po_number
-                      : null,
-                  },
-                });
-                setSData({
-                  ...sdata,
-                  po_number: e.target.value,
-                });
-              }}
-            />
-            <small>The date this project launched in-field</small>
-          </div>
-        </div>
-
-        {/* project setting  */}
-        <div className="card">
-          <p className="title">Project Settings</p>
-
-          <div>
-            <label>External Name</label>
-            <input
-              type="text"
-              placeholder="Other name of Project"
-              value={sdata?.external_name}
-              onChange={(e) => {
-                setChanges({
-                  ...changes,
-                  external_project_name: {
-                    changed_to: e.target.value,
-                    previous_change: surveyData?.external_project_name,
-                  },
-                });
-                setSData({
-                  ...sdata,
-                  external_project_name: e.target.value,
-                });
-              }}
-            />
-          </div>
-          <div>
-            <label>Project ID</label>
-            <input
-              type="text"
-              disabled
-              placeholder="Project ID"
-              value={sdata.project_id}
-            />
-          </div>
-          <div>
-            <label>Survey Group</label>
-            <input
-              type="text"
-              placeholder="Group Number"
-              value={sdata.survey_group}
-              onChange={(e) => {
-                setChanges({
-                  ...changes,
-                  survey_group: {
-                    changed_to: e.target.value,
-                    previous_change: surveyData?.survey_group
-                      ? surveyData?.survey_group
-                      : null,
-                  },
-                });
-                setSData({
-                  ...sdata,
-                  survey_group: e.target.value,
-                });
-              }}
-            />
-          </div>
-          <div>
-            <label>Client PM Email</label>
-            <input
-              type="text"
-              placeholder="Client's PM email"
-              value={sdata?.client_pm_email}
-              onChange={(e) => {
-                setChanges({
-                  ...changes,
-                  client_pm_email: {
-                    changed_to: e.target.value,
-                    previous_change: surveyData?.client_info?.client_pm_email,
-                  },
-                });
-                setSData({
-                  ...sdata,
-                  client_info: {
-                    ...sdata?.client_info,
-                    client_pm_email: e.target.value,
-                  },
-                });
-              }}
-            />
-          </div>
-          <div>
-            <label>Client Project Manager</label>
-            <input
-              type="text"
-              placeholder="Client's Project Manager"
-              value={sdata?.client_project_manager}
-              onChange={(e) => {
-                setChanges({
-                  ...changes,
-                  client_project_manager: {
-                    changed_to: e.target.value,
-                    previous_change:
-                      surveyData?.client_info?.client_project_manager,
-                  },
-                });
-                setSData({
-                  ...sdata,
-                  client_info: {
-                    ...sdata?.client_info,
-                    client_project_manager: e.target.value,
-                  },
-                });
-              }}
-            />
-          </div>
-        </div>
-
-        {/* save and cancle button  */}
-        <div
-          className="savediscardContainer"
-          style={{
-            display: Object.keys(changes).length === 0 ? "none" : "flex",
-          }}
-        >
-          <Button variant="contained" onClick={SaveChanges}>
-            Save
-          </Button>
-          <Button variant="contained" id="cancle_btn" onClick={CancelChanges}>
-            Cancel
-          </Button>
-        </div>
-
-        {/* change log  */}
-        {/* <div className="change_log">
-          <p className="change_log_title">Change log</p>
-          <
-		  p className="change_log_instruction">
-            Review Changes to your survey configurations. See who made changes
-            and when
-          </>
-          <div style={{ overflowX: "auto" }}>
-            <table className="change_log_table" border="1">
-              <thead>
-                <tr>
-                  <th>Time @ Date</th>
-                  <th>Profile Name</th>
-                  <th>Profile Email</th>
-                  <th colSpan={3}>Changes</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th></th>
-                  <th></th>
-                  <th></th>
-
-                  <th>Change log</th>
-                  <th>previous change</th>
-                  <th>current change</th>
-                </tr>
-
-                {displaychanges?.map((change, index) => {
-                  //   console.log(change);
-
-                  return (
-                    <tr>
-                      <td>{change?.updated_date?.toDate()?.toString()}</td>
-                      <td>Profile Name </td>
-                      <td>Profile email</td>
-                      {Object.keys(change).map((oneKey, i) => {
-                        console.log(oneKey);
-                        if (oneKey != "updated_date") {
-                          return (
-                            <>
-                              <td>{oneKey}</td>
-                              <td>{change[oneKey]?.previous_change}</td>
-                              <td>{change[oneKey]?.changed_to}</td>
-                            </>
-                          );
-                        }
-                      })}
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        </div> */}
-
-        <div className="change_log">
-          <p className="change_log_title">Change log</p>
-          <p className="change_log_instruction">
-            Review Changes to your survey configurations. See who made changes
-            and when
-          </p>
-          <div style={{ overflowX: "auto" }}>
-            <table className="change_log_table" border="1">
-              <thead>
-                <tr>
-                  <th>Time @ Date</th>
-                  <th>Profile Name</th>
-                  <th>Profile Email</th>
-                  <th>Changes</th>
-                  {/* <th>Removed</th>
-                  <th>Changed to</th>  */}
-                </tr>
-              </thead>
-              <tbody>
-                {displaychanges?.map((change) => {
-                  return (
-                    <tr>
-                      {/* <td>{change?.updated_date.toDate()}</td> */}
-                      <td>{change?.updated_date.toDate().toString()}</td>
-                      <td>Profile Name </td>
-                      <td>Profile email</td>
-                      <td>
-                        <th>Changed Elements/Fields</th>
-                        <th>Removed</th>
-                        <th>Changed to</th>
-                        {Object.keys(change).map((oneKey, i) => {
-                          if (oneKey != "updated_date") {
-                            console.log(change[oneKey], "change is ");
-                            return (
-                              <>
-                                {/* <table> */}
-
-                                <tr>
-                                  <td>{oneKey}</td>
-                                  <td>{change[oneKey]?.previous_change}</td>
-                                  <td>{change[oneKey]?.changed_to}</td>
-                                </tr>
-                                {/* </table> */}
-                              </>
-                            );
-                          }
-                        })}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+          {/* ******* createdBy_container */}
+          <div className={styles.createdBy_container}>
+            <h2>Created By</h2>
+            <p>Ayaan Ali</p>
+            <p>Head of Global Sales</p>
+            <a href="http://"> ayaan.ali@miratsinsights.com</a>
+            <span>Created on 12/03/2022 2:00 AM</span>
           </div>
         </div>
       </div>
+
+      {/******** changes save and cancel button  */}
+      {showSaveChangesBtn ? (
+        <div className={styles.save_and_cancel_btn}>
+          <button className={styles.save_btn} onClick={handleSaveChangesBtn}>
+            Save
+          </button>
+          <button
+            className={styles.cancel_btn}
+            onClick={handleCancleChangesBtn}
+          >
+            Cancel
+          </button>
+        </div>
+      ) : null}
+
+      <ChangeLogComponent />
+
+      {/* snackbar  */}
+      <SnackbarMsg
+        msg={snackbarData?.msg}
+        severity={snackbarData?.severity}
+        open={snackbar}
+        handleClose={() => setSnackbar(false)}
+      />
     </>
   );
 };
 
-export default ProjectSettings;
+const InputFieldCard = ({
+  title,
+  value,
+  inputType,
+  dropDownData,
+  selectedData,
+  defaultVal,
+  handleInputChange,
+}) => {
+  const [prevVal, setPrevVal] = useState();
+  useEffect(() => {
+    setPrevVal(defaultVal ? defaultVal : selectedData);
+  }, [defaultVal, selectedData]);
 
-const handleProjectSettingChanges = (
-  setChanges,
-  changes,
-  setSData,
-  sdata,
-  e
-) => {
-  setChanges({
-    ...changes,
-    survey_group: {
-      changed_to: e.target.value,
-      previous_change: JSON.parse(localStorage.getItem("survey_data"))[
-        "survey_group"
-      ],
-    },
-  });
-  setSData({
-    ...sdata,
-    survey_group: e.target.value,
-  });
+  let mydate = new Date(defaultVal);
+  mydate =
+    mydate.getFullYear() +
+    "-" +
+    ("0" + (mydate.getMonth() + 1)).slice(-2) +
+    "-" +
+    ("0" + mydate.getDate()).slice(-2);
+
+  return (
+    <div className={styles.input_component}>
+      <span>{title}</span>
+      {(() => {
+        switch (inputType) {
+          case "select":
+            return (
+              <select onChange={(e) => handleInputChange(e, value, prevVal)}>
+                {dropDownData?.map((data) => (
+                  <option
+                    selected={data?.value === selectedData}
+                    key={uuid()}
+                    value={data?.value}
+                  >
+                    {data.label}
+                  </option>
+                ))}
+              </select>
+            );
+          case "input":
+            return (
+              <input
+                type="text"
+                value={defaultVal}
+                onChange={(e) => handleInputChange(e, value, prevVal)}
+              />
+            );
+          case "date":
+            return <input type="date" value={mydate} />;
+        }
+      })()}
+    </div>
+  );
 };
 
-{
-  /* <tbody> */
-}
-{
-  /* {displaychanges?.map((change, indx) => {
+const TeamCard = ({ title, projectCoo, salesCoo, accountManager }) => {
   return (
-	<tr>
-	  <td>{change?.updated_date.toDate()}</td>
-	  <td>{change?.updated_date.toDate().toLocaleString()}</td>
-	  <td>Profile Name </td>
-	  <td>Profile email</td>
-	  {Object.keys(change).map((oneKey, i) => {
-		if (oneKey != "updated_date") {
-		  return (
-			<>
-
-			  <td>{oneKey}</td>
-			  <td>{change[oneKey]?.previous_change}</td>
-			  <td>{change[oneKey]?.changed_to}</td>
-			
-			</>
-		  );
-		}
-	  })}
-	</tr>
+    <div className={styles.Teamcard}>
+      <h1>{title}</h1>
+      <div className={styles.sub_container}>
+        <h2>Project Coordinators</h2>
+        <select>
+          {projectCoo?.map((coordinator) => (
+            <option key={uuid()}>{coordinator}</option>
+          ))}
+        </select>
+        <select>
+          {projectCoo?.map((coordinator) => (
+            <option key={uuid()}>{coordinator}</option>
+          ))}
+        </select>
+      </div>
+      <div className={styles.sub_container}>
+        <h2>Sales Coordinator</h2>
+        <select>
+          {salesCoo?.map((coordinator) => (
+            <option key={uuid()}>{coordinator}</option>
+          ))}
+        </select>
+      </div>
+      <div className={styles.sub_container}>
+        <h2>Account Manager</h2>
+        <select>
+          {accountManager?.map((accManager) => (
+            <option key={uuid()}>{accManager}</option>
+          ))}
+        </select>
+      </div>
+    </div>
+    // <div className={styles.Teamcard}>
+    // 	<h1>{title}</h1>
+    // 	<div>
+    // 		{co_ordinators?.map(value => {
+    // 			return (
+    // 				<>
+    // 					<h2>{value.title}</h2>
+    // 					<div className={styles.subMenuBtn}>
+    // 						<select>
+    // 							{value.members.map(member => {
+    // 								return <option>{member}</option>
+    // 							})}
+    // 						</select>
+    // 					</div>
+    // 				</>
+    // 			)
+    // 		})}
+    // 	</div>
+    // </div>
   );
-})}
-</tbody> */
-}
+};
+
+export default NewProjectSettings;

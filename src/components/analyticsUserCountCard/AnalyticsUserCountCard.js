@@ -15,14 +15,14 @@ function AnalyticsUserCountCard({
   return (
     <div className={styles.UserAnalytics_container}>
       <div className={styles.legend}>
-        <h1 className={styles.cardTitle}>{cardTitle}</h1>
+        <p className={styles.cardTitle}>{cardTitle}</p>
         {last30MinutesCard && (
-          <h3>
+          <p className={styles.time}>
             users in last{"   "}
             {lastPresentTime === "30"
               ? `${lastPresentTime} minutes`
               : ` ${parseInt(lastPresentTime) / 60}  hrs`}
-          </h3>
+          </p>
         )}
       </div>
       <div className={styles.UserAnalytics_header}>

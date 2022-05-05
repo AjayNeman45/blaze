@@ -1,6 +1,6 @@
 import Header from "../../components/header/Header";
 import styles from "./Dashboard.module.css";
-// import Chart from "chart.js";
+import { Chart } from "chart.js";
 import { Line } from "react-chartjs-2";
 import ProjectServiceCard from "./components/projectDashboardCard/ProjectServiceCard";
 import AnalyticsUserCountCard from "../../components/analyticsUserCountCard/AnalyticsUserCountCard";
@@ -10,6 +10,7 @@ import { useContext } from "react";
 import { DateRangePicker } from "rsuite";
 import "rsuite/dist/rsuite.min.css";
 import { addDays, subDays } from "date-fns";
+import { v4 as uuid } from "uuid";
 // Chart.register(...registerables);
 
 const data = {
@@ -78,98 +79,6 @@ const state = {
   ],
 };
 
-// const rescentProjects = [
-//   {
-//     name: "Something",
-//     owner: "Someone",
-//     startDate: "10/01/2022",
-//     endDate: "10/01/2022",
-//     status: "completed",
-//   },
-//   {
-//     name: "Something",
-//     owner: "Someone",
-//     startDate: "10/01/2022",
-//     endDate: "10/01/2022",
-//     status: "completed",
-//   },
-//   {
-//     name: "Something",
-//     owner: "Someone",
-//     startDate: "10/01/2022",
-//     endDate: "10/01/2022",
-//     status: "completed",
-//   },
-//   {
-//     name: "Something",
-//     owner: "Someone",
-//     startDate: "10/01/2022",
-//     endDate: "10/01/2022",
-//     status: "completed",
-//   },
-//   {
-//     name: "Something",
-//     owner: "Someone",
-//     startDate: "10/01/2022",
-//     endDate: "10/01/2022",
-//     status: "completed",
-//   },
-// ];
-
-// const contacts = [
-//   {
-//     name: "something",
-//     email: "something@gmail.com",
-//     phoneNumber: "9273947390",
-//   },
-//   {
-//     name: "something",
-//     email: "something@gmail.com",
-//     phoneNumber: "9273947390",
-//   },
-//   {
-//     name: "something",
-//     email: "something@gmail.com",
-//     phoneNumber: "9273947390",
-//   },
-//   {
-//     name: "something",
-//     email: "something@gmail.com",
-//     phoneNumber: "9273947390",
-//   },
-//   {
-//     name: "something",
-//     email: "something@gmail.com",
-//     phoneNumber: "9273947390",
-//   },
-// ];
-
-// const cardData = [
-//   {
-//     attribute: "Length Of Interview",
-//     value: "15 minutes",
-//   },
-//   {
-//     attribute: "Increases Rate",
-//     value: "38%",
-//   },
-//   {
-//     attribute: "Sample Size",
-//     value: "150 N",
-//   },
-//   {
-//     attribute: "Cost Per Interview",
-//     value: "7 USD",
-//   },
-//   {
-//     attribute: "Status of the survey",
-//     value: "Active",
-//   },
-//   {
-//     attribute: "In-field LOI",
-//     value: "NaN minutes",
-//   },
-// ];
 const Dashboard = () => {
   let { allSurveys, FetchTodaySurveyCreated, basicStats } =
     useContext(DashboardContext);
@@ -216,7 +125,7 @@ const Dashboard = () => {
             <div className={styles.big_bar_container}>
               {big_bar_status?.map(({ name, value, count }) => {
                 return (
-                  <div className={styles.b_bar}>
+                  <div className={styles.b_bar} key={uuid()}>
                     <p className={styles.b_title}>{name}</p>
                     <p className={styles.b_count}>
                       {/* {statusesCnt?.[value] ? statusesCnt?.[value] : "-"} */}{" "}
@@ -352,7 +261,7 @@ const Dashboard = () => {
               </div> */}
             </div>
             <div className={styles.graph}>
-              <Line data={data} options={options} />
+              {/* <Line data={data} options={options} /> */}
             </div>
           </div>
         </div>

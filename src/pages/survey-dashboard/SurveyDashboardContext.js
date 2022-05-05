@@ -26,9 +26,7 @@ const SurveyDashboardContextProvider = ({ children }) => {
   const [completedSessions, setCompletedSessions] = useState([]);
   const [finacialRev, setFinancialRev] = useState({});
   const [inClientSurveySessions, setInClientSurveySessions] = useState(0);
-  const handleSnackbar = () => {
-    setSnackbar(!snackbar);
-  };
+
   useEffect(() => {
     getSurvey(surveyID)
       .then((data) => {
@@ -134,7 +132,7 @@ const SurveyDashboardContextProvider = ({ children }) => {
           msg: "survey name is updated",
           severity: "success",
         });
-        handleSnackbar();
+        setSnackbar(true);
         setNewSurveyName(changedSurveyName);
       })
       .catch((err) =>
@@ -159,7 +157,7 @@ const SurveyDashboardContextProvider = ({ children }) => {
     snackbarData,
     setSnackbarData,
     snackbar,
-    handleSnackbar,
+    setSnackbar,
     completedSessions,
     inClientSurveySessions,
   };
@@ -175,7 +173,7 @@ export const getAvgLOI = (completedSessions, total) => {
   completedSessions?.forEach((session) => {
     sum += parseInt(session?.total_survey_time.split(":")[1]);
   });
-  return sum / total;
+  return (sum / total).toFixed(0);
 };
 
 export const getAvgCPI = (completedSessions, total) => {

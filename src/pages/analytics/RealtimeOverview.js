@@ -48,25 +48,6 @@ const RealtimeOverview = () => {
           setInClientAcLast30Minutes((prevData) => prevData + 1);
         }
       }
-
-      const handleUsersByGender = (gender) => {
-        setUsersByGender((prevData) => {
-          return {
-            ...prevData,
-            [gender]: prevData?.[gender] + 1,
-          };
-        });
-      };
-
-      if (session.data()?.client_status === 10) {
-        if (session.data()?.responses[1]?.user_response === 0) {
-          handleUsersByGender("Male");
-        } else if (session.data()?.responses[1]?.user_response === 1) {
-          handleUsersByGender("Female");
-        } else {
-          handleUsersByGender("Other");
-        }
-      }
     });
   }, [allSessions, lastPresentTime]);
 
@@ -97,10 +78,10 @@ const RealtimeOverview = () => {
         });
       });
       // condition for calculating the suppliers by completes
-      allSessions?.forEach((session) => {
+      lastTimeSessions?.forEach((session) => {
         if (
-          supp?.supplier_account_id === session.data()?.supplier_account_id &&
-          session.data()?.client_status === 10
+          supp?.supplier_account_id === session?.supplier_account_id &&
+          session?.client_status === 10
         ) {
           setUsersByCompletesSuppliersData((prevData) => {
             return {
@@ -113,8 +94,8 @@ const RealtimeOverview = () => {
           });
         }
         if (
-          supp?.supplier_account_id === session.data()?.supplier_account_id &&
-          session.data()?.mirats_status === 3
+          supp?.supplier_account_id === session?.supplier_account_id &&
+          session?.mirats_status === 3
         ) {
           setInClientAcSupplier((prevData) => {
             return {
@@ -165,6 +146,26 @@ const RealtimeOverview = () => {
             mobile: prevData?.mobile + 1,
           };
         });
+      }
+
+      //for gender by completes card
+      const handleUsersByGender = (gender) => {
+        setUsersByGender((prevData) => {
+          return {
+            ...prevData,
+            [gender]: prevData?.[gender] + 1,
+          };
+        });
+      };
+      //for gender by completes card
+      if (session?.client_status === 10) {
+        if (session?.responses[1]?.user_response === 0) {
+          handleUsersByGender("Male");
+        } else if (session?.responses[1]?.user_response === 1) {
+          handleUsersByGender("Female");
+        } else {
+          handleUsersByGender("Other");
+        }
       }
     });
   }, [lastTimeSessions, survey, allSessions]);
@@ -218,6 +219,8 @@ const RealtimeOverview = () => {
                 cardTitle="gender by completes"
                 cardSubtitle={["suppliers", "completes"]}
                 data={usersByGender}
+                last30MinutesCard={true}
+                lastPresentTime={lastPresentTime}
                 inClientSessions={statusesCnt?.inClient}
               />
             </div>
@@ -226,6 +229,8 @@ const RealtimeOverview = () => {
                 cardTitle="completes by suppliers"
                 cardSubtitle={["suppliers", "users"]}
                 data={usersByCompletesSuppliersData}
+                last30MinutesCard={true}
+                lastPresentTime={lastPresentTime}
                 inClientSessions={inClientAcSupplier}
               />
             </div>

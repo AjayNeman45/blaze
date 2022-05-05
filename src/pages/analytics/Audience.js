@@ -1,6 +1,5 @@
 import React from "react";
 import styles from "./Analytics.module.css";
-
 import AnalyticsUserCountCard from "../../components/analyticsUserCountCard/AnalyticsUserCountCard";
 import { AudienceGraph1, AudiencesGraph2 } from "./AudienceGraphs";
 import { useAanalyticsContext } from "./AnalyticsContext";

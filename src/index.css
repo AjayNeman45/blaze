@@ -1,19 +1,21 @@
 body {
-	margin: 0;
-	font-family: Google Sans, Roboto, Arial, sans-serif;
+  margin: 0;
+  font-family: Google Sans, Roboto, Arial, sans-serif;
 
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-	overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 :root {
-	--btn-back: rgb(35, 104, 194);
+  --btn-back: rgb(35, 104, 194);
 }
 .required_tag {
-	background-color: red;
-	color: white;
-	padding: 0 7px;
-	font-size: 14px;
-	text-transform: uppercase;
+  background-color: red;
+  color: white;
+  padding: 0 7px;
+  font-size: 14px;
+  text-transform: uppercase;
 }
-
+.required {
+  color: red;
+}

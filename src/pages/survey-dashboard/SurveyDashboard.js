@@ -20,10 +20,14 @@ import {
 } from "./SurveyDashboardContext";
 import SnackbarMsg from "../../components/Snackbar";
 import { getAvgLOI } from "./SurveyDashboardContext";
-import { statusOptions } from "../../utils/commonData";
+import {
+  mainStatusWithInternalStatuses,
+  statusOptions,
+} from "../../utils/commonData";
 import { useParams } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 import { updateSurvey } from "../../utils/firebaseQueries";
+import ChangeInternalStatusModal from "../../components/survey-info/ChangeInternalStatusModal";
 
 const big_bar_status = [
   {
@@ -60,7 +64,7 @@ function SurveyDashboard() {
     snackbarData,
     setSnackbarData,
     snackbar,
-    handleSnackbar,
+    setSnackbar,
     completedSessions,
     inClientSurveySessions,
   } = useSurveyDashboardContext();
@@ -70,6 +74,9 @@ function SurveyDashboard() {
   const { surveyID } = useParams();
   const history = useHistory();
   const [surveyStatus, setSurveyStatus] = useState();
+  const [internalStatusChangeModal, setInternalStatusChangeModal] =
+    useState(false);
+
   useEffect(() => {
     getFinancialOverview(
       "actual",
@@ -81,35 +88,68 @@ function SurveyDashboard() {
 
   useEffect(() => {
     setSurveyStatus(survey?.status);
-    if (survey?.status?.toLowerCase() === "bidding") {
-      setBatti(1);
-    } else if (survey?.status?.toLowerCase() === "testing") {
-      setBatti(2);
-    } else if (survey?.status?.toLowerCase() === "live") {
-      setBatti(3);
-    } else if (
-      survey?.status?.toLowerCase() === "complete_with_reconciliation"
-    ) {
-      setBatti(4);
-    } else if (survey?.status?.toLowerCase() === "billed") {
-      setBatti(5);
-    }
+
+    handleActiveLight(survey?.status, survey?.internal_status);
   }, [survey]);
 
-  // ---->>> updates the status of the survey
-  const handleStatusChange = (e) => {
-    setSurveyStatus(e.target.value);
-    updateSurvey(surveyID, { status: e.target.value })
+  const handleActiveLight = (mainStatus, internalStatus) => {
+    console.log(mainStatus, internalStatus);
+    if (mainStatus?.toLowerCase() === "bidding") {
+      setBatti(1);
+    } else if (mainStatus?.toLowerCase() === "awarded") {
+      setBatti(2);
+      console.log("awarded choose");
+    } else if (mainStatus?.toLowerCase() === "live") {
+      if (internalStatus.toLowerCase() === "soft_launch") setBatti(3);
+      else if (internalStatus.toLowerCase() === "full_launch") setBatti(4);
+    } else if (mainStatus?.toLowerCase() === "complete") {
+      console.log("completed status hit");
+      setBatti(5);
+    } else if (mainStatus?.toLowerCase() === "billed") {
+      console.log("billed status hit");
+      setBatti(6);
+    } else {
+      setBatti();
+    }
+  };
+
+  const handleConfirmButton = (internalStatus) => {
+    updateSurvey(surveyID, {
+      status: surveyStatus,
+      internal_status: internalStatus,
+    })
       .then(() => {
-        handleSnackbar(true);
+        setSnackbar(true);
+        setSnackbarData({
+          msg: "survey status and internal status updated successfully.",
+          severity: "success",
+        });
+        handleActiveLight(surveyStatus, internalStatus);
+      })
+      .catch((err) => {
+        {
+          setSnackbar(true);
+          setSnackbarData({
+            msg: "Oops! something went wrong",
+            severity: "error",
+          });
+        }
+      });
+  };
+
+  // ---->>> updates the status of the survey
+  const handleStatusChange = (changedStatus) => {
+    updateSurvey(surveyID, { status: changedStatus, internal_status: "" })
+      .then(() => {
+        setSnackbar(true);
         setSnackbarData({
           msg: "survey status updated successfully...",
           severity: "success",
         });
-        console.log("status updated...!");
+        handleActiveLight(changedStatus, "");
       })
       .catch((err) => {
-        handleSnackbar(true);
+        setSnackbar(true);
         setSnackbarData({
           msg: "Oops! something went wrong",
           severity: "error",
@@ -124,9 +164,16 @@ function SurveyDashboard() {
 
   return (
     <>
+      <ChangeInternalStatusModal
+        openModal={internalStatusChangeModal}
+        setOpenModal={setInternalStatusChangeModal}
+        mainStatus={surveyStatus}
+        handleConfirmButton={handleConfirmButton}
+      />
       <SnackbarMsg
         msg={snackbarData?.msg}
         open={snackbar}
+        setSnackbar={setSnackbar}
         severity={snackbarData.severity}
       />
 
@@ -142,7 +189,19 @@ function SurveyDashboard() {
                 <p onClick={() => setSurveyNameEditModal(true)}>edit</p>
               </div>
               <div className={styles.status_conatainer}>
-                <select value={surveyStatus} onChange={handleStatusChange}>
+                <select
+                  value={surveyStatus}
+                  onChange={(e) => {
+                    setSurveyStatus(e.target.value);
+                    if (
+                      !mainStatusWithInternalStatuses.hasOwnProperty(
+                        e.target.value
+                      )
+                    )
+                      handleStatusChange(e.target.value);
+                    else setInternalStatusChangeModal(true);
+                  }}
+                >
                   {statusOptions?.map((option) => (
                     <option value={option?.value} style={{ color: "green" }}>
                       {option?.label}
@@ -287,17 +346,17 @@ function SurveyDashboard() {
                     <span>Soft Launch</span>
                   </div>
 
-                  <div className={batti >= 3 ? styles.active : styles.inactive}>
+                  <div className={batti >= 4 ? styles.active : styles.inactive}>
                     <span className={classnames(styles.round)}></span>
                     <span>full launch</span>
                   </div>
-                  <div className={batti >= 4 ? styles.active : styles.inactive}>
+                  <div className={batti >= 5 ? styles.active : styles.inactive}>
                     <span
                       className={classnames(styles.round, styles.disabled)}
                     ></span>
                     <span>Reconcillation</span>
                   </div>
-                  <div className={batti >= 5 ? styles.active : styles.inactive}>
+                  <div className={batti >= 6 ? styles.active : styles.inactive}>
                     <span className={classnames(styles.round)}></span>
                     <span>Closed and Billed</span>
                   </div>
@@ -531,7 +590,7 @@ function SurveyDashboard() {
         msg={snackbarData.msg}
         severity={snackbarData?.severity}
         open={snackbar}
-        handleClose={handleSnackbar}
+        setSnackbar={setSnackbar}
       />
     </>
   );

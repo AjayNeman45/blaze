@@ -54,3 +54,17 @@
   font-size: 12px;
   border: 1px solid #dcdcdc;
 }
+
+/* filters  */
+.filters_container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  /* border: 1px solid red; */
+  margin: 1rem 0;
+}
+.filters_container select {
+  width: 10rem;
+  height: 48px;
+  padding: 0 7px;
+}

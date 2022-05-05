@@ -73,24 +73,12 @@ export const projectManagersData = ["Moinnudin S.", "Mahmood A.", "Janhavi R."];
 
 export const statusOptions = [
   {
-    label: "Archieved",
-    value: "awarded",
-  },
-  {
     label: "Awarded",
     value: "awarded",
   },
   {
     label: "Bidding",
     value: "bidding",
-  },
-  {
-    label: "Canceled Non charged",
-    value: "canceled_non_charged",
-  },
-  {
-    label: "Canceled with charge",
-    value: "canceled_with_charge",
   },
   {
     label: "Complete",
@@ -101,31 +89,38 @@ export const statusOptions = [
     value: "live",
   },
   {
-    label: "Paid",
-    value: "paid",
+    label: "Paused",
+    value: "paused",
   },
   {
-    label: "Pending",
-    value: "pending",
-  },
-  {
-    label: "Ready to Invoice",
-    value: " ready_to_invoice",
-  },
-  {
-    label: "Invoiced",
-    value: "invoiced",
-  },
-  {
-    label: "Titanic",
-    value: "titanic",
-  },
-  {
-    label: "Triton",
-    value: "triton",
-  },
-  {
-    label: "Umbriel",
-    value: "umbriel",
+    label: "Billed",
+    value: "billed",
   },
 ];
+
+export const mainStatusWithInternalStatuses = {
+  bidding: [
+    { label: "Won", value: "won" },
+    { label: "Lost", value: "lost" },
+    { label: "Lead", value: "lead" },
+    { label: "Ongoing", value: "ongoing" },
+  ],
+  awarded: [
+    { label: "Tested", value: "tested" },
+    {
+      label: "Not Tested",
+      value: "not_tested",
+    },
+  ],
+  live: [
+    { label: "Soft Launch", value: "soft_launch" },
+    {
+      label: "Full Launch",
+      value: "full_launch",
+    },
+  ],
+  complete: [
+    { label: "Reconciled", value: "reconciled" },
+    { label: "Not Reconciled", value: "not_reconciled" },
+  ],
+};

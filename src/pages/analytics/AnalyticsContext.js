@@ -72,11 +72,17 @@ const AnalyticsContextProvider = ({ children }) => {
       browsers.add(session.data()?.session_techincal_details?.browser_name);
       deviceBrand.add(session.data()?.session_techincal_details?.vendor);
 
-      let creationDate = session.data()?.date.toDate().toDateString();
-      if (session.data()?.date?.toDate()?.toDateString() === creationDate) {
-        handleGraphData(creationDate, "hits");
-      }
+      const options = {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      };
+      let creationDate = session
+        .data()
+        ?.date.toDate()
+        .toLocaleDateString("en-us", options);
 
+      handleGraphData(creationDate, "hits");
       if (session.data()?.mirats_status === 3) {
         dates.add(creationDate);
         handleGraphData(creationDate, "inClient");
@@ -209,7 +215,10 @@ const AnalyticsContextProvider = ({ children }) => {
             {
               supplier: supp?.supplier_account,
               completes,
-              avgCompleteTime: completes ? completeTimeSum / completes : 0,
+              avgCompleteTime: (completes
+                ? completeTimeSum / completes
+                : 0
+              ).toFixed(0),
             },
           ];
         });
@@ -228,6 +237,8 @@ const AnalyticsContextProvider = ({ children }) => {
     //   });
     // });
   }, [allSessions]);
+
+  console.log(graphData);
 
   const value = {
     usersByOs,

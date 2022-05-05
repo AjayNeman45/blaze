@@ -219,8 +219,8 @@ const Surveys = () => {
                 <p className={styles.p}>{activity}</p>
                 <Switch
                   onChange={(e) => {
-                    if (e.target.checked) history.push("/projects");
-                    else history.push("/surveys?view=all");
+                    if (e.target.checked) history.push("/mi/projects");
+                    else history.push("/mi/surveys?view=all");
                   }}
                   checked={activity === "projects"}
                 />
@@ -587,9 +587,7 @@ const ProjectTable = ({ currentProjects, handleSelect, history }) => {
                       }}
                       htmlFor="vehicle1"
                       onClick={() =>
-                        history.push(
-                          `/currentSurveys/dashboard/${project?.survey_id}`
-                        )
+                        history.push(`/surveys/dashboard/${project?.survey_id}`)
                       }
                     >
                       {project?.project_name}
@@ -736,9 +734,7 @@ const SurveyTable = ({ currentSurveys, handleSelect, history }) => {
                 <td className="project_table_first_col">
                   <input
                     type="checkbox"
-                    value="Bike"
                     name={project?.survey_name}
-                    id="vehicle1"
                     onChange={handleSelect}
                   />
                   <div className="coldiv">

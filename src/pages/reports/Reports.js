@@ -280,7 +280,7 @@ const Reports = () => {
           </div>
           <div>
             <ExternalSupplier
-              tableTitle="mirats external supplier completes"
+              tableTitle="mirats internal supplier completes"
               data={extIntSupplierData?.internalSuppliresData}
             />
           </div>

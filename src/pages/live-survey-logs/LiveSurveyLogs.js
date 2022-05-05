@@ -43,15 +43,48 @@ function LiveSurveyLogs() {
   const logtype = new URLSearchParams(location.search).get("logtype");
 
   const supplier_id = new URLSearchParams(location.search).get("supplier_id");
+  console.log(supplier_id);
+
+  // Set All the filters after useeffect and set all the sessions
+  useEffect(() => {
+    setAllSessions([]);
+    if (!liveSurveyLogsFilter?.logtype) {
+      if (logtype === "test")
+        setLiveSurveyLogsFilter((preob) => ({ ...preob, logtype: "test" }));
+      else setLiveSurveyLogsFilter((preob) => ({ ...preob, logtype: "live" }));
+    }
+    console.log(liveSurveyLogsFilter?.logtype);
+    getAllSessions(
+      surveyID,
+      liveSurveyLogsFilter?.logtype === "test" ? "alpha" : ""
+    ).then((querysnapshot) => {
+      querysnapshot.forEach((doc) => {
+        setAllSessions((prear) => [...prear, doc.data()]);
+        setFilteredSessions((prear) => [...prear, doc.data()]);
+      });
+    });
+
+    if (supplier_id) {
+      setLiveSurveyLogsFilter((preob) => ({
+        ...preob,
+        supplier_id: supplier_id,
+      }));
+    } else {
+      setLiveSurveyLogsFilter((preob) => ({
+        ...liveSurveyLogsFilter,
+        supplier_id: "all",
+      }));
+    }
+  }, [liveSurveyLogsFilter?.logtype]);
+  console.log(liveSurveyLogsFilter);
   // Setting the sessions according to live and test
   useEffect(() => {
     setFilteredSessions([]);
     setFilteredSessions(allSessions);
-    console.log(liveSurveyLogsFilter?.supplier_id);
     if (liveSurveyLogsFilter?.supplier_id) {
       if (liveSurveyLogsFilter?.supplier_id != "all") {
         setFilteredSessions((prear) =>
-          prear.filter((session) => {
+          [...prear].filter((session) => {
             return (
               session?.supplier_account_id ===
               parseInt(liveSurveyLogsFilter?.supplier_id)
@@ -75,6 +108,7 @@ function LiveSurveyLogs() {
         });
       }
     }
+
     if (liveSurveyLogsFilter?.client_status) {
       if (liveSurveyLogsFilter?.client_status !== "") {
         setFilteredSessions((prear) => {
@@ -156,32 +190,7 @@ function LiveSurveyLogs() {
   console.log(liveSurveyLogsFilter);
   // console.log("Sessions", allSessions);
 
-  // Set All the filters after useeffect and set all the sessions
-  useEffect(() => {
-    setAllSessions([]);
-    // console.log(liveSurveyLogsFilter?.logtype);
-    getAllSessions(surveyID, logtype === "test" ? "alpha" : "").then(
-      (querysnapshot) => {
-        querysnapshot.forEach((doc) => {
-          setAllSessions((prear) => [...prear, doc.data()]);
-          setFilteredSessions((prear) => [...prear, doc.data()]);
-        });
-      }
-    );
-    if (supplier_id) {
-      setLiveSurveyLogsFilter((preobj) => {
-        return { ...preobj, supplier_id: supplier_id };
-      });
-    } else
-      setLiveSurveyLogsFilter({ ...liveSurveyLogsFilter, supplier_id: "all" });
-
-    if (logtype === "test")
-      setLiveSurveyLogsFilter({ ...liveSurveyLogsFilter, logtype: "test" });
-    else setLiveSurveyLogsFilter({ ...liveSurveyLogsFilter, logtype: "live" });
-  }, []);
-
-  console.log("All Filter  is", liveSurveyLogsFilter);
-
+  // console.log(liveSurveyLogsFilter)
   let [browsers, setBrowsers] = useState([]);
   let [OS, setOS] = useState([]);
   // Set browser and OS select option useEffect

@@ -12,7 +12,7 @@ function LiveSurveyLogsContextProvider({ children }) {
 
   let [liveSurveyLogsFilter, setLiveSurveyLogsFilter] = useState({
     device_type: [],
-    log_type: "live",
+    // log_type: "live",
   });
   // let [errorCodes, setErrorCodes] = useState({
   //   client_codes: [],

@@ -1,10 +1,13 @@
 import cx from "classnames";
 import { Line } from "react-chartjs-2";
-import { Chart, registerables } from "chart.js";
+// import { Chart, registerables } from "chart.js";
 import styles from "./Analytics.module.css";
 import { useEffect, useState } from "react";
 import { useAanalyticsContext } from "./AnalyticsContext";
-Chart.register(...registerables);
+import ReactApexChart from "react-apexcharts";
+import { addDays, subDays } from "date-fns";
+
+// Chart.register(...registerables);
 
 export const AudienceGraph1 = ({ statusesCnt }) => {
   const [labels, setLabels] = useState([]);
@@ -25,8 +28,6 @@ export const AudienceGraph1 = ({ statusesCnt }) => {
     });
   }, [graphData, graphTab]);
 
-  console.log(graphData, yAxixData);
-
   const data = {
     labels: labels,
     datasets: [
@@ -38,8 +39,6 @@ export const AudienceGraph1 = ({ statusesCnt }) => {
       },
     ],
   };
-
-  console.log(labels);
 
   const options = {
     plugins: {
@@ -59,6 +58,9 @@ export const AudienceGraph1 = ({ statusesCnt }) => {
         },
         beginAtZero: true,
       },
+    },
+    xaxis: {
+      range: 2,
     },
   };
 
@@ -92,7 +94,60 @@ export const AudienceGraph1 = ({ statusesCnt }) => {
         </div>
       </div>
       <div className={styles.graph}>
-        <Line data={data} options={options} />
+        {/* <Line data={data} options={options} /> */}
+        <ReactApexChart
+          series={[{ name: graphTab, data: yAxixData }]}
+          options={{
+            chart: {
+              height: 150,
+              type: "line",
+              zoom: {
+                enabled: true,
+              },
+            },
+            dataLabels: {
+              enabled: false,
+            },
+            xaxis: {
+              type: "datetime",
+              categories: labels,
+              // labels: {
+              //   formatter: (value) => {
+              //     switch (value) {
+              //       case "1":
+              //         return "January";
+              //       case "2":
+              //         return "February";
+              //       case "3":
+              //         return "March";
+              //       case "4":
+              //         return "April";
+              //       case "5":
+              //         return "May";
+              //       case "6":
+              //         return "June";
+              //       case "7":
+              //         return "July";
+              //       case "8":
+              //         return "August";
+              //       case "9":
+              //         return "September";
+              //       case "10":
+              //         return "October";
+              //       case "11":
+              //         return "November";
+              //       case "12":
+              //         return "December";
+              //       default:
+              //         return "No";
+              //     }
+              //   },
+              // },
+            },
+          }}
+          type="line"
+          height={400}
+        />
       </div>
     </div>
   );
@@ -117,40 +172,6 @@ export const AudiencesGraph2 = ({ statusesCnt }) => {
     });
   }, [graphData, graphTab]);
 
-  const data = {
-    labels: labels,
-    datasets: [
-      {
-        label: graphTab,
-        data: yAxixData,
-        fill: false,
-        borderColor: "#1765DC",
-      },
-    ],
-  };
-
-  const options = {
-    plugins: {
-      legend: {
-        display: false,
-      },
-    },
-    scales: {
-      x: {
-        grid: {
-          display: false,
-        },
-      },
-      y: {
-        grid: {
-          display: false,
-        },
-        beginAtZero: true,
-      },
-    },
-  };
-
-  console.log(yAxixData);
   return (
     <div className={styles.graph2}>
       <div className={styles.graph1_stats}>
@@ -187,7 +208,28 @@ export const AudiencesGraph2 = ({ statusesCnt }) => {
         </div>
       </div>
       <div className={styles.graph}>
-        <Line data={data} options={options} />
+        {/* <Line data={data} options={options} /> */}
+        <ReactApexChart
+          series={[{ name: graphTab, data: yAxixData }]}
+          options={{
+            chart: {
+              height: 150,
+              type: "line",
+              zoom: {
+                enabled: true,
+              },
+            },
+            dataLabels: {
+              enabled: false,
+            },
+
+            xaxis: {
+              categories: labels,
+            },
+          }}
+          type="line"
+          height={400}
+        />
       </div>
     </div>
   );

@@ -194,6 +194,7 @@ const Table = ({
               : allSessions
             )?.map((row) => (
               <>
+              {console.log(row)}
                 {/* <div className={styles.gap}> */}
                 <tr key={row?.date.toDate().toDateString()}>
                   <td>{row?.date.toDate().toDateString()}</td>

@@ -26,6 +26,7 @@ const AddQualificationContextProvider = ({ children }) => {
   const [allowedTextAns, setAllowedTextAns] = useState(null);
   const [insertLoading, setInsertLoading] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [survey, setSurvey] = useState({});
 
   const { surveyID } = useParams();
   const handleMinMaxCondition = (value, type) => {
@@ -38,10 +39,16 @@ const AddQualificationContextProvider = ({ children }) => {
     setOpenSnackbar(!openSnackbar);
   };
 
+  useEffect(() => {
+    getSurvey(surveyID).then((res) => {
+      setSurvey(res);
+    });
+  }, [surveyID]);
+
   // fetch the question according the question type change
   const handleQuestionTypeSelect = (e) => {
     setQuestionType(e.target.value);
-    getQuestions(e.target.value)
+    getQuestions(e.target.value, survey)
       .then((res) => {
         setDropDownQuestions(res);
       })

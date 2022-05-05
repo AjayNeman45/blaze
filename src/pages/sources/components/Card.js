@@ -10,6 +10,7 @@ import classNames from "classnames";
 import { db } from "../../../firebase";
 import { doc, setDoc } from "firebase/firestore";
 import copy from "copy-to-clipboard";
+import { SourceContext } from "../SourcesContext";
 function Card({
   data,
   title,
@@ -22,9 +23,11 @@ function Card({
   supplier_type,
 }) {
   const history = useHistory();
+  let { ChangeVendorStatus } = useContext(SourceContext);
   const [redirectsopenDialog, setRedirectsOpenDialog] = useState(false);
   const [viewLinkopenDialog, setViewLinkOpenDialog] = useState(false);
   const [copyText, setCopyText] = useState({});
+  // console.log(surveyid)
 
   useEffect(() => {
     setCopyText({
@@ -292,7 +295,11 @@ function Card({
         >
           View Stats
         </button>
-        <select className={styles.status_select} value={data?.vendor_status}>
+        <select
+          className={styles.status_select}
+          value={data?.vendor_status}
+          onChange={(e) => ChangeVendorStatus(index, e.target.value, surveyid)}
+        >
           <option value="active">Active</option>
           <option value="paused">Paused</option>
           <option value="closed">Closed</option>

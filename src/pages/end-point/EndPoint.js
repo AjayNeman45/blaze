@@ -7,6 +7,7 @@ import { db } from "../../firebase";
 import { hashids } from "../../index";
 import {
   getAllSessions,
+  getAllSurveys,
   getAllTestSessions,
   getSessionBasedOnType,
   getSuppier,
@@ -39,14 +40,25 @@ const EndPoint = () => {
       gamma = "alpha";
     }
 
+    // getAllSurveys().then((surveys) => {
+    //   surveys.forEach((survey) => {
+    //     if (survey.data()?.tid === decodedID[2]) {
+    //       decodedID[2] = survey.data()?.rid;
+    //       console.log(survey.data()?.rid);
+    //     }
+    //   });
+    // });
+
+    // console.log(decodedID);
+
     // getting appropriate session and inserting client status, survey_end_time and all other details
     getAllSessions(decodedID[0], gamma)
       .then((sessions) => {
         sessions.forEach((session) => {
           const sd = session.data(); // session data
           if (
-            sd.supplier_account_id === decodedID[1] &&
-            sd.rid === decodedID[2]
+            sd?.supplier_account_id === decodedID[1] &&
+            sd?.tid === decodedID[2]
           ) {
             const total_survey_time = msToTime(
               new Date() - sd.survey_start_time.toDate()
@@ -70,18 +82,20 @@ const EndPoint = () => {
 
                   // if global redirects is false then redirect with static_redirect
                   if (!supp?.global_redirect) {
+                    console.log("static redirects", supp);
                     RedirectFunction(
                       status,
-                      supp?.static_redirect,
-                      decodedID[2],
+                      supp?.static_redirects,
+                      sd?.rid,
                       decodedID[0]
                     );
                   } else {
+                    console.log("global redirects");
                     getSuppier(decodedID[1]).then((data) => {
                       RedirectFunction(
                         status,
                         data?.global_redirects,
-                        decodedID[2],
+                        sd?.rid,
                         decodedID[0]
                       );
                     });

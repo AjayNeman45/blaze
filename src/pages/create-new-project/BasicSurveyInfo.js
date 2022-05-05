@@ -26,7 +26,6 @@ export const selectStyle = {
   input: (styles) => ({
     ...styles,
     height: "45px",
-    width: "100%",
   }),
 };
 
@@ -46,6 +45,8 @@ const BasicSurveyInfo = () => {
     snackbar,
     snackbarData,
     handleSnackbar,
+    checkProjectExistance,
+    surveyGrps,
   } = useCreateNewProject();
 
   const [preexistCheck, setPreexistCheck] = useState(false);
@@ -56,84 +57,13 @@ const BasicSurveyInfo = () => {
       existing_project_checked: preexistCheck,
     });
   }, [preexistCheck]);
-  const handleInputChange = (type, e) => {
-    switch (type) {
-      case "survey_name":
-        setSurveyData((prevData) => {
-          return {
-            ...prevData,
-            survey_name: e.target.value,
-          };
-        });
-        break;
-      case "country":
-        setCountry(e);
-        setSurveyData((prevData) => {
-          return {
-            ...prevData,
-            country: {
-              ...surveyData.country,
-              country: e.value,
-              country_full_name: e.label,
-              code: surveyData?.country?.language + "-" + e.value,
-            },
-          };
-        });
-        break;
-      case "language":
-        setSurveyData((prevData) => {
-          return {
-            ...prevData,
-            country: {
-              ...surveyData.country,
-              language: e.target.value,
-              code: e.target.value + "-" + surveyData?.country?.country,
-            },
-          };
-        });
-        return;
-      case "no_of_completes":
-        setSurveyData((prevData) => {
-          return {
-            ...prevData,
-            no_of_completes: parseInt(e.target.value),
-          };
-        });
-        break;
-      case "project_name":
-        setSurveyData((prevData) => {
-          return {
-            ...prevData,
-            project: e.target.value,
-          };
-        });
-        break;
-      case "external_survey_name":
-        setSurveyData((prevData) => {
-          return {
-            ...prevData,
-            external_survey_name: e.target.value,
-          };
-        });
-        break;
-      case "survey_group":
-        setSurveyData((prevData) => {
-          return {
-            ...prevData,
-            survey_group: parseInt(e.target.value),
-          };
-        });
-        break;
-      case "client":
-        setSurveyData((prevData) => {
-          return {
-            ...prevData,
-            client_info: e.label,
-          };
-        });
-      default:
-        return;
-    }
+  const handleInputChange = (type, val) => {
+    setSurveyData((prevData) => {
+      return {
+        ...prevData,
+        [type]: val,
+      };
+    });
   };
 
   useEffect(() => {
@@ -144,7 +74,7 @@ const BasicSurveyInfo = () => {
       s?.country &&
       s?.external_survey_name &&
       s?.no_of_completes &&
-      s?.project &&
+      (s?.project || s?.project_id) &&
       s?.survey_name
     ) {
       setEnableNextBtn(true);
@@ -159,13 +89,14 @@ const BasicSurveyInfo = () => {
       result.forEach((res) => {
         setClients((prevData) => [
           ...prevData,
-          { value: res.data()?.company_name, label: res.data()?.company_name },
+          {
+            value: res.data()?.company_name,
+            label: res.data()?.company_name,
+          },
         ]);
       });
     });
   }, []);
-
-  console.log(clients);
 
   return (
     <div>
@@ -192,9 +123,10 @@ const BasicSurveyInfo = () => {
               type="text"
               className="text_input"
               value={surveyData?.survey_name}
-              onChange={(e) => handleInputChange("survey_name", e)}
+              onChange={(e) => handleInputChange("survey_name", e.target.value)}
             />
           </div>
+          {/****** country input  *****/}
           <div className="column">
             <label>
               <span>Country</span> &nbsp;
@@ -205,10 +137,20 @@ const BasicSurveyInfo = () => {
                 styles={selectStyle}
                 options={countries}
                 value={country}
-                onChange={(e) => handleInputChange("country", e)}
+                onChange={(e) => {
+                  setCountry(e);
+                  setSurveyData((prevData) => {
+                    return {
+                      ...prevData,
+                      code: prevData?.country?.language + "-" + e.value,
+                    };
+                  });
+                }}
               />
             </div>
           </div>
+
+          {/****** language input  *****/}
           <div className="column">
             <label>
               <span>Country - Language</span> &nbsp;
@@ -217,9 +159,22 @@ const BasicSurveyInfo = () => {
 
             <select
               value={surveyData?.country_langauge}
-              onChange={(e) => handleInputChange("language", e)}
+              onChange={(e) => {
+                setSurveyData((prevData) => {
+                  return {
+                    ...prevData,
+                    country: {
+                      ...surveyData.country,
+                      language: e.target.value,
+                      code: e.target.value + "-" + surveyData?.country?.country,
+                    },
+                  };
+                });
+              }}
             >
-              <option value="_">Select the country and Language</option>
+              <option selected disabled hidden>
+                Select the country and Language
+              </option>
               <option value="ENG">English</option>
               <option value="FRA">French</option>
               <option value="GER">German</option>
@@ -227,6 +182,8 @@ const BasicSurveyInfo = () => {
               <option value="ESP">Spanish</option>
             </select>
           </div>
+
+          {/* Number of completes  */}
           <div className="column">
             <label>
               <span>Number of Completes Required</span> &nbsp;
@@ -235,9 +192,13 @@ const BasicSurveyInfo = () => {
             <input
               type="number"
               value={surveyData?.no_of_completes}
-              onChange={(e) => handleInputChange("no_of_completes", e)}
+              onChange={(e) =>
+                handleInputChange("no_of_completes", parseInt(e.target.value))
+              }
             />
           </div>
+
+          {/* client name  */}
           <div className="column">
             <label>
               <span>Client Name / Organization Name</span> &nbsp;
@@ -252,13 +213,22 @@ const BasicSurveyInfo = () => {
                   value: surveyData?.client_info,
                 }}
                 className="text_input"
-                onChange={(e) => handleInputChange("client", e)}
+                onChange={(e) => {
+                  setSurveyData((prevData) => {
+                    return {
+                      ...prevData,
+                      client_info: {
+                        client_name: e.label,
+                      },
+                    };
+                  });
+                }}
               />
             </div>
           </div>
         </div>
       </div>
-      <hr />
+
       <div className="project_detail_info">
         <div className="create_survey_left">
           <p className="title">Your Project Details</p>
@@ -269,6 +239,7 @@ const BasicSurveyInfo = () => {
           </p>
         </div>
         <div className="create_survey_right">
+          {/* check for inserting survey into already exist project  */}
           <div className="radio_input">
             <label>
               <span>
@@ -309,20 +280,8 @@ const BasicSurveyInfo = () => {
               </div>
             </div>
           </div>
-          {/* <div className="project_name_input">
-            <label>
-              {preexistCheck === "No"
-                ? "New Project Name"
-                : "Existing Project Name"}
-            </label>
-            <input
-              type="text"
-              className="text_input"
-              value={surveyData?.project}
-              onChange={(e) => handleInputChange("project_name", e)}
-            />
-            {error && <p style={{ color: "red" }}>{error}</p>}
-          </div> */}
+
+          {/* project id and project name input  */}
           <div className="column">
             {preexistCheck ? (
               <>
@@ -330,7 +289,18 @@ const BasicSurveyInfo = () => {
                   <span>Please Enter Project ID here</span> &nbsp;
                   <span className="required_tag">required</span>
                 </label>
-                <input type="number" placeholder="1102003" />
+                <input
+                  type="number"
+                  placeholder="1102003"
+                  onChange={(e) => {
+                    setSurveyData((prevData) => {
+                      return {
+                        ...prevData,
+                        project_id: parseInt(e.target.value),
+                      };
+                    });
+                  }}
+                />
               </>
             ) : (
               <>
@@ -342,11 +312,14 @@ const BasicSurveyInfo = () => {
                   type="text"
                   value={surveyData?.project}
                   placeholder="Project name"
-                  onChange={(e) => handleInputChange("project_name", e)}
+                  onChange={(e) => handleInputChange("project", e.target.value)}
                 />
               </>
             )}
+            <span className="error_msg">{error}</span>
           </div>
+
+          {/* external survey name  */}
           <div className="column">
             <label>
               <label>External Survey Name</label> &nbsp;
@@ -356,23 +329,34 @@ const BasicSurveyInfo = () => {
               type="text"
               placeholder="Robert D. Jr."
               value={surveyData?.external_survey_name}
-              onChange={(e) => handleInputChange("external_survey_name", e)}
+              onChange={(e) =>
+                handleInputChange("external_survey_name", e.target.value)
+              }
             />
           </div>
+
+          {/* survey groups  */}
           <div className="column">
             <label>
               <span>Survey Groups (optional)</span>
             </label>
-            <input
-              type="number"
-              placeholder="11200342"
-              value={surveyData?.survey_group}
-              onChange={(e) => handleInputChange("survey_group", e)}
-            />
+            <select
+              onChange={(e) =>
+                handleInputChange("survey_group", e.target.value)
+              }
+            >
+              <option selected disabled hidden>
+                Select Survey group
+              </option>
+              {surveyGrps?.map((grp) => (
+                <option value={grp?.survey_group_number}>
+                  {grp?.survey_group_number}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
       </div>
-      <hr />
 
       <div
         className={

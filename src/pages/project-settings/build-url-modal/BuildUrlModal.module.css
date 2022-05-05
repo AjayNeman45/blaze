@@ -1,0 +1,97 @@
+/* head container  */
+.head_container {
+  display: flex;
+  flex-direction: column;
+}
+.head_container .legend {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0;
+}
+.desc {
+  display: block;
+  font-size: 14px;
+  margin: 5px 0 10px 0;
+  color: gray;
+}
+.head_container input {
+  margin: 0;
+  width: 100%;
+  padding: 10px 5px;
+  border: 1px solid rgb(208, 208, 208);
+}
+
+/* variabled container  */
+.variables_container {
+  margin-top: 20px;
+}
+.variables_container .legend {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0;
+}
+.middle_of_variable_container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.middle_of_variable_container .desc {
+  width: 70%;
+}
+
+/* variable input container  */
+.variable_input_container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.variable_input_container .container {
+  /* border: 1px solid blue; */
+  margin: 5px;
+  width: 100%;
+}
+.variable_input_container .container .variable_input {
+  border: none;
+  border-bottom: 1px solid rgb(208, 208, 208);
+  width: 100%;
+  margin-top: 10px;
+}
+
+.paneList_id_variable div,
+.supplier_id_variable div {
+  display: flex;
+  align-items: center;
+}
+
+/* verify callback container  */
+.verify_callback_container {
+  margin-top: 20px;
+}
+.verify_callback_container .legend {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0;
+}
+.callback_variable_input {
+  border: none;
+  border-bottom: 1px solid rgb(208, 208, 208);
+}
+
+/* final url container  */
+.final_url_container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+.final_url_container textarea {
+  width: 80%;
+  padding: 10px;
+  border: 1px solid rgb(208, 208, 208);
+  outline: none;
+}
+.final_url_container .apply_url_btn {
+  padding: 10px;
+  background-color: #5db5f9;
+  color: white;
+}

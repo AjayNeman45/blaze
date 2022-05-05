@@ -84,7 +84,7 @@ export const getAllSurveys = async () => {
 export const getAllSessions = async (surveyID, gamma) => {
   let sessionType = "Sessions";
   if (gamma === "alpha") sessionType = "TestSessions";
-  return await getDocs(
+  const q = query(
     collection(
       db,
       "mirats",
@@ -93,8 +93,9 @@ export const getAllSessions = async (surveyID, gamma) => {
       String(surveyID),
       sessionType
     ),
-    orderBy("date", "desc")
+    orderBy("date", "asc")
   );
+  return await getDocs(q);
 };
 
 export const getAllTestSessions = async (surveyID) => {
@@ -198,7 +199,7 @@ export const updateQualificationStatus = async (surveyID, question_id) => {
   );
 };
 
-export const getQuestions = async (question_type) => {
+export const getQuestions = async (question_type, survey) => {
   let questions = [];
   try {
     if (question_type === "All") {
@@ -207,7 +208,9 @@ export const getQuestions = async (question_type) => {
       );
       const querySnapshot = await getDocs(q);
       querySnapshot.forEach((doc) => {
-        if (doc.data()?.lang?.["ENG-IN"]?.question_text !== undefined) {
+        if (
+          doc.data()?.lang?.[survey?.country?.code]?.question_text !== undefined
+        ) {
           questions.push(doc.data());
         }
       });
@@ -218,7 +221,9 @@ export const getQuestions = async (question_type) => {
       );
       const querySnapshot = await getDocs(q);
       querySnapshot.forEach((doc) => {
-        if (doc.data()?.lang?.["ENG-IN"]?.question_text !== undefined) {
+        if (
+          doc.data()?.lang?.[survey?.country?.code]?.question_text !== undefined
+        ) {
           questions.push(doc.data());
         }
       });
@@ -227,6 +232,18 @@ export const getQuestions = async (question_type) => {
   } catch (err) {
     return err;
   }
+};
+
+export const getAllQuestionLibraryQuestions = async () => {
+  let questions = [];
+  const q = query(
+    collection(db, "mirats", "Qualifications", "QuestionLibrary")
+  );
+  const querySnapshot = await getDocs(q);
+  querySnapshot.forEach((doc) => {
+    questions.push(doc.data());
+  });
+  return questions;
 };
 
 export const updateReconciliationStatus = async (
@@ -354,8 +371,8 @@ export const getSuppier = async (srcID) => {
 };
 
 export const updateSurvey = async (surveyID, body) => {
-  const survey = await updateDoc(
-    doc(db, "mirats", "surveys", "survey", surveyID),
+  return await updateDoc(
+    doc(db, "mirats", "surveys", "survey", String(surveyID)),
     {
       ...body,
     },
@@ -453,5 +470,28 @@ export const getErrorCodesForMiratsStatus = async () => {
 export const getClients = async () => {
   return await getDocs(
     query(collection(db, "mirats", "Organisations", "clients"))
+  );
+};
+
+export const addSurveyGroup = async (data) => {
+  return await addDoc(
+    collection(db, "mirats", "survey_groups", "SurveyGroups"),
+    { ...data }
+  );
+};
+
+export const getAllSurveyGroups = async () => {
+  return await getDocs(
+    collection(db, "mirats", "survey_groups", "SurveyGroups")
+  );
+};
+
+export const addQuestion = async (body, id) => {
+  return await setDoc(
+    doc(db, "mirats", "Qualifications", "QuestionLibrary", String(id)),
+    { ...body },
+    {
+      merge: true,
+    }
   );
 };

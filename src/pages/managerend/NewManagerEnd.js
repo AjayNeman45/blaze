@@ -19,6 +19,7 @@ import {
 import { useAddQualificationContext } from "./AddQualificationContext";
 import { Loading } from "@nextui-org/react";
 import SnackbarMsg from "../../components/Snackbar";
+import Subheader from "../../components/subheader/Subheader";
 
 const questionTypeRawData = [
   {
@@ -70,6 +71,7 @@ const NewManagerEnd = () => {
         handleClose={handleSnackbar}
       />
       <Header />
+      <Subheader />
       <div className={styles.add_qualification_page}>
         <RadioGroup
           aria-labelledby="demo-radio-buttons-group-label"

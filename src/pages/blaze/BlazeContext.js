@@ -50,13 +50,13 @@ const BlazeContextProvider = ({ children }) => {
   const [responses, setResponses] = useState({});
   const [finalVerification, setFinalverification] = useState();
   const [survey, setSurvey] = useState("");
-
+  const [allSurveys, setAllSurveys] = useState([]);
   const [ip, setIp] = useState(null);
 
   const location = useLocation();
 
   const srcID = new URLSearchParams(location.search).get("SRCID");
-  const rID = parseInt(new URLSearchParams(location.search).get("RID"));
+  const rID = new URLSearchParams(location.search).get("RID");
   let gamma = new URLSearchParams(location.search).get("gamma");
   const default_responses = new URLSearchParams(location.search).get(
     "responses"
@@ -95,6 +95,16 @@ const BlazeContextProvider = ({ children }) => {
     }
     return false;
   }
+
+  useEffect(() => {
+    getAllSurveys().then((surveys) => {
+      let surveysData = [];
+      surveys.forEach((survey) => {
+        surveysData.push(survey.data());
+      });
+      setAllSurveys(surveysData);
+    });
+  }, []);
 
   useEffect(() => {
     if (!encryptedID && !srcID && !rID) {
@@ -431,8 +441,6 @@ const BlazeContextProvider = ({ children }) => {
     console.log("verifying src id");
     let flag = false;
 
-    console.log(supplier_account_id);
-
     let supplier;
     survey?.external_suppliers?.forEach((d) => {
       if (
@@ -521,10 +529,21 @@ const BlazeContextProvider = ({ children }) => {
   // when finalVerification is true, add all the bakcground verified details in database
   useEffect(() => {
     if (!errCode && !errMsg && finalVerification) {
+      let tid = 2000001,
+        flag = false; // flag to indicade wheather atleast one tid is present or not.
+      allSurveys?.map((survey) => {
+        if (survey?.tid >= tid) {
+          tid = parseInt(survey?.tid);
+          flag = true;
+        }
+      });
+      if (flag) tid += 1;
+
+      // creating ref id for sending it to the client by using surveyID, supplieriID, and tid.
       let ref_id = hashids.encode([
         parseInt(surveyID),
         supplier_account_id,
-        parseInt(rID),
+        tid,
       ]);
       console.log(
         "all the background verification is done and session is inserted in database"
@@ -536,6 +555,7 @@ const BlazeContextProvider = ({ children }) => {
         geo_data: geoData,
         srcid: srcID,
         rid: rID,
+        tid,
         date: new Date(),
         fingerprint: fingerPrint,
         mirats_status: 0,

@@ -21,7 +21,11 @@ import SnackbarMsg from "../Snackbar";
 import { encryptText } from "../../utils/enc-dec.utils";
 import { BsCheckCircle } from "react-icons/bs";
 import { useHistory } from "react-router-dom";
-import { statusOptions } from "../../utils/commonData";
+import {
+  mainStatusWithInternalStatuses,
+  statusOptions,
+} from "../../utils/commonData";
+import ChangeInternalStatusModal from "./ChangeInternalStatusModal";
 
 const style = {
   position: "absolute",
@@ -66,6 +70,8 @@ function SurveyInfo() {
   const [snackbar, setSnackbar] = useState(false);
   const [snackbarData, setSnackbarData] = useState({});
   const [newSurveyID, setNewSurveyID] = useState("");
+  const [internalStatusChangeModal, setInternalStatusChangeModal] =
+    useState(false);
 
   const handleSnackbar = () => {
     setOpenSnackbar(!openSnackbar);
@@ -76,6 +82,10 @@ function SurveyInfo() {
   const [batti, setBatti] = useState();
 
   useEffect(() => {
+    handleActiveLight();
+  }, []);
+
+  const handleActiveLight = () => {
     getSurvey(surveyID)
       .then((data) => {
         setSurvey(data);
@@ -85,20 +95,21 @@ function SurveyInfo() {
 
         if (data?.status?.toLowerCase() === "bidding") {
           setBatti(1);
-        } else if (data?.status?.toLowerCase() === "testing") {
+        } else if (data?.status?.toLowerCase() === "awarded") {
           setBatti(2);
         } else if (data?.status?.toLowerCase() === "live") {
-          setBatti(3);
-        } else if (
-          data?.status?.toLowerCase() === "complete_with_reconciliation"
-        ) {
-          setBatti(4);
-        } else if (data?.status?.toLowerCase() === "billed") {
+          if (data?.internal_status.toLowerCase() === "soft_launch")
+            setBatti(3);
+          else if (data?.internal_status.toLowerCase() === "full_launch")
+            setBatti(4);
+        } else if (data?.status?.toLowerCase() === "complete") {
           setBatti(5);
+        } else if (data?.status?.toLowerCase() === "billed") {
+          setBatti(6);
         }
       })
       .catch((err) => console.log(err.message));
-  }, []);
+  };
 
   const handleChangeSurveyNameBtn = (e) => {
     e.preventDefault();
@@ -180,22 +191,45 @@ function SurveyInfo() {
     }
   };
 
-  // ---->>> handle when the status of the survey changes
-  const handleStatusChange = (e) => {
-    setSurveyStatus(e.target.value);
-    updateSurvey(surveyID, { status: e.target.value })
+  const handleConfirmButton = (internalStatus) => {
+    updateSurvey(surveyID, {
+      status: surveyStatus,
+      internal_status: internalStatus,
+    })
       .then(() => {
         setSnackbar(true);
         setSnackbarData({
-          msg: "survey status updated successfully.",
+          msg: "survey status and internal status updated successfully.",
           severity: "success",
         });
-        console.log("survey stauts updated successfully....");
+        handleActiveLight();
+      })
+      .catch((err) => {
+        {
+          setSnackbar(true);
+          setSnackbarData({
+            msg: "Oops! something went wrong",
+            severity: "error",
+          });
+        }
+      });
+  };
+
+  // ---->>> handle when the status of the survey changes and it does not have the internal status
+  const handleStatusChange = (changedStatus) => {
+    updateSurvey(surveyID, { status: changedStatus, internal_status: "" })
+      .then(() => {
+        setSnackbar(true);
+        setSnackbarData({
+          msg: "survey status updated successfully",
+          severity: "success",
+        });
+        handleActiveLight();
       })
       .catch((err) => {
         setSnackbar(true);
         setSnackbarData({
-          msg: "survey status updated successfully.",
+          msg: "Oops! something went wrong",
           severity: "error",
         });
       });
@@ -203,13 +237,19 @@ function SurveyInfo() {
 
   return (
     <>
+      <ChangeInternalStatusModal
+        openModal={internalStatusChangeModal}
+        setOpenModal={setInternalStatusChangeModal}
+        mainStatus={surveyStatus}
+        handleConfirmButton={handleConfirmButton}
+      />
+
       <SnackbarMsg
         msg={snackbarData?.msg}
         open={snackbar}
         severity={snackbarData?.severity}
         setSnackbar={setSnackbar}
       />
-
       <div className={styles.survey_info_container}>
         <div className={styles.survey_name_and_btns}>
           <div className={styles.survey_info_name}>
@@ -227,7 +267,16 @@ function SurveyInfo() {
           <div className={styles.btns}>
             <FormControl sx={{ m: 1, minWidth: 120 }}>
               <Select
-                onChange={handleStatusChange}
+                onChange={(e) => {
+                  setSurveyStatus(e.target.value);
+                  if (
+                    !mainStatusWithInternalStatuses.hasOwnProperty(
+                      e.target.value
+                    )
+                  )
+                    handleStatusChange(e.target.value);
+                  else setInternalStatusChangeModal(true);
+                }}
                 inputProps={{ "aria-label": "Without label" }}
                 className={styles.status_select_field}
                 value={surveyStatus}
@@ -293,15 +342,15 @@ function SurveyInfo() {
                 <GoPrimitiveDot />
                 soft launch
               </li>
-              <li className={batti >= 3 ? styles.active : style.inactive}>
+              <li className={batti >= 4 ? styles.active : style.inactive}>
                 <GoPrimitiveDot />
                 full launch
               </li>
-              <li className={batti >= 4 ? styles.active : style.inactive}>
+              <li className={batti >= 5 ? styles.active : style.inactive}>
                 <GoPrimitiveDot />
                 reconciliation
               </li>
-              <li className={batti >= 5 ? styles.active : style.inactive}>
+              <li className={batti >= 6 ? styles.active : style.inactive}>
                 <GoPrimitiveDot />
                 closed & billed{" "}
               </li>
@@ -309,7 +358,6 @@ function SurveyInfo() {
           </div>
         </div>
       </div>
-
       {surveyCloneModal && (
         <Modal
           open={surveyCloneModal}
@@ -332,7 +380,6 @@ function SurveyInfo() {
           </div>
         </Modal>
       )}
-
       {surveyExterNameModal && (
         <NameModal
           title="Set External Project name"

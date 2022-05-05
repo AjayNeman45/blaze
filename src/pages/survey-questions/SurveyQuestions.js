@@ -7,6 +7,7 @@ import ErrorPage from "../../components/error-page/ErrorPage";
 import { decryptText } from "../../utils/enc-dec.utils";
 import {
   addQualificationResponse,
+  getAllSessions,
   getQuestion,
   getSessionBasedOnType,
   getSurvey,
@@ -15,8 +16,6 @@ import Question from "../../components/question/Question";
 import { useLocation } from "react-router-dom";
 
 const SurveyQuestions = () => {
-  const location = useLocation();
-
   let { encryptedID, questionNumber } = useParams();
   const [question, setQuestion] = useState({});
   questionNumber = parseInt(questionNumber);
@@ -34,9 +33,7 @@ const SurveyQuestions = () => {
   const [error, setError] = useState(null);
   const history = useHistory();
   const [nextQNumber, setNextQNumber] = useState(null);
-
-  const srcID = localStorage.getItem("srcID");
-  const rID = localStorage.getItem("rID");
+  const [sessions, setSessions] = useState([]);
   const gamma = localStorage.getItem("gamma");
   const default_responses = JSON.parse(
     localStorage.getItem("default_responses")
@@ -47,11 +44,28 @@ const SurveyQuestions = () => {
   const predirectUrl = `/blaze/${encryptedID}/preRedirectUrl/${questionNumber}`;
   const refereneUrl = `/blaze/${encryptedID}/reference`;
 
+  useEffect(() => {
+    getAllSessions(surveyID, gamma).then((res) => {
+      let tmp = [];
+      res.forEach((session) => {
+        tmp.push(session.data());
+      });
+      setSessions(tmp);
+    });
+  }, []);
+
   const handleSinglePunch = () => {
     const user_res = parseInt(response);
+    console.log(response);
     let flag = false,
+      index,
       mirats_status;
-    if (question?.conditions?.valid_options?.includes(user_res)) flag = true;
+    if (question?.conditions?.valid_options?.includes(user_res)) {
+      flag = true;
+    }
+    question?.conditions?.valid_options?.map((option, i) => {
+      if (option === user_res) index = i;
+    });
     question?.is_core_demographic ? (mirats_status = 23) : (mirats_status = 24);
 
     const body = {
@@ -60,10 +74,32 @@ const SurveyQuestions = () => {
       user_response: parseInt(response),
     };
 
+    let cntSessions = 0;
+
+    sessions.forEach((session) => {
+      if (session?.mirats_status === 3) {
+        session?.responses?.map((response) => {
+          if (String(question?.question_id) === response?.question_id) {
+            if (parseInt(response?.user_response) === user_res) cntSessions++;
+          }
+        });
+      }
+    });
+
+    console.log(cntSessions);
+
     if (flag) {
       setError("");
       isFinalQuestion ? (mirats_status = 3) : (mirats_status = 1);
       addQualificationResponseInSessions(body, mirats_status);
+      if (question?.conditions?.quotas.hasOwnProperty(index)) {
+        if (question?.conditions?.quotas?.[index] < cntSessions) {
+          setErrCode(40);
+          setErrMsg("reach maximum limit for this option");
+          console.log("quota is full for this input");
+          return;
+        }
+      }
       if (isFinalQuestion) {
         if (gamma === "alpha") history.push(predirectUrl);
         else history.push(refereneUrl);
@@ -153,15 +189,44 @@ const SurveyQuestions = () => {
     const user_res = parseInt(response);
     question?.is_core_demographic ? (mirats_status = 23) : (mirats_status = 24);
 
-    let flag = false;
-    question?.conditions?.valid_responses?.map((res) => {
-      if (res.from <= user_res && user_res <= res.to) flag = true;
+    let flag = false,
+      index;
+    question?.conditions?.valid_responses?.map((res, i) => {
+      if (res.from <= user_res && user_res <= res.to) {
+        index = i;
+        flag = true;
+      }
     });
+
+    let cntSessions = 0;
+    sessions.forEach((session) => {
+      if (session?.mirats_status === 3) {
+        session?.responses?.map((response) => {
+          if (question?.question_id === response?.question_id) {
+            let user_res = parseInt(response?.user_response);
+            let from = question?.conditions?.valid_responses[index]?.from;
+            let to = question?.conditions?.valid_responses[index]?.to;
+            if (from <= user_res && user_res <= to) {
+              cntSessions++;
+            }
+          }
+        });
+      }
+    });
+
     if (flag) {
       setResponse("");
       setError("");
       isFinalQuestion ? (mirats_status = 3) : (mirats_status = 1);
       addQualificationResponseInSessions(body, mirats_status);
+      if (question?.conditions?.quotas.hasOwnProperty(index)) {
+        if (question?.conditions?.quotas[index] < cntSessions) {
+          setErrCode(40);
+          setErrMsg("reach maximum limit for this option");
+          console.log("quota is full for this input");
+          return;
+        }
+      }
       if (isFinalQuestion) {
         if (gamma === "alpha") history.push(predirectUrl);
         else history.push(refereneUrl);
@@ -327,8 +392,6 @@ const SurveyQuestions = () => {
     };
     questionNumber && func();
   }, [questionNumber]);
-
-  console.log(multiPunchResp);
 
   window.addEventListener("popstate", () => {
     history.go(1);

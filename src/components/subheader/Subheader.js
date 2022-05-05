@@ -44,7 +44,7 @@ const Subheader = () => {
         <NavLink
           activeClassName="subheader_active_link"
           className="subheader_link"
-          to={`/surveys/questions/${surveyID}`}
+          to={`/surveys/qualifications/${surveyID}`}
         >
           Qualifications
         </NavLink>

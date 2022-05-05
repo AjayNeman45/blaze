@@ -14,7 +14,6 @@ const Question = ({
   loading,
   showSkeleton,
 }) => {
-  console.log(response);
   return (
     <>
       {showSkeleton ? (
