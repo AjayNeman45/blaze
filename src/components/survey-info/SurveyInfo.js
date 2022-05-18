@@ -98,9 +98,9 @@ function SurveyInfo() {
         } else if (data?.status?.toLowerCase() === "awarded") {
           setBatti(2);
         } else if (data?.status?.toLowerCase() === "live") {
-          if (data?.internal_status.toLowerCase() === "soft_launch")
+          if (data?.internal_status.toLowerCase() === "soft launch")
             setBatti(3);
-          else if (data?.internal_status.toLowerCase() === "full_launch")
+          else if (data?.internal_status.toLowerCase() === "full launch")
             setBatti(4);
         } else if (data?.status?.toLowerCase() === "complete") {
           setBatti(5);

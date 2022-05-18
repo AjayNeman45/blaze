@@ -2,7 +2,12 @@ import { arrayUnion, doc, getDoc, setDoc } from "firebase/firestore";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { db } from "../../firebase";
-import { getAllSuppliers, getSurvey } from "../../utils/firebaseQueries";
+import {
+  getAllSuppliers,
+  getSurvey,
+  updateSupplier,
+  updateSurvey,
+} from "../../utils/firebaseQueries";
 
 const AllocationContext = createContext();
 
@@ -18,6 +23,7 @@ const AllocationContextProvider = ({ children }) => {
   const [survey, setSurvey] = useState(null);
   const { surveyID } = useParams();
   const [externalSuppliers, setExternalSuppliers] = useState([]);
+  const [internalSuppliers, setInternalSuppliers] = useState([]);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [err, setErr] = useState(null);
   const [suppliers, setSuppliers] = useState([]);
@@ -29,7 +35,6 @@ const AllocationContextProvider = ({ children }) => {
     unreserved_completes: false,
     global_redirect: true,
   });
-  const [internalSuppliers, setInternalSuppliers] = useState([]);
 
   const handleInternalSupplierModal = () => {
     setinternalSupplierModal(!internalsupplierModal);
@@ -107,6 +112,24 @@ const AllocationContextProvider = ({ children }) => {
     setSupplierData({});
   };
 
+  const handleUpdateSupplier = async () => {
+    updateSupplier(survey, supplierData)
+      .then(() => {
+        setSnackbarData({
+          msg: "Supplier updated successfully...",
+          severity: "success",
+        });
+        handleSnackbar();
+      })
+      .catch((err) => {
+        setSnackbarData({
+          msg: "Oops!. something went wrong. try again.",
+          severity: "error",
+        });
+        handleSnackbar();
+      });
+  };
+
   // insert internal supplier in database
   const AddInternalSupplierDetails = async () => {
     if (
@@ -148,6 +171,27 @@ const AllocationContextProvider = ({ children }) => {
     }
   };
 
+  const handleSupplierDelete = (supplier, setDeleteSupplierModal) => {
+    setDeleteSupplierModal(false);
+    const surveyTmp = survey;
+    const externalSuppTmp = survey?.external_suppliers?.filter((es) => {
+      return es?.supplier_account_id !== supplier;
+    });
+    surveyTmp["external_suppliers"] = externalSuppTmp;
+    updateSurvey(surveyID, surveyTmp)
+      .then(() => {
+        setOpenSnackbar(true);
+        setSnackbarData({
+          msg: "Supplier deleted successfully...",
+          severity: "success",
+        });
+        console.log("supplier deleted");
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+  };
+
   async function handleAddInternalSupplierDetails() {
     handleInternalSupplierModal();
   }
@@ -178,7 +222,6 @@ const AllocationContextProvider = ({ children }) => {
       .catch((err) => console.log(err.message));
   };
 
-  console.log(supplierData);
   const value = {
     externalSuppliers,
     internalSuppliers,
@@ -202,6 +245,8 @@ const AllocationContextProvider = ({ children }) => {
     setStaticRedirectsModal,
     insertExternalSupplier,
     snackbarData,
+    handleSupplierDelete,
+    handleUpdateSupplier,
   };
   return (
     <AllocationContext.Provider value={value}>

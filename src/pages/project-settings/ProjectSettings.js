@@ -14,38 +14,15 @@ import { updateSurveyData } from "../../utils/firebaseQueries";
 import SnackbarMsg from "../../components/Snackbar";
 import { statusOptions } from "../../utils/commonData";
 import BuildUrlModal from "./build-url-modal/BuildUrlModal";
-
-const studyTypeData = [
-  {
-    label: "Adhoc",
-    value: "adhoc",
-  },
-  {
-    label: "Another",
-    value: "another",
-  },
-];
+import {
+  mainStatusWithInternalStatuses,
+  studyTypesData,
+  industryData,
+} from "../../utils/commonData";
 
 const businessUnitData = [
-  {
-    label: "mirats-api",
-    value: "mirats_api",
-  },
-  {
-    label: "another-api",
-    value: "another_api",
-  },
-];
-
-const industryData = [
-  {
-    label: "others",
-    value: "others",
-  },
-  {
-    label: "another",
-    value: "another",
-  },
+  { label: "MIRATS-API", value: "mirats-api" },
+  { label: "MIRATS-OTC", value: "mirats-otc" },
 ];
 
 const surveyStatusData = statusOptions;
@@ -172,6 +149,8 @@ const NewProjectSettings = () => {
     }),
   };
 
+  console.log(sData);
+
   return (
     <>
       <BuildUrlModal
@@ -192,7 +171,7 @@ const NewProjectSettings = () => {
                 title="study type"
                 value="study_type"
                 inputType="select"
-                dropDownData={studyTypeData}
+                dropDownData={studyTypesData}
                 selectedData={sData?.study_type}
                 handleInputChange={handleInputChange}
               />
@@ -287,7 +266,7 @@ const NewProjectSettings = () => {
                 title="internal status"
                 value="internal_status"
                 inputType="select"
-                dropDownData={surveyInternStatusData}
+                dropDownData={mainStatusWithInternalStatuses?.[sData?.status]}
                 selectedData={sData?.internal_status}
                 handleInputChange={handleInputChange}
               />
@@ -623,15 +602,20 @@ const InputFieldCard = ({
           case "select":
             return (
               <select onChange={(e) => handleInputChange(e, value, prevVal)}>
-                {dropDownData?.map((data) => (
-                  <option
-                    selected={data?.value === selectedData}
-                    key={uuid()}
-                    value={data?.value}
-                  >
-                    {data.label}
-                  </option>
-                ))}
+                <option selected disabled hidden>
+                  Select {title}
+                </option>
+                {dropDownData?.map((data) => {
+                  return (
+                    <option
+                      selected={data?.value === selectedData}
+                      key={uuid()}
+                      value={data?.value}
+                    >
+                      {data.label}
+                    </option>
+                  );
+                })}
               </select>
             );
           case "input":

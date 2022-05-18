@@ -1,8 +1,12 @@
 import { Loading } from "@nextui-org/react";
 import { useEffect } from "react";
 import { useState } from "react";
-import { studyTypesData, surveyTypesData } from "../../utils/commonData";
-// import { InputHelperCard } from "./CreateNewProject"
+import {
+  studyTypesData,
+  surveyTypesData,
+  industryData,
+} from "../../utils/commonData";
+
 import { useCreateNewProject } from "./CreateNewProjectContext";
 
 const SetUpRequirments = () => {
@@ -53,7 +57,6 @@ const SetUpRequirments = () => {
               <span className="required_tag">Required</span>
             </label>
             <select
-              placeholder="Adhoc"
               value={surveyData?.study_type}
               onChange={(e) =>
                 setSurveyData({
@@ -62,8 +65,11 @@ const SetUpRequirments = () => {
                 })
               }
             >
+              <option selected disabled hidden>
+                select study type
+              </option>
               {studyTypesData?.map((type) => {
-                return <option>{type.label}</option>;
+                return <option value={type?.value}>{type.label}</option>;
               })}
             </select>
           </div>
@@ -82,8 +88,13 @@ const SetUpRequirments = () => {
                 })
               }
             >
+              <option selected disabled hidden>
+                select survey type
+              </option>
               {surveyTypesData?.map((surveyType) => {
-                return <option value={surveyType}>{surveyType}</option>;
+                return (
+                  <option value={surveyType?.value}>{surveyType?.label}</option>
+                );
               })}
             </select>
           </div>
@@ -103,7 +114,9 @@ const SetUpRequirments = () => {
                 })
               }
             >
-              <option value="--">--</option>
+              <option selected disabled hidden>
+                select business unit
+              </option>
               <option value="mirats-api">MIRATS-API</option>
               <option value="mirats-otc">MIRATS-OTC</option>
             </select>
@@ -123,8 +136,12 @@ const SetUpRequirments = () => {
                 })
               }
             >
-              <option value="--">--</option>
-              <option value="other">Other</option>
+              <option selected disabled hidden>
+                select industry
+              </option>
+              {industryData?.map((data) => (
+                <option value={data?.value}>{data?.label}</option>
+              ))}
             </select>
           </div>
           {/* <div className="column">

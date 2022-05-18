@@ -2,6 +2,7 @@ import {
   addDoc,
   arrayUnion,
   collection,
+  deleteDoc,
   doc,
   FieldValue,
   getDoc,
@@ -473,10 +474,11 @@ export const getClients = async () => {
   );
 };
 
-export const addSurveyGroup = async (data) => {
-  return await addDoc(
-    collection(db, "mirats", "survey_groups", "SurveyGroups"),
-    { ...data }
+export const addSurveyGroup = async (data, surveyGrpID) => {
+  return await setDoc(
+    doc(db, "mirats", "survey_groups", "SurveyGroups", String(surveyGrpID)),
+    { ...data },
+    { merge: true }
   );
 };
 
@@ -495,3 +497,60 @@ export const addQuestion = async (body, id) => {
     }
   );
 };
+
+export const getSurveyGrpData = async (surveyGrpNumber) => {
+  return await getDocs(
+    query(
+      collection(db, "mirats", "survey_groups", "SurveyGroups"),
+      where("survey_group_number", "==", surveyGrpNumber)
+    )
+  );
+};
+
+export const deleteSurveyGroup = async (surveyGrpNum) => {
+  console.log(surveyGrpNum);
+  return getDocs(
+    query(
+      collection(db, "mirats", "survey_groups", "SurveyGroups"),
+      where("survey_group_number", "==", surveyGrpNum)
+    )
+  ).then(async (surveyGrpDoc) => {
+    console.log(surveyGrpDoc.docs[0].id);
+    return await deleteDoc(
+      doc(
+        db,
+        "mirats",
+        "survey_groups",
+        "SurveyGroups",
+        surveyGrpDoc.docs[0].id
+      )
+    );
+  });
+};
+
+export const updateSupplier = async (survey, supplier) => {
+  const updatedExternalSupplier = survey?.external_suppliers?.map((supp) => {
+    if (supp?.supplier_account_id === supplier?.supplier_account_id) {
+      return supplier;
+    }
+    return supp;
+  });
+
+  survey.external_suppliers = updatedExternalSupplier;
+  console.log(survey?.survey_id);
+  return await updateSurvey(survey?.survey_id, survey);
+};
+
+// export const deletSupplier = async (supplier) => {
+//   return getDocs(
+//     query(
+//       collection(db, "mirats", "surveys", "survey"),
+//       where("survey_group_number", "==", surveyGrpNum)
+//     )
+//   ).then(async (surveyDoc) => {
+//     let survey = surveyDoc.docs[0].data()?.external_suppliers?.map((es) => {
+//       if (es?.supplier_account_id === supplier) {
+//       }
+//     });
+//   });
+// };

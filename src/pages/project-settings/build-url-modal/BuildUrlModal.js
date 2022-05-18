@@ -25,7 +25,7 @@ const style = {
 };
 
 const BuildUrlModal = ({ openModal, setOpenModal }) => {
-  const [tab, setTab] = useState("live_url");
+  const [tab, setTab] = useState(0);
   const [variables, setVariables] = useState({
     response_ID: { status: true, value: "" },
   });

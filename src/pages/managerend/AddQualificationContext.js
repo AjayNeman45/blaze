@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { createContext, useContext } from "react";
 import { useParams } from "react-router-dom";
+import { v4 as uuid } from "uuid";
 import {
   addQualificationQuestion,
   getQuestions,
@@ -21,7 +22,10 @@ const AddQualificationContextProvider = ({ children }) => {
   const [selectedQuestion, setSelectedQuestion] = useState({});
   const [displayOpt, setDisplayOpt] = useState([]);
   const [compulsaryOpt, setCompulsaryOpt] = useState([]);
-  const [allowedResponses, setAllowedResponses] = useState([]);
+  const [allowedResponses, setAllowedResponses] = useState([
+    { from: 20, to: 30, id: uuid() },
+    { from: "", to: "", id: uuid() },
+  ]);
   const [minMaxCondition, setMinMaxCondition] = useState();
   const [allowedTextAns, setAllowedTextAns] = useState(null);
   const [insertLoading, setInsertLoading] = useState(false);
@@ -47,10 +51,17 @@ const AddQualificationContextProvider = ({ children }) => {
 
   // fetch the question according the question type change
   const handleQuestionTypeSelect = (e) => {
-    setQuestionType(e.target.value);
-    getQuestions(e.target.value, survey)
+    console.log(e.target.innerHTML);
+    setQuestionType(e.target.innerHTML);
+    getQuestions(e.target.innerHTML, survey)
       .then((res) => {
-        setDropDownQuestions(res);
+        let queTmp = [];
+        res?.map((que) => {
+          que["label"] = que?.lang?.[survey?.country?.code]?.question_text;
+          que["value"] = que?.name;
+          queTmp.push(que);
+        });
+        setDropDownQuestions(queTmp);
       })
       .catch((err) => console.log(err.message));
     setSelectedQuestion({});
@@ -96,6 +107,7 @@ const AddQualificationContextProvider = ({ children }) => {
   };
 
   const insertQualificationQuestion = (body) => {
+    console.log(body);
     addQualificationQuestion(body, surveyID)
       .then(() => {
         setInsertLoading(false);
@@ -116,6 +128,7 @@ const AddQualificationContextProvider = ({ children }) => {
   //   console.log(selectedQuestion, displayOpt, minMaxCondition, compulsaryOpt);
 
   const value = {
+    survey,
     dropDownQuestions,
     handleQuestionTypeSelect,
     selectedQuestion,

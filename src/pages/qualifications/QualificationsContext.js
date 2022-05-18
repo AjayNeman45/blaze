@@ -21,7 +21,11 @@ const QualificationContextProvider = ({ children }) => {
   const [editQuestion, setEditQuestion] = useState({});
   const [compulsaryOpt, setCompulsaryOpt] = useState([]);
   const [allowedOpt, setAllowedOpt] = useState([]);
-  const [allowedResponses, setAllowedResponses] = useState([]);
+  const [allowedResponses, setAllowedResponses] = useState([
+    { from: "", to: "" },
+    { from: "", to: "" },
+  ]);
+
   const [allowedTextAns, setAllowedTextAns] = useState("");
   const [minMaxCondition, setMinMaxCondition] = useState({});
 

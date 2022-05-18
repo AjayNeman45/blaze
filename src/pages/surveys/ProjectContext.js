@@ -72,7 +72,7 @@ const ProjectContextProvider = ({ children }) => {
               projectData.study_type = sd?.study_type;
               projectData.survey_type = sd?.survey_type;
               projectData.pm = sd?.mirats_insights_team?.lead_project_managers;
-              projectData.client = sd?.client_info?.client_name;
+              projectData.client = sd?.client_info;
               projectData.country = sd?.country?.country_full_name;
             });
           }
@@ -97,7 +97,6 @@ const ProjectContextProvider = ({ children }) => {
     setCurrentProjects(projectData);
     Object.keys(filters).forEach((key) => {
       if (key === "study_type" || key === "survey_type") {
-        console.log("filtering based on study type");
         setCurrentProjects((prevData) => {
           return prevData.filter((project) => {
             if (project?.[key] === filters[key]) return project;

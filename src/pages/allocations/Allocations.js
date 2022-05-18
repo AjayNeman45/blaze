@@ -4,7 +4,7 @@ import Header from "../../components/header/Header";
 import Subheader from "../../components/subheader/Subheader";
 import styles from "./Allocations.module.css";
 import { useAllocationContext } from "./AllocationContext";
-import { BiChevronDown } from "react-icons/bi";
+import { BiChevronDown, BiEdit } from "react-icons/bi";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import SurveyInfo from "../../components/survey-info/SurveyInfo";
@@ -15,6 +15,12 @@ import { v4 as uuid } from "uuid";
 import AddStaticRedirectsModal from "./AddStaticRedirectsModal";
 import SnackbarMsg from "../../components/Snackbar";
 import { getAllSessions } from "../../utils/firebaseQueries";
+import { RiDeleteBin5Line } from "react-icons/ri";
+import { Menu, MenuItem, Modal } from "@mui/material";
+import { Box } from "@mui/system";
+import { MdDeleteOutline } from "react-icons/md";
+import SupplierEditModal from "./supplier-edit-modal/SupplierEditModal";
+
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -35,7 +41,12 @@ const Allocations = () => {
     survey,
   } = useAllocationContext();
   let [sessions, setSessions] = useState([]);
-  let [externalsupplierdata, setExternalSupplierData] = useState({});
+  const [deletSupplierModal, setDeleteSupplierModal] = useState(false);
+  const [supplierTableMenu, setSupplierTableMenu] = React.useState(null);
+  const [supplierIDToDelete, setSupplierIDToDelete] = useState();
+  const [supplierToEdit, setSuppplierToEdit] = useState({});
+  const [supplierEditModal, setSupplierEditModal] = useState(false);
+
   useEffect(() => {
     getAllSessions(survey?.survey_id).then((querysnapshot) => {
       querysnapshot.forEach((doc) => {
@@ -43,8 +54,6 @@ const Allocations = () => {
       });
     });
   }, [survey]);
-  // console.log("Sessions", sessions);
-  // console.log("External suppliers", survey?.external_suppliers);
 
   function CalculateTotalCompletes() {
     let count = 0;
@@ -55,7 +64,6 @@ const Allocations = () => {
     });
     return count;
   }
-
   function CalculateCompletes(supplier_account_id) {
     let count = 0;
     sessions?.map((session) => {
@@ -112,9 +120,13 @@ const Allocations = () => {
     });
     return count;
   }
-  // function CountTotalRemaining(supplier_account_id){
-  //   return
-  // }
+  const open = Boolean(supplierTableMenu);
+  const handleTableRowEditMenu = (event) => {
+    setSupplierTableMenu(event.currentTarget);
+  };
+  const handleClose = () => {
+    setSupplierTableMenu(null);
+  };
   return (
     <>
       <Header />
@@ -214,7 +226,7 @@ const Allocations = () => {
                   <th>
                     Block Optimzer <BiChevronDown />
                   </th>
-                  <th></th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -241,6 +253,31 @@ const Allocations = () => {
                       </td>
                       <td>{CountConversion(supplier?.supplier_account_id)}</td>
                       <td>0</td>
+                      <td>
+                        {/* {CalculateCompletes(supplier?.supplier_account_id) ? ( */}
+                        <a>
+                          <RiDeleteBin5Line
+                            className={styles.delete_icon}
+                            onClick={() => {
+                              setDeleteSupplierModal(true);
+                              setSupplierIDToDelete(
+                                supplier?.supplier_account_id
+                              );
+                            }}
+                          />
+                        </a>
+                        {/* // ) : null} */}
+                        &nbsp;
+                        <a>
+                          <BiEdit
+                            className={styles.edit_icon}
+                            onClick={() => {
+                              setSupplierEditModal(true);
+                              setSuppplierToEdit(supplier);
+                            }}
+                          />
+                        </a>
+                      </td>
                     </tr>
                   );
                 })}
@@ -328,6 +365,15 @@ const Allocations = () => {
       {/* add internal supplier modal  */}
       {internalsupplierModal && <InternalSupplierModal />}
 
+      {/* supplier edit modal  */}
+      {supplierEditModal && (
+        <SupplierEditModal
+          open={supplierEditModal}
+          handleClose={() => setSupplierEditModal(false)}
+          defaultData={supplierToEdit}
+        />
+      )}
+
       {/* global redirects modal  */}
       <AddStaticRedirectsModal
         addStaticRedirectsModal={staticRedirectsModal}
@@ -341,12 +387,66 @@ const Allocations = () => {
         open={openSnackbar}
         handleClose={handleSnackbar}
       />
+
+      <DeleteConfirmationModal
+        open={deletSupplierModal}
+        handleCloseDeleteModal={() => setDeleteSupplierModal(false)}
+        supplier={supplierIDToDelete}
+        setDeleteSupplierModal={setDeleteSupplierModal}
+      />
     </>
   );
 };
 
-// const AddSupplierModal = () => {
+const DeleteConfirmationModal = ({
+  open,
+  handleCloseDeleteModal,
+  supplier,
+  setDeleteSupplierModal,
+}) => {
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 400,
+    bgcolor: "white",
+    borderRadius: "20px",
+    boxShadow: 24,
+    p: 4,
+  };
 
-// };
+  console.log(supplier);
+  const { handleSupplierDelete } = useAllocationContext();
+
+  return (
+    <Modal
+      open={open}
+      onClose={handleCloseDeleteModal}
+      aria-labelledby="modal-modal-title"
+      aria-describedby="modal-modal-description"
+    >
+      <Box sx={style}>
+        <div className={styles.confirmDelete_Modal}>
+          <MdDeleteOutline fontSize={50} color={"#f15e5e"} />
+          <p className={styles.modal_title}>Are you sure ? </p>
+          <p className={styles.modal_text}> You want to delete</p>
+
+          <div className={styles.btn_container}>
+            <button onClick={handleCloseDeleteModal}>Cancel</button>
+            <button
+              className={styles.btn_active}
+              onClick={() => {
+                handleSupplierDelete(supplier, setDeleteSupplierModal);
+              }}
+            >
+              Confirm
+            </button>
+          </div>
+        </div>
+      </Box>
+    </Modal>
+  );
+};
 
 export default Allocations;

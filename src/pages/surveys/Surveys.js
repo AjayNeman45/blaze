@@ -15,7 +15,7 @@ import Hashids from "hashids";
 import styles from "./Survey.module.css";
 import { AiOutlineSearch } from "react-icons/ai";
 import facewithmask from "../../assets/images/facewithmask.png";
-import { Switch } from "@nextui-org/react";
+import { Switch, Tooltip } from "@nextui-org/react";
 import { getAvgCPI } from "../survey-dashboard/SurveyDashboardContext";
 import {
   studyTypesData,
@@ -68,17 +68,26 @@ const Surveys = () => {
   const { activity } = useParams();
 
   useEffect(() => {
-    setCurrentSurveys(surveys);
+    setCurrentSurveys(
+      surveys.sort((a, b) => {
+        return (
+          a.creation_date.toDate().getTime() -
+          b.creation_date.toDate().getTime()
+        );
+      })
+    );
 
     // ------>>>>  storing the status cnts (live, awarded, paused,.....) of the surveys
     let tmp = {};
-    surveys.map((survey) => {
+
+    surveys?.map((survey) => {
       tmp[survey?.status] =
         (tmp?.[survey?.status] ? tmp?.[survey?.status] : 0) + 1;
     });
     Object.keys(tmp).map((key) => {
       tmp["all"] = (tmp["all"] ? tmp["all"] : 0) + tmp[key];
     });
+    console.log(tmp);
     setStatusesCnt(tmp);
     // ------->>>>> End status cnt storing
 
@@ -146,6 +155,7 @@ const Surveys = () => {
   // ---->>>> filter all the surveys according to pm, study type and all other filters....
   const filterSurveys = () => {
     Object.keys(filters).forEach((key) => {
+      console.log("filtering surveys");
       if (key === "study_type" || key === "survey_type") {
         setCurrentSurveys((prevData) => {
           return prevData.filter((survey) => {
@@ -207,6 +217,8 @@ const Surveys = () => {
       }
     }
   }
+
+  console.log(statusesCnt);
 
   return (
     <>
@@ -414,44 +426,44 @@ const Surveys = () => {
           {activity === "projects" ? null : (
             <div className="headingLinks">
               <Link
-                to="/surveys?view=live"
+                to="/mi/surveys?view=live"
                 className={view === "live" ? styles.active : null}
               >
                 Live ({statusesCnt?.live ? statusesCnt?.live : 0})
               </Link>
               <Link
-                to="/surveys?view=awarded"
+                to="/mi/surveys?view=awarded"
                 className={view === "awarded" ? styles.active : null}
               >
                 Awarded ({statusesCnt?.awarded ? statusesCnt?.awarded : 0})
               </Link>
               <Link
-                to="/surveys?view=paused"
+                to="/mi/surveys?view=paused"
                 className={view === "paused" && styles.active}
               >
                 Paused ({statusesCnt?.paused ? statusesCnt?.paused : 0})
               </Link>
               <Link
-                to="/surveys?view=completed"
+                to="/mi/surveys?view=completed"
                 className={view === "completed" ? styles.active : null}
               >
                 Completed ({statusesCnt?.completed ? statusesCnt?.completed : 0}
                 )
               </Link>
               <Link
-                to="/surveys?view=billed"
+                to="/mi/surveys?view=billed"
                 className={view === "billed" ? styles.active : null}
               >
                 Billed ({statusesCnt?.billed ? statusesCnt?.billed : 0})
               </Link>
               <Link
-                to="/surveys?view=bidding"
+                to="/mi/surveys?view=bidding"
                 className={view === "bidding" ? styles.active : null}
               >
                 Bidding ({statusesCnt?.bidding ? statusesCnt?.bidding : 0})
               </Link>
               <Link
-                to="/surveys?view=all"
+                to="/mi/surveys?view=all"
                 className={view === "all" ? styles.active : null}
               >
                 All ({statusesCnt?.all ? statusesCnt?.all : 0})
@@ -548,7 +560,7 @@ const ProjectTable = ({ currentProjects, handleSelect, history }) => {
               <p className="headingDescription">avg</p>
             </th>
             <th>
-              PM
+              Project Managers
               <p className="headingDescription">lead</p>
             </th>
             <th>
@@ -579,26 +591,33 @@ const ProjectTable = ({ currentProjects, handleSelect, history }) => {
                     onChange={handleSelect}
                   />
                   <div className="coldiv">
-                    <label
-                      style={{
-                        color: "black",
-                        fontWeight: 100,
-                        fontSize: "12px",
-                      }}
-                      htmlFor="vehicle1"
-                      onClick={() =>
-                        history.push(`/surveys/dashboard/${project?.survey_id}`)
+                    <Tooltip
+                      content={
+                        <TooltipForSurveyName name={project?.project_name} />
                       }
                     >
-                      {project?.project_name}
-                    </label>
+                      <label
+                        className="project_name"
+                        htmlFor="vehicle1"
+                        onClick={() =>
+                          history.push(
+                            `/surveys/dashboard/${project?.survey_id}`
+                          )
+                        }
+                      >
+                        {project?.project_name}
+                      </label>
+                    </Tooltip>
+
                     <br />
-                    <div className="project_id_and_internal_status">
+                    <div className="project_survey_id_and_client_name">
                       <span>
                         #{project.project_id} / {project?.survey_id}
                       </span>
 
-                      <span className="client">{project?.client}</span>
+                      <span className="client">
+                        {project?.client?.client_name}
+                      </span>
                     </div>
                   </div>
                 </td>
@@ -617,7 +636,7 @@ const ProjectTable = ({ currentProjects, handleSelect, history }) => {
                   {/* {project.CPI} */}
                   <span className="tableValue">{project?.avg_cpi}</span>
                   <br />
-                  <span>US Dollar</span>
+                  <span>{project?.client?.client_cost_currency}</span>
                 </td>
                 <td>
                   {/* {project.IR} */}
@@ -632,18 +651,35 @@ const ProjectTable = ({ currentProjects, handleSelect, history }) => {
                 </td>
                 <td>
                   <span className="tableValue">
-                    {project?.pm?.map((pm) => (
-                      <>
-                        {pm} <br />
-                      </>
-                    ))}
+                    {/* {project?.pm?.map(pm => (
+											<>
+												{pm} <br />
+											</>
+										))} */}
+                    {/* showing only the first lead project manager  */}
+                    {project?.pm?.length ? (
+                      <span className="project_manager_name">
+                        {project?.pm[0]}
+                      </span>
+                    ) : (
+                      "-"
+                    )}
+                    {/* showing the number of lead project managers  */}
+                    {project?.pm?.length - 1 ? (
+                      <Tooltip
+                        content={<OtherPMsTooltip pms={project?.pm} />}
+                        placement="bottom"
+                      >
+                        {` +${project?.pm?.length - 1}`}
+                      </Tooltip>
+                    ) : null}
                   </span>
                 </td>
                 <td>
                   {/* {project.EPC} */}
                   <span className="tableValue">0.35</span>
                   <br />
-                  <span>US Dollar </span>
+                  <span>{project?.client?.client_cost_currency} </span>
                 </td>
                 <td>
                   <span className="tableValue">{project?.study_type}</span>
@@ -694,7 +730,7 @@ const SurveyTable = ({ currentSurveys, handleSelect, history }) => {
             </th>
             <th>
               Progress
-              <p className="headingDescription">Completes/Hits</p>
+              <p className="headingDescription">Compl./Hits</p>
             </th>
             <th>
               Avg. Cost
@@ -709,7 +745,7 @@ const SurveyTable = ({ currentSurveys, handleSelect, history }) => {
               <p className="headingDescription">avg</p>
             </th>
             <th>
-              PM
+              Project Managers
               <p className="headingDescription">lead</p>
             </th>
             <th>
@@ -738,37 +774,39 @@ const SurveyTable = ({ currentSurveys, handleSelect, history }) => {
                     onChange={handleSelect}
                   />
                   <div className="coldiv">
-                    <label
-                      style={{
-                        color: "black",
-                        fontWeight: 100,
-                        fontSize: "12px",
-                      }}
-                      htmlFor="vehicle1"
-                      onClick={() =>
-                        history.push(`/surveys/dashboard/${project?.survey_id}`)
-                      }
-                    >
-                      {project?.survey_name}
-                    </label>
-                    <br />
-                    <div className="project_id_and_internal_status">
-                      <span>
-                        #{project?.survey_id} / {project.project_id}
-                      </span>
-
-                      <span className="client">Luc.id</span>
+                    <div className="project_name_and_status">
+                      <Tooltip
+                        content={
+                          <TooltipForSurveyName name={project?.survey_name} />
+                        }
+                      >
+                        <label
+                          htmlFor="vehicle1"
+                          onClick={() =>
+                            history.push(
+                              `/surveys/dashboard/${project?.survey_id}`
+                            )
+                          }
+                          className="project_name"
+                        >
+                          {project?.survey_name}
+                        </label>
+                      </Tooltip>
 
                       <span
-                        style={{
-                          fontSize: "10px",
-                          color: "black",
-                          fontWeight: "lighter",
-                        }}
                         className={`survey_status_${project.internal_status} survey_status`}
                       >
                         {project.internal_status}
                       </span>
+                    </div>
+
+                    <br />
+                    <div className="project_id_and_internal_status">
+                      <span>
+                        #{project?.project_id} / {project.survey_id}
+                      </span>
+
+                      <span className="client">Luc.id</span>
                     </div>
                   </div>
                 </td>
@@ -790,35 +828,67 @@ const SurveyTable = ({ currentSurveys, handleSelect, history }) => {
                       : project?.avg_cpi}
                   </span>
                   <br />
-                  <span>US Dollar</span>
+                  <span>{project?.client_info?.client_cost_currency}</span>
                 </td>
                 <td>
                   {/* {project.IR} */}
                   <span className="tableValue">
-                    {project?.expected_incidence_rate}%
+                    {project?.ir ? `${project?.ir} %` : "-"}
                   </span>
                   <br />
                   <span>in-field</span>
                 </td>
                 <td>
                   <span className="tableValue">
-                    {project?.expected_completion_loi}
+                    {project?.expected_completion_loi
+                      ? project?.expected_completion_loi
+                      : "-"}
                   </span>
                   <br />
                   <span>mins</span>
                 </td>
                 <td>
                   <span className="tableValue">
-                    {project?.mirats_insights_team?.lead_project_managers[0]}{" "}
-                    <br />
-                    {project?.mirats_insights_team?.lead_project_managers[1]}
+                    {/* showing only the first lead project manager  */}
+                    {project?.mirats_insights_team?.lead_project_managers
+                      .length ? (
+                      <span className="project_manager_name">
+                        {
+                          project?.mirats_insights_team
+                            ?.lead_project_managers[0]
+                        }
+                      </span>
+                    ) : (
+                      "-"
+                    )}
+
+                    {/* showing the number of lead project managers  */}
+                    {project?.mirats_insights_team?.lead_project_managers
+                      .length - 1 ? (
+                      <Tooltip
+                        content={
+                          <OtherPMsTooltip
+                            pms={
+                              project?.mirats_insights_team
+                                ?.lead_project_managers
+                            }
+                          />
+                        }
+                        placement="bottom"
+                      >
+                        {` +${
+                          project?.mirats_insights_team?.lead_project_managers
+                            .length - 1
+                        }`}
+                      </Tooltip>
+                    ) : null}
                   </span>
                 </td>
                 <td>
                   {/* {project.EPC} */}
                   <span className="tableValue">0.35</span>
                   <br />
-                  <span>US Dollar </span>
+                  <span>{project?.client_info?.client_cost_currency} </span>
                 </td>
                 <td>
                   <span className="tableValue">{project?.study_type}</span>
@@ -845,6 +915,24 @@ const SurveyTable = ({ currentSurveys, handleSelect, history }) => {
         </tbody>
       </table>
     </div>
+  );
+};
+
+const TooltipForSurveyName = ({ name }) => {
+  return (
+    <>
+      <p>{name}</p>
+    </>
+  );
+};
+
+const OtherPMsTooltip = ({ pms }) => {
+  return (
+    <>
+      {pms.map((pm, index) => {
+        if (index !== 0) return <p>{pm}</p>;
+      })}
+    </>
   );
 };
 

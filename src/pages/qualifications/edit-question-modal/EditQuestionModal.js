@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
@@ -7,13 +7,12 @@ import { MdInfoOutline } from "react-icons/md";
 import Tooltip from "@mui/material/Tooltip";
 import { IconButton } from "@mui/material";
 import TextField from "@mui/material/TextField";
-import { v4 as uuidv4 } from "uuid";
+import { v4 as uuid } from "uuid";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { TiDeleteOutline } from "react-icons/ti";
 import { useQualificationsContext } from "../QualificationsContext";
-import { v4 as uuid } from "uuid";
 
 const style = {
   position: "absolute",
@@ -163,6 +162,7 @@ export const OptionsToDisplay = ({ question, displayOpt, setDisplayOpt }) => {
         : [...prevArr, index];
     });
   };
+
   return (
     <div className={styles.edit_display_options}>
       <label htmlFor="all" className={styles.legend}>
@@ -173,9 +173,7 @@ export const OptionsToDisplay = ({ question, displayOpt, setDisplayOpt }) => {
         {question?.options?.map((option, index) => (
           <div key={uuid()}>
             <FormControlLabel
-              control={
-                <Checkbox defaultChecked={displayOpt?.includes(index)} />
-              }
+              control={<Checkbox checked={displayOpt?.includes(index)} />}
               onChange={(e, checked) =>
                 handleDisplayOptionsChange(checked, index)
               }
@@ -196,7 +194,6 @@ export const Conditions = ({
   setCompulsaryOpt,
   handleMinMaxCondition,
 }) => {
-  console.log(question);
   const handleCheckboxChange = (checked, option) => {
     setCompulsaryOpt((prevArr) => {
       return !checked
@@ -208,7 +205,7 @@ export const Conditions = ({
     <div className={styles.conditions_container}>
       {question?.question_type === "Multi Punch" && (
         <>
-          <label>Conditions</label>
+          <label className={styles.legend}>Conditions</label>
           <div className={styles.textfields}>
             <TextField
               id="outlined-basic"
@@ -238,16 +235,7 @@ export const Conditions = ({
       )}
 
       <div className={styles.compulsary_options_container}>
-        <label>One or More from</label>{" "}
-        <Tooltip
-          title="Specify the condition for the editQuestion, If you want to give range then type it as eg. 1-7"
-          placement="right"
-          arrow
-        >
-          <IconButton>
-            <MdInfoOutline size={20} color="gray" />
-          </IconButton>
-        </Tooltip>
+        <label className={styles.legend}>One or More from</label>
       </div>
       <div className={styles.compulsary_options}>
         {!displayOpt?.length ? (
@@ -283,52 +271,51 @@ export const AllowedResponses = ({
   allowed_responses,
   set_allowed_responses,
 }) => {
-  const [cnt, setCnt] = useState(allowed_responses.length);
-  const handleMinInputChange = (e, i) => {
-    let newArr = [...allowed_responses];
-    if (i === allowed_responses.length) {
-      newArr.push({ from: parseInt(e.target.value), to: undefined });
-    } else newArr[i].from = parseInt(e.target.value);
+  const handleInputChange = (e, index) => {
+    const newArr = [...allowed_responses];
+    newArr[index][e.target.name] = parseInt(e.target.value);
     set_allowed_responses(newArr);
   };
-  const handleMaxInputChange = (e, i) => {
-    let newArr = [...allowed_responses];
-    if (i === allowed_responses.length)
-      newArr.push({ from: undefined, to: parseInt(e.target.value) });
-    else newArr[i].to = parseInt(e.target.value);
-    set_allowed_responses(newArr);
-  };
-  const handleRemoveInputBtn = (i) => {
-    set_allowed_responses(() => {
-      return allowed_responses.filter((_, index) => index !== i);
-    });
-    setCnt(cnt - 1);
+
+  const handleRemoveInputBtn = (id) => {
+    const values = [...allowed_responses];
+    values.splice(
+      values.findIndex((value) => value.id === id),
+      1
+    );
+    set_allowed_responses(values);
   };
 
   return (
     <div className={styles.response_container}>
       <div className={styles.responses}>
         <label className={styles.legend}>Allowed Responses</label>
-        {!cnt ? (
-          <p>You have no conditions specified</p>
+        {!allowed_responses.length ? (
+          <p className={styles.no_condition_text}>
+            You have no conditions specified
+          </p>
         ) : (
-          [...Array(cnt)].map((e, i) => {
+          allowed_responses.map((response, index) => {
             return (
-              <div key={uuid()} className={styles.response_inputs}>
+              <div key={response.id} className={styles.response_inputs}>
                 <input
                   type="number"
-                  value={allowed_responses[i]?.from}
-                  onChange={(e) => handleMinInputChange(e, i)}
-                />{" "}
+                  name="from"
+                  value={response?.from}
+                  onChange={(e) => handleInputChange(e, index)}
+                />
                 &nbsp; <span>to</span> &nbsp;
                 <input
                   type="number"
-                  value={allowed_responses[i]?.to}
-                  onChange={(e) => handleMaxInputChange(e, i)}
+                  name="to"
+                  value={response.to}
+                  onChange={(e) => handleInputChange(e, index)}
                 />
                 <TiDeleteOutline
                   size={30}
-                  onClick={() => handleRemoveInputBtn(i)}
+                  onClick={() => {
+                    handleRemoveInputBtn(response.id);
+                  }}
                 />
               </div>
             );
@@ -339,7 +326,11 @@ export const AllowedResponses = ({
       <div className={styles.add_condition_btn}>
         <AiOutlinePlusCircle
           size={26}
-          onClick={() => setCnt(cnt + 1)}
+          onClick={() => {
+            set_allowed_responses((prevData) => {
+              return [...prevData, { from: "", to: "" }];
+            });
+          }}
           id="add-btn"
         />{" "}
         &nbsp; &nbsp;

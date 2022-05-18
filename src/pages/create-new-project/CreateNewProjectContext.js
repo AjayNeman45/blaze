@@ -33,12 +33,14 @@ const CreateNewProjectProvider = ({ children }) => {
 
 	useEffect(() => {
 		const func = async () => {
-			const surveys = await getAllSurveys()
-			const sid = decryptText(encryptedID?.split("-")[0])
-			surveys.forEach(survey => {
-				setSurveys(prevData => [...prevData, survey.data()])
-				if (survey.data()?.survey_id === parseInt(sid))
-					setSurveyData(survey.data())
+			let sid
+			if (encryptedID) sid = decryptText(encryptedID?.split("-")[0])
+			getAllSurveys().then(surveys => {
+				surveys.forEach(survey => {
+					setSurveys(prevData => [...prevData, survey.data()])
+					if (survey.data()?.survey_id === parseInt(sid))
+						setSurveyData(survey.data())
+				})
 			})
 		}
 		func()
@@ -50,7 +52,6 @@ const CreateNewProjectProvider = ({ children }) => {
 			sGrps.forEach(group => {
 				tmp.push(group.data())
 			})
-			console.log(tmp)
 			setSurveyGrps(tmp)
 		})
 	}, [])
@@ -60,6 +61,7 @@ const CreateNewProjectProvider = ({ children }) => {
 	}
 
 	const insertBasicData = async () => {
+		console.log("inerting basic data ", surveys)
 		setInsertLoading(true)
 
 		let maxSurveyId = 0
@@ -75,6 +77,8 @@ const CreateNewProjectProvider = ({ children }) => {
 		})
 		const newSurveyId = maxSurveyId ? maxSurveyId + 1 : 10000001
 		const newProjectId = maxProjectId ? maxProjectId + 1 : 10000001
+
+		console.log(newSurveyId, newProjectId)
 
 		// check the existance of the project
 		const checkProjectExistance = checkingFor => {

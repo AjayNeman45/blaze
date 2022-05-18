@@ -1,87 +1,96 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react"
 import {
-  addDoc,
-  collection,
-  getDoc,
-  getDocs,
-  query,
-  setDoc,
-} from "firebase/firestore";
-import { db } from "../../firebase";
+	addDoc,
+	collection,
+	getDoc,
+	getDocs,
+	orderBy,
+	query,
+	setDoc,
+} from "firebase/firestore"
+import { db } from "../../firebase"
 import {
-  getAllSessions,
-  getAllSurveys,
-  getClients,
-} from "../../utils/firebaseQueries";
-import { useParams } from "react-router-dom";
+	getAllSessions,
+	getAllSurveys,
+	getClients,
+} from "../../utils/firebaseQueries"
+import { useParams } from "react-router-dom"
 
-const SurveyContext = createContext();
+const SurveyContext = createContext()
 
 export const useSurveyContext = () => {
-  return useContext(SurveyContext);
-};
+	return useContext(SurveyContext)
+}
 
 const SurveyContextProvider = ({ children }) => {
-  const { activity } = useParams();
-  console.log(activity);
-  const [surveys, setSurveys] = useState([]);
-  const [clients, setClients] = useState([]);
-  const [completedSessions, setCompletedSessions] = useState([]);
-  useEffect(() => {
-    const func = async () => {
-      const querySnapshot = await getDocs(
-        collection(db, "mirats", "surveys", "survey")
-      );
+	const { activity } = useParams()
+	const [surveys, setSurveys] = useState([])
+	const [clients, setClients] = useState([])
+	const [completedSessions, setCompletedSessions] = useState([])
+	useEffect(() => {
+		const func = async () => {
+			const querySnapshot = await getDocs(
+				collection(db, "mirats", "surveys", "survey")
+			)
 
-      querySnapshot.docs.reverse().forEach(async (doc) => {
-        let completes = 0;
-        let survey = doc.data();
-        let sid = survey?.survey_id;
-        let cpiSum = 0;
-        const result = await getAllSessions(sid);
-        result.forEach((res) => {
-          if (res.data()?.client_status === 10) {
-            cpiSum += parseInt(res.data()?.client_cpi);
-            completes++;
-          }
-        });
+			let surveysTmp = []
 
-        survey["completes"] = completes;
-        survey["hits"] = result.docs.length;
-        survey["avg_cpi"] = (cpiSum / completes).toFixed(2);
-        setSurveys((prevData) => {
-          return [...prevData, survey];
-        });
-      });
+			querySnapshot?.forEach(async doc => {
+				let completes = 0,
+					inClients = 0
+				let survey = doc.data()
+				let sid = survey?.survey_id
+				let cpiSum = 0
+				const result = await getAllSessions(sid)
 
-      const clients = await getClients();
-      clients?.forEach((client) => {
-        setClients((prevData) => [...prevData, client.data()]);
-      });
-    };
-    func();
-  }, []);
+				result.forEach(res => {
+					if (res.data()?.client_status === 10) {
+						cpiSum += parseInt(res.data()?.client_cpi)
+						completes++
+					}
+					if (res.data()?.mirats_status === 3) {
+						inClients++
+					}
+				})
+				survey["completes"] = completes
+				survey["hits"] = result.docs.length
+				survey["avg_cpi"] = (cpiSum / completes).toFixed(2)
+				survey["ir"] = ((completes / inClients) * 100).toFixed(2)
+				surveysTmp.push(survey)
+			})
 
-  const getCompletedSessions = async (sid) => {
-    const sessions = await getAllSessions(sid);
-    sessions?.forEach((session) => {
-      if (session.data()?.client_status === 10) {
-        setCompletedSessions((prevData) => {
-          return [...prevData, session.data()];
-        });
-      }
-    });
-  };
+			setSurveys(surveysTmp)
 
-  const value = {
-    surveys,
-    clients,
-    getCompletedSessions,
-    completedSessions,
-  };
-  return (
-    <SurveyContext.Provider value={value}>{children}</SurveyContext.Provider>
-  );
-};
+			const clients = await getClients()
+			clients?.forEach(client => {
+				setClients(prevData => [...prevData, client.data()])
+			})
+		}
+		func()
+	}, [])
 
-export default SurveyContextProvider;
+	const getCompletedSessions = async sid => {
+		const sessions = await getAllSessions(sid)
+		sessions?.forEach(session => {
+			if (session.data()?.client_status === 10) {
+				setCompletedSessions(prevData => {
+					return [...prevData, session.data()]
+				})
+			}
+		})
+	}
+	const value = {
+		surveys,
+		clients,
+		getCompletedSessions,
+		completedSessions,
+	}
+	return (
+		<SurveyContext.Provider value={value}>
+			{children}
+		</SurveyContext.Provider>
+	)
+}
+
+export default SurveyContextProvider
+

@@ -61,12 +61,30 @@ export const studyTypesData = [
   },
 ];
 export const surveyTypesData = [
-  "Consumer",
-  "Business-To-Business",
-  "Information Technology Decision Maker",
-  "Healthcare",
-  "Medical Professionals",
-  "Panel Recruits",
+  {
+    label: "Consumer",
+    value: "consumer",
+  },
+  {
+    label: "Business-To-Business",
+    value: "business-to-business",
+  },
+  {
+    label: "Information Technology Decision Maker",
+    value: "information_technology_decision_maker",
+  },
+  {
+    label: "Healthcare",
+    value: "helthcare",
+  },
+  {
+    label: "Medical Professionals",
+    value: "medical-professionals",
+  },
+  {
+    label: "Panel Recruits",
+    value: "panel_recruits",
+  },
 ];
 
 export const projectManagersData = ["Moinnudin S.", "Mahmood A.", "Janhavi R."];
@@ -109,18 +127,69 @@ export const mainStatusWithInternalStatuses = {
     { label: "Tested", value: "tested" },
     {
       label: "Not Tested",
-      value: "not_tested",
+      value: "not tested",
     },
   ],
   live: [
-    { label: "Soft Launch", value: "soft_launch" },
+    { label: "Soft Launch", value: "soft launch" },
     {
       label: "Full Launch",
-      value: "full_launch",
+      value: "full launch",
     },
   ],
   complete: [
     { label: "Reconciled", value: "reconciled" },
-    { label: "Not Reconciled", value: "not_reconciled" },
+    { label: "Not Reconciled", value: "not reconciled" },
   ],
 };
+
+export const industryData = [
+  {
+    label: "Automotive & Mobility",
+    value: "automotive_and_mobility",
+  },
+  {
+    label: "Consumer Package Goods",
+    value: "consumer_package_goods",
+  },
+  {
+    label: "Energy & Utilities",
+    value: "energy_and_utilities",
+  },
+  {
+    label: "Fashion, Beauty & Luxury",
+    value: "fashion_beauty_and_luxury",
+  },
+  {
+    label: "Finance",
+    value: "finance",
+  },
+  {
+    label: "Government & Public Sector",
+    value: "government_and_public_sector",
+  },
+  {
+    label: "Health",
+    value: "health",
+  },
+  {
+    label: "Hospitality, Leisure & Travel",
+    value: "hospitality_leisure_and_travel",
+  },
+  {
+    label: "Media",
+    value: "media",
+  },
+  {
+    label: "Retail",
+    value: "retail",
+  },
+  {
+    label: "Sport & Leisure",
+    value: "sport_and_leisure",
+  },
+  {
+    label: "Technology & Telecoms",
+    value: "technology_and_telecoms",
+  },
+];

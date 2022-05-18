@@ -120,6 +120,8 @@ const Documents = () => {
     fetchSurveyDocuments();
   }, []);
 
+  console.log(value);
+
   return (
     <>
       <Header />

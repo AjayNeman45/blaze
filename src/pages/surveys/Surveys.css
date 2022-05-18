@@ -94,7 +94,7 @@
   /* width: 320px !important; */
   display: flex;
   /* align-items: start; */
-  justify-content: space-around;
+  justify-content: space-evenly;
   /* border: 1px solid red; */
 }
 .project_table_first_col input {
@@ -110,38 +110,51 @@
   align-items: flex-start;
   margin-left: 8px;
 }
-.project_table_first_col .coldiv label {
-  cursor: pointer;
-  font-size: 15px;
-  color: rgb(18, 82, 219);
-  font-weight: bold;
-  text-align: start;
-}
-.project_table_first_col .coldiv label:hover {
-  color: rgb(18, 149, 209);
-  text-decoration: underline;
-}
 
-.project_id_and_internal_status {
+.project_survey_id_and_client_name {
   display: flex;
   align-items: center;
   flex-direction: row;
   justify-content: space-between;
   margin-top: 0.1rem;
 }
-.project_id_and_internal_status span {
-  /* border: 1px solid black; */
-  font-size: 12px;
+.project_name_and_status {
+  display: flex;
+  align-items: center;
+  /* border: 1px solid red; */
 }
+.project_name {
+  color: rgb(110, 110, 110);
+  font-weight: 100;
+  font-size: 12px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: bold;
+  text-align: start;
+  white-space: nowrap;
+  width: 8.3rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /* border: 1px solid red; */
+}
+.project_name:hover {
+  color: rgb(18, 149, 209);
+  text-decoration: underline;
+}
+
 .survey_status {
-  width: 4rem;
-  padding: 0.1rem 0;
-  /* border-radius: 20px; */
   margin-left: 10px;
   font-weight: 200;
+  font-size: 10px;
+  font-weight: "lighter";
+  color: white;
+  padding: 2px 5px;
+  font-weight: bold;
+  /* width: 6rem; */
 }
 .survey_status_ongoing {
-  background-color: rgb(255, 204, 93);
+  background-color: rgb(247, 217, 152);
+  color: rgb(130, 126, 2);
 }
 .survey_status_lost {
   background-color: rgb(186, 0, 0);
@@ -152,8 +165,29 @@
   color: white;
 }
 .survey_status_lead {
-  background-color: gray;
-  color: white;
+  background-color: rgb(193, 190, 190);
+  color: grey;
+}
+.survey_status_soft {
+  background-color: skyblue;
+  color: rgb(16, 98, 130);
+}
+.survey_status_full {
+  background-color: rgb(138, 138, 223);
+  color: rgb(77, 77, 109);
+}
+.survey_status_tested {
+  color: rgb(162, 38, 38);
+  background-color: rgb(249, 181, 181);
+}
+.survey_status_not {
+  background-color: rgb(255, 158, 129);
+}
+.project_manager_name {
+  font-size: 12px;
+  border: 1px solid gray;
+  border-radius: 5px;
+  padding: 1px 3px;
 }
 
 .project_table {
@@ -241,13 +275,7 @@
   align-items: center;
   justify-content: center;
 }
-.dataRow {
-  /* height: 110px; */
-}
-.dataRow td span {
-  color: #6a6a6a;
-  /* font-weight: 600 !important; */
-}
+
 .client {
   margin-left: 0.3vmax;
   border: 1px solid #000000;

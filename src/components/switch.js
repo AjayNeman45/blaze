@@ -96,10 +96,10 @@ function BasicSwitch(props) {
   );
 }
 
-export default function UseSwitchBasic({ setSupplierData }) {
+export default function UseSwitchBasic({ checked, setSupplierData }) {
   return (
     <div>
-      <BasicSwitch setSupplierData={setSupplierData} />
+      <BasicSwitch setSupplierData={setSupplierData} isChecked={checked} />
     </div>
   );
 }

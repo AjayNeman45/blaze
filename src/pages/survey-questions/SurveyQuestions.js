@@ -56,7 +56,6 @@ const SurveyQuestions = () => {
 
   const handleSinglePunch = () => {
     const user_res = parseInt(response);
-    console.log(response);
     let flag = false,
       index,
       mirats_status;
@@ -90,9 +89,10 @@ const SurveyQuestions = () => {
 
     if (flag) {
       setError("");
+      console.log(isFinalQuestion);
       isFinalQuestion ? (mirats_status = 3) : (mirats_status = 1);
       addQualificationResponseInSessions(body, mirats_status);
-      if (question?.conditions?.quotas.hasOwnProperty(index)) {
+      if (question?.conditions?.quotas?.hasOwnProperty(index)) {
         if (question?.conditions?.quotas?.[index] < cntSessions) {
           setErrCode(40);
           setErrMsg("reach maximum limit for this option");
@@ -101,6 +101,7 @@ const SurveyQuestions = () => {
         }
       }
       if (isFinalQuestion) {
+        console.log(refereneUrl);
         if (gamma === "alpha") history.push(predirectUrl);
         else history.push(refereneUrl);
         console.log("Cangrats You are qualify for the survey");
@@ -121,16 +122,17 @@ const SurveyQuestions = () => {
     }
     setResponse("");
   };
-  // console.log(question)
 
   const handleMultiPunch = () => {
     let count = 0,
-      mirats_status;
+      mirats_status,
+      flag = true;
     let wanted_cnt = question?.conditions?.valid_options?.length;
 
     multiPunchResp?.map((res) => {
       const user_res = parseInt(res);
-      question?.conditions?.valid_options?.includes(user_res) && count++;
+      if (!question?.conditions?.valid_options?.includes(user_res))
+        flag = false;
     });
 
     const body = {
@@ -141,6 +143,7 @@ const SurveyQuestions = () => {
     question?.is_core_demographic ? (mirats_status = 23) : (mirats_status = 24);
 
     // conditions for right answer
+
     if (multiPunchResp.length < question?.conditions?.how_many?.min) {
       if (gamma === "alpha") history.push(predirectUrl);
       else
@@ -153,7 +156,7 @@ const SurveyQuestions = () => {
         setError(
           `Select maximum ${question?.conditions?.how_many?.max} options`
         );
-    } else if (wanted_cnt !== count) {
+    } else if (!flag) {
       addQualificationResponseInSessions(body, mirats_status);
       if (gamma === "alpha") history.push(predirectUrl);
       else {
@@ -219,7 +222,7 @@ const SurveyQuestions = () => {
       setError("");
       isFinalQuestion ? (mirats_status = 3) : (mirats_status = 1);
       addQualificationResponseInSessions(body, mirats_status);
-      if (question?.conditions?.quotas.hasOwnProperty(index)) {
+      if (question?.conditions?.quotas?.hasOwnProperty(index)) {
         if (question?.conditions?.quotas[index] < cntSessions) {
           setErrCode(40);
           setErrMsg("reach maximum limit for this option");
@@ -233,6 +236,7 @@ const SurveyQuestions = () => {
         console.log("Cangrats You are qualify for the survey");
         return;
       }
+      console.log(nextQuestionUrl);
       history.push(nextQuestionUrl);
     } else {
       addQualificationResponseInSessions(body, mirats_status);

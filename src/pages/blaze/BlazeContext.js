@@ -51,6 +51,7 @@ const BlazeContextProvider = ({ children }) => {
   const [finalVerification, setFinalverification] = useState();
   const [survey, setSurvey] = useState("");
   const [allSurveys, setAllSurveys] = useState([]);
+  const [allSessions, setAllSessions] = useState([]);
   const [ip, setIp] = useState(null);
 
   const location = useLocation();
@@ -104,7 +105,15 @@ const BlazeContextProvider = ({ children }) => {
       });
       setAllSurveys(surveysData);
     });
-  }, []);
+
+    getAllSessions(surveyID, gamma).then((sessions) => {
+      let sessionsTmp = [];
+      sessions?.forEach((session) => {
+        sessionsTmp.push(session.data());
+      });
+      setAllSessions(sessionsTmp);
+    });
+  }, [gamma, surveyID]);
 
   useEffect(() => {
     if (!encryptedID && !srcID && !rID) {
@@ -294,22 +303,20 @@ const BlazeContextProvider = ({ children }) => {
     }
   }, [sessionTechnicalDetails, geoData, ip]);
 
-  //  verify ip, rid , encrypt url, cookie, country
+  //  verify ip, rid , fingerprint for uniqueness
   const verifyTechnicalDetails = async () => {
     console.log("verifying techincal details ");
     let techincalDetailsVerification = false;
     const securityChecks = survey?.security_checks;
     const device_type = sessionTechnicalDetails?.deviceType.toLowerCase();
-
-    // get all the sessions of that survey
-    const sessions = await getAllSessions(surveyID, gamma);
+    console.log(ip);
 
     // directly move on to the blocked data verification when there in no session
-    if (sessions.size === 0) techincalDetailsVerification = true;
+    if (allSessions.length === 0) techincalDetailsVerification = true;
 
     // traverse over all the sessions to match ip , rid and all other things
-    sessions?.forEach((doc) => {
-      const geoData = doc.data().geo_data;
+    allSessions?.forEach((doc) => {
+      const geoData = doc?.geo_data;
       if (!surveyID || !countryID || !projectID) {
         setErrCodeAndMsg(
           131,
@@ -323,7 +330,7 @@ const BlazeContextProvider = ({ children }) => {
         techincalDetailsVerification = false;
       }
       // verifying respondant id
-      else if (securityChecks?.unique_rid && doc.data()?.rid === rID) {
+      else if (securityChecks?.unique_rid && doc?.rid === rID) {
         setErrCodeAndMsg(
           35,
           "Respondent did not have a unique rid for that supplier"
@@ -331,27 +338,12 @@ const BlazeContextProvider = ({ children }) => {
         techincalDetailsVerification = false;
       } else if (
         securityChecks?.unique_fingerprint &&
-        fingerPrint === doc.data()?.fingerPrint
+        fingerPrint === doc?.fingerPrint
       ) {
         setErrCodeAndMsg(
           232,
           "TrueSample Fingerprint Risk Level exceeds acceptable threshold"
         );
-        techincalDetailsVerification = false;
-      } else if (check_cookie_name("blaze")) {
-        setErrCodeAndMsg(
-          36,
-          "Respondant cookie indicated they had taken a survey"
-        );
-        techincalDetailsVerification = false;
-      } else if (!survey?.device_suitability?.[`${device_type}`]) {
-        setErrCodeAndMsg(
-          101,
-          "device type " + device_type + " dosent allowed to attend the survey"
-        );
-        techincalDetailsVerification = false;
-      } else if (survey?.country?.country !== geoData?.country_code) {
-        setErrCodeAndMsg(37, "Respondent is not in the country of the survey");
         techincalDetailsVerification = false;
       } else {
         techincalDetailsVerification = true;
@@ -391,50 +383,32 @@ const BlazeContextProvider = ({ children }) => {
     }
   };
 
-  // verifying other information
+  // verifying device type, device suitability country and cookie
   const otherVerification = async () => {
     console.log("verifying other information");
-    const device_type = sessionTechnicalDetails?.deviceType;
-    switch (device_type) {
-      case "Desktop":
-        if (!survey?.device_suitability.desktop) {
-          setErrCodeAndMsg(
-            101,
-            "device type " +
-              device_type +
-              " dosent allowed to attend the survey"
-          );
-        } else {
-          return verifySrcId();
-        }
-        break;
-      case "Laptop":
-        if (!survey?.device_suitability.laptop) {
-          setErrCodeAndMsg(
-            101,
-            "device type " +
-              device_type +
-              " dosent allowed to attend the survey"
-          );
-        } else {
-          verifySrcId();
-        }
-        break;
-      case "Mobile":
-        if (!survey?.device_suitability.mobile) {
-          setErrCodeAndMsg(
-            101,
-            "device type " +
-              device_type +
-              " dosent allowed to attend the survey"
-          );
-        } else {
-          verifySrcId();
-        }
-        break;
-      default:
-        return;
-    }
+    const device_type = sessionTechnicalDetails?.deviceType.toLowerCase();
+    console.log(device_type);
+    if (
+      survey?.device_suitability?.[device_type] === undefined ||
+      !survey?.device_suitability?.[device_type]
+    ) {
+      setErrCodeAndMsg(
+        101,
+        "device type " + device_type + " dosent allowed to attend the survey"
+      );
+    } else if (check_cookie_name("blaze")) {
+      setErrCodeAndMsg(
+        36,
+        "Respondant cookie indicated they had taken a survey"
+      );
+    } else if (!survey?.device_suitability?.[`${device_type}`]) {
+      setErrCodeAndMsg(
+        101,
+        "device type " + device_type + " dosent allowed to attend the survey"
+      );
+    } else if (survey?.country?.country !== geoData?.country_code) {
+      setErrCodeAndMsg(37, "Respondent is not in the country of the survey");
+    } else verifySrcId();
   };
   //verify srcid
   const verifySrcId = async () => {
@@ -456,33 +430,34 @@ const BlazeContextProvider = ({ children }) => {
     if (flag) {
       let completedSessionsCnt = 0;
       let srcSpecificCompletedSessionsCnt = 0;
-      getAllSessions(surveyID, gamma).then((sessions) => {
-        sessions.docs.forEach((session) => {
-          const sd = session.data();
-          if (sd?.client_status === 10) {
-            completedSessionsCnt++;
-            if (sd?.supplier_account_id === supplier_account_id) {
-              srcSpecificCompletedSessionsCnt++;
-            }
-          }
-        });
-        if (completedSessionsCnt > survey?.no_of_completes) {
-          console.log(
-            "survey has completed the no of completes hence terminated"
-          );
-        } else {
-          if (srcSpecificCompletedSessionsCnt > supplier?.allocation?.number) {
-            console.log(
-              "allocation for the supplier has completed hence terminated"
-            );
-          } else {
-            console.log("src id verification done..");
+      allSessions?.forEach((session) => {
+        if (session?.client_status === 10) {
+          completedSessionsCnt++;
+          if (session?.supplier_account_id === supplier_account_id) {
+            srcSpecificCompletedSessionsCnt++;
           }
         }
       });
+
+      if (completedSessionsCnt > survey?.no_of_completes) {
+        console.log(
+          "survey has completed the no of completes hence terminated"
+        );
+      } else {
+        if (srcSpecificCompletedSessionsCnt > supplier?.allocation?.number) {
+          console.log(
+            "allocation for the supplier has completed hence terminated"
+          );
+        } else {
+          console.log("src id verification done..");
+        }
+      }
+
       verifySurveyGroupData();
     } else {
-      console.log("srcid is not matched hence terminated");
+      console.log(
+        "srcid is not matched or the src is not active... hence terminated"
+      );
     }
   };
 
