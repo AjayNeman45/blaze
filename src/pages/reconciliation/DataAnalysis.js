@@ -69,7 +69,6 @@ const DataAnalysis = () => {
     const func = async () => {
       try {
         const survey = await getSurvey(surveyID);
-        console.log(survey);
         const allSessions = await getAllSessions(surveyID, gamma);
         allSessions.forEach((session) => {
           let clientStatus = session.data()?.client_status;
@@ -146,7 +145,6 @@ const DataAnalysis = () => {
       return temp;
     });
   };
-  console.log(sessionsCopy);
   // handles Download To Excel btn
   const DownloadToExcel = () => {
     console.log("download excel function called");

@@ -308,7 +308,6 @@ const RespondantActivity = () => {
       setLabels([]);
       setBarData({ entrants: [], prescreens: [], completed: [] });
       Object?.keys(graphData)?.map((key) => {
-        console.log(graphData?.[key]?.entrants);
         setLabels((prevData) => [...prevData, key]);
         setBarData((prevData) => {
           return {

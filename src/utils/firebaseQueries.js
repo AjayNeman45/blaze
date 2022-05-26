@@ -236,15 +236,11 @@ export const getQuestions = async (question_type, survey) => {
 };
 
 export const getAllQuestionLibraryQuestions = async () => {
-  let questions = [];
   const q = query(
-    collection(db, "mirats", "Qualifications", "QuestionLibrary")
+    collection(db, "mirats", "Qualifications", "QuestionLibrary"),
+    orderBy("question_id", "desc")
   );
-  const querySnapshot = await getDocs(q);
-  querySnapshot.forEach((doc) => {
-    questions.push(doc.data());
-  });
-  return questions;
+  return await getDocs(q);
 };
 
 export const updateReconciliationStatus = async (
@@ -539,6 +535,33 @@ export const updateSupplier = async (survey, supplier) => {
   survey.external_suppliers = updatedExternalSupplier;
   console.log(survey?.survey_id);
   return await updateSurvey(survey?.survey_id, survey);
+};
+
+export const deleteSurveys = async (elem) => {
+  return await deleteDoc(doc(db, "mirats", "surveys", "survey", String(elem)));
+};
+
+export const getUserData = async (id) => {
+  return await getDoc(doc(db, "miratsinsights", "employees", "employee", id));
+};
+
+export const updateQuestion = async (questionID, body) => {
+  return await updateDoc(
+    doc(db, "mirats", "Qualifications", "QuestionLibrary", String(questionID)),
+    { ...body }
+  );
+};
+
+export const deleteLangFromQualification = async (
+  questionID,
+  deletedLangQue
+) => {
+  console.log(questionID, deletedLangQue);
+  return await updateDoc(
+    doc(db, "mirats", "Qualifications", "QuestionLibrary", questionID),
+    { ...deletedLangQue },
+    { merge: true }
+  );
 };
 
 // export const deletSupplier = async (supplier) => {

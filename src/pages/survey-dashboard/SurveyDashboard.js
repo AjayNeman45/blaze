@@ -2,16 +2,14 @@ import React, { ReactDOM, useEffect, useState } from "react";
 import styles from "./surveydashboard.module.css";
 import Header from "../../components/header/Header";
 import Subheader from "../../components/subheader/Subheader";
-import SurveyInfo, { NameModal } from "../../components/survey-info/SurveyInfo";
+import { NameModal } from "../../components/survey-info/SurveyInfo";
 import TeamCards from "../../components/teamcards/TeamCards";
 import { Progress } from "@nextui-org/react";
-import Badge from "@mui/material/Badge";
 import { IoAdd } from "react-icons/io5";
 import classnames from "classnames";
 import SupplyOverViewBigCard from "./components/supply-overview-bigcard/SupplyOverViewBigCard";
 import NerdySpecs from "./components/nerdy-Specs/NerdySpecs";
-import DateRangePicker from "rsuite/DateRangePicker";
-import Loader from "rsuite/Loader";
+
 import {
   getAvgCPI,
   getFinancialOverview,
@@ -23,11 +21,13 @@ import { getAvgLOI } from "./SurveyDashboardContext";
 import {
   mainStatusWithInternalStatuses,
   statusOptions,
+  studyTypesData,
 } from "../../utils/commonData";
 import { useParams } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 import { updateSurvey } from "../../utils/firebaseQueries";
 import ChangeInternalStatusModal from "../../components/survey-info/ChangeInternalStatusModal";
+import { v4 as uuid } from "uuid";
 
 const big_bar_status = [
   {
@@ -93,20 +93,16 @@ function SurveyDashboard() {
   }, [survey]);
 
   const handleActiveLight = (mainStatus, internalStatus) => {
-    console.log(mainStatus, internalStatus);
     if (mainStatus?.toLowerCase() === "bidding") {
       setBatti(1);
     } else if (mainStatus?.toLowerCase() === "awarded") {
       setBatti(2);
-      console.log("awarded choose");
     } else if (mainStatus?.toLowerCase() === "live") {
       if (internalStatus.toLowerCase() === "soft_launch") setBatti(3);
       else if (internalStatus.toLowerCase() === "full_launch") setBatti(4);
     } else if (mainStatus?.toLowerCase() === "complete") {
-      console.log("completed status hit");
       setBatti(5);
     } else if (mainStatus?.toLowerCase() === "billed") {
-      console.log("billed status hit");
       setBatti(6);
     } else {
       setBatti();
@@ -142,6 +138,7 @@ function SurveyDashboard() {
     updateSurvey(surveyID, { status: changedStatus, internal_status: "" })
       .then(() => {
         setSnackbar(true);
+        console.log(`survey status (${changedStatus}) updated`);
         setSnackbarData({
           msg: "survey status updated successfully...",
           severity: "success",
@@ -203,7 +200,11 @@ function SurveyDashboard() {
                   }}
                 >
                   {statusOptions?.map((option) => (
-                    <option value={option?.value} style={{ color: "green" }}>
+                    <option
+                      value={option?.value}
+                      style={{ color: "green" }}
+                      key={uuid()}
+                    >
                       {option?.label}
                     </option>
                   ))}
@@ -218,7 +219,7 @@ function SurveyDashboard() {
               <div className={styles.big_bar_container}>
                 {big_bar_status?.map(({ name, value }) => {
                   return (
-                    <div className={styles.b_bar}>
+                    <div className={styles.b_bar} key={uuid()}>
                       <p className={styles.b_title}>{name}</p>
                       <p className={styles.b_count}>
                         {statusesCnt?.[value] ? statusesCnt?.[value] : "-"}
@@ -400,7 +401,9 @@ function SurveyDashboard() {
             </div>
             <div className={styles.big_card_container}>
               {survey?.external_suppliers?.slice(0, 3).map((supp) => (
-                <SupplyOverViewBigCard supp={supp} />
+                <div key={uuid()}>
+                  <SupplyOverViewBigCard supp={supp} />
+                </div>
               ))}
             </div>
             <div className={styles.small_card_container}>
@@ -422,7 +425,7 @@ function SurveyDashboard() {
           <div className={styles.financial_overview_container}>
             <div className={styles.financial_overview_header}>
               <div className={styles.left_container}>
-                <h1 className={styles.title}>Financial Overview</h1>
+                <h1 className={styles.title}>Financial Overview </h1>(Actual)
               </div>
               <div className={styles.right_container}>
                 {/* <div>
@@ -446,7 +449,7 @@ function SurveyDashboard() {
 										Predicted
 									</button>
 								</div> */}
-                <div>
+                {/* <div>
                   <button
                     className={styles.actual_btn}
                     onClick={() =>
@@ -460,7 +463,7 @@ function SurveyDashboard() {
                   >
                     Actual
                   </button>
-                </div>
+                </div> */}
               </div>
             </div>
             <div className={styles.financial_data_container_bigcard}>
@@ -564,7 +567,16 @@ function SurveyDashboard() {
             <div className={styles.stud_and_sur}>
               <div className={styles.right_small_cards}>
                 <p className={styles.title}>Study Type</p>
-                <p className={styles.count}>{survey?.study_type}</p>
+
+                {studyTypesData?.map((type) => {
+                  if (type?.value === survey?.study_type) {
+                    return (
+                      <p className={styles.count} key={uuid()}>
+                        {type?.label}
+                      </p>
+                    );
+                  }
+                })}
               </div>
               <div className={styles.right_small_cards}>
                 <p className={styles.title}>Survey Type</p>

@@ -22,10 +22,7 @@ const AddQualificationContextProvider = ({ children }) => {
   const [selectedQuestion, setSelectedQuestion] = useState({});
   const [displayOpt, setDisplayOpt] = useState([]);
   const [compulsaryOpt, setCompulsaryOpt] = useState([]);
-  const [allowedResponses, setAllowedResponses] = useState([
-    { from: 20, to: 30, id: uuid() },
-    { from: "", to: "", id: uuid() },
-  ]);
+  const [allowedResponses, setAllowedResponses] = useState([]);
   const [minMaxCondition, setMinMaxCondition] = useState();
   const [allowedTextAns, setAllowedTextAns] = useState(null);
   const [insertLoading, setInsertLoading] = useState(false);

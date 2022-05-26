@@ -2,15 +2,25 @@ import React, { useEffect, useMemo, useState } from "react";
 import Header from "../../components/header/Header";
 import { useQualificationsContext } from "../qualifications/QualificationsContext";
 import styles from "./QuestionLibrary.module.css";
-import { styled } from "@mui/system";
+import { Box, styled } from "@mui/system";
 import { useQualificationLibraryContext } from "./QuestionLibraryContext";
 import { v4 as uuid } from "uuid";
-import { Pagination, Stack, TablePagination } from "@mui/material";
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Modal,
+  Pagination,
+  Stack,
+  TablePagination,
+} from "@mui/material";
 import TablePaginationUnstyled from "@mui/base/TablePaginationUnstyled";
 import CreateQualifications from "./CreateQualifications/CreateQualifications";
 import countryList from "react-select-country-list";
-import Select from "react-select";
+import { default as MuiSelect } from "@mui/material/Select";
 import SnackbarMsg from "../../components/Snackbar";
+import EditQualification from "./EditQualifications/EditQualification";
+import { MdDeleteOutline } from "react-icons/md";
 
 const countrySelectStyle = {
   menu: (provided, state) => ({
@@ -43,13 +53,20 @@ const QuestionLibrary = () => {
   } = useQualificationLibraryContext();
   const [allQuestions, setAllQuestions] = useState([]);
   const [allQuestionsCopy, setAllQuestionsCopy] = useState([]);
-  const [filtersApplied, setFiltersApplied] = useState({});
+  const [filtersApplied, setFiltersApplied] = useState({
+    status: "all",
+    question_type: "all",
+  });
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const countries = useMemo(() => countryList().getData(), []);
+  const rowsPerPage = 10;
+  const [selectedQues, setSelectedQues] = useState([]);
+  const [selectedQueCnt, setSelectedQueCnt] = useState(0);
+  const [editQueModal, setEditQueModal] = useState(false);
+  const [deleteConfirmationModal, setDeleteConfirmationModal] = useState(false);
 
   useEffect(() => {
-    console.log(questions[0]);
+    setAllQuestions([]);
+    setAllQuestionsCopy([]);
     questions?.map((que) => {
       Object.keys(que?.lang)?.map((key) => {
         let body = {
@@ -59,6 +76,7 @@ const QuestionLibrary = () => {
           name: que?.name,
           question_id: que?.question_id,
           question_type: que?.question_type,
+          question_status: que?.question_status,
         };
         setAllQuestions((prevData) => [...prevData, { ...body }]);
         setAllQuestionsCopy((prevData) => [...prevData, { ...body }]);
@@ -78,46 +96,55 @@ const QuestionLibrary = () => {
     let value = e.target.value.toLowerCase();
     let filteredQue = [];
 
-    allQuestionsCopy?.map((que) => {
-      if (que?.question_text.toLowerCase().includes(value)) {
+    setAllQuestions(allQuestionsCopy);
+
+    allQuestionsCopy?.filter((que) => {
+      if (que?.name.toLowerCase() === value) {
+        filteredQue.unshift(que);
+      } else if (que?.question_text.includes(value)) {
         filteredQue.push(que);
       }
     });
-
     setAllQuestions(filteredQue);
-    // var filter, table, tr, td, i, txtValue;
-    // filter = e.target.value.toUpperCase();
-    // table = document.getElementById("qualification_table");
-    // tr = table.getElementsByTagName("tr");
-    // for (i = 0; i < tr.length; i++) {
-    //   td = tr[i].getElementsByTagName("td")[0];
-    //   if (td) {
-    //     txtValue = td.textContent || td.innerText;
-    //     if (txtValue.toUpperCase().indexOf(filter) > -1) {
-    //       tr[i].style.display = "";
-    //     } else {
-    //       tr[i].style.display = "none";
-    //     }
-    //   }
-    // }
   }
 
   useEffect(() => {
-    // allQuestionsCopy?.map((que) => {
-    //   Object.keys(filtersApplied)?.map((filter) => {
-    //     switch (filter) {
-    //       case "question_text":
-    //         filteredQue.push(que);
-    //     }
-    //   });
-    // });
+    setAllQuestions(allQuestionsCopy);
+
+    Object.keys(filtersApplied)?.map((filter) => {
+      if (filtersApplied[filter] === "all") return;
+      switch (filter) {
+        case "status":
+          setAllQuestions((prevQues) => {
+            return prevQues?.filter((que) => {
+              if (que?.question_status === filtersApplied?.status) {
+                return que?.question_status;
+              }
+            });
+          });
+          break;
+        case "question_type":
+          setAllQuestions((prevQues) => {
+            return prevQues?.filter((que) => {
+              if (que?.question_type === filtersApplied?.question_type) {
+                return que?.question_status;
+              }
+            });
+          });
+          break;
+        default:
+          return;
+      }
+    });
+
+    allQuestions?.map((que) => {
+      Object.keys(filtersApplied)?.map((filter) => {});
+    });
   }, [filtersApplied]);
 
   const handleChange = (event, value) => {
     setCurrentPage(value);
   };
-
-  console.log(filtersApplied);
 
   return (
     <>
@@ -127,10 +154,34 @@ const QuestionLibrary = () => {
         open={snackbarData?.show}
         handleClose={handleCloseSnackbar}
       />
+
+      {/* for creating qualification  */}
       <CreateQualifications
         openModal={addQualModal}
         setOpenModal={setAddQualModal}
       />
+
+      {/* for editing qualifications  */}
+      {editQueModal ? (
+        <EditQualification
+          open={editQueModal}
+          handleClose={() => setEditQueModal(false)}
+          defaultData={selectedQues}
+          setSelectedQueCnt={setSelectedQueCnt}
+          setSelectedQues={setSelectedQues}
+        />
+      ) : null}
+
+      {deleteConfirmationModal ? (
+        <DeleteConfirmModal
+          open={deleteConfirmationModal}
+          handleCloseDeleteModal={() => setDeleteConfirmationModal(false)}
+          data={selectedQues}
+          setSelectedQueCnt={setSelectedQueCnt}
+          setSelectedQues={setSelectedQues}
+        />
+      ) : null}
+
       <Header />
       <div className={styles.question_library_page}>
         <div className={styles.header_container}>
@@ -147,71 +198,57 @@ const QuestionLibrary = () => {
           </div>
         </div>
         <div className={styles.filters_container}>
-          {/* <select
-            onChange={(e) => {
-              setFiltersApplied((prevData) => {
-                return {
-                  ...prevData,
-                  status: e.target.value,
-                };
-              });
-            }}
-          >
-            <option selected disabled hidden>
-              status
-            </option>
-            <option value="active">Active</option>
-            <option value="inactive">In Active</option>
-          </select> */}
-          {/* <select
-            onChange={(e) => {
-              setFiltersApplied((prevData) => {
-                return {
-                  ...prevData,
-                  question_type: e.target.value,
-                };
-              });
-            }}
-          >
-            <option selected disabled hidden>
-              Question Type
-            </option>
-            <option>Single Punch</option>
-            <option>Multi Punch</option>
-            <option>Numeric - Open-end</option>
-            <option>Text - Open-end</option>
-          </select> */}
-          {/* <Select
-            options={countries}
-            styles={countrySelectStyle}
-            onChange={(e) => {
-              setFiltersApplied((prevData) => {
-                return {
-                  ...prevData,
-                  country: e.value,
-                };
-              });
-            }}
-          /> */}
-          {/* <select
-            onChange={(e) => {
-              setFiltersApplied((prevData) => {
-                return {
-                  ...prevData,
-                  language: e.target.value,
-                };
-              });
-            }}
-          >
-            <option selected disabled hidden>
-              Language
-            </option>
-            <option value="ENG">English</option>
-            <option value="FRA">French</option>
-            <option value="GER">German</option>
-            <option value="JPN">Japanese</option>
-            <option value="ESP">Spanish</option>
-          </select> */}
+          <div className={styles.left}>
+            <FormControl sx={{ width: "200px" }}>
+              <InputLabel id="demo-simple-select-label">status</InputLabel>
+              <MuiSelect
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={filtersApplied?.status}
+                label="status"
+                onChange={(e) => {
+                  setFiltersApplied((prevData) => {
+                    return {
+                      ...prevData,
+                      status: e.target.value,
+                    };
+                  });
+                }}
+              >
+                <MenuItem value="all">All</MenuItem>
+                <MenuItem value="active">Active</MenuItem>
+                <MenuItem value="inactive">Inactive</MenuItem>
+              </MuiSelect>
+            </FormControl>
+            &nbsp; &nbsp; &nbsp;
+            <FormControl sx={{ width: "200px" }}>
+              <InputLabel id="demo-simple-select-label">
+                Question Type
+              </InputLabel>
+              <MuiSelect
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={filtersApplied?.question_type}
+                label="Question Type"
+                onChange={(e) => {
+                  setFiltersApplied((prevData) => {
+                    return {
+                      ...prevData,
+                      question_type: e.target.value,
+                    };
+                  });
+                }}
+              >
+                <MenuItem value="all">All</MenuItem>
+                <MenuItem value="Single Punch">Single Punch</MenuItem>
+                <MenuItem value="Multi Punch">Multi Punch</MenuItem>
+                <MenuItem value="Numeric - Open-end">
+                  Numeric - Open-end
+                </MenuItem>
+                <MenuItem value="Text - Open-end">Text - Open-end</MenuItem>
+              </MuiSelect>
+            </FormControl>
+          </div>
           <input
             className={styles.question_search_input}
             type="search"
@@ -222,14 +259,9 @@ const QuestionLibrary = () => {
 
         <div style={{ overflowX: "auto" }} className={styles.project_table_div}>
           <table className="project_table" id="qualification_table">
-            <thead style={{ width: "100%" }}>
+            <thead>
               <tr className={styles.cell_large}>
-                <th
-                  style={{
-                    width: "50%",
-                    textAlign: "center",
-                  }}
-                >
+                <th>
                   Qualification Text
                   <p className="headingDescription">Question Type</p>
                 </th>
@@ -243,45 +275,48 @@ const QuestionLibrary = () => {
             <tbody>
               {currentQuestions?.map((que) => (
                 <tr className="dataRow" key={uuid()}>
-                  <td
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "flex-start",
-                      padding: "40px 20px",
-                      width: "100%",
-                    }}
-                    className="project_table_first_col"
-                  >
+                  <td className={styles.table_first_column}>
                     <input
                       type="checkbox"
                       name="firstCol"
-                      value={que?.question_id}
+                      checked={selectedQues.includes(
+                        que?.lang + que?.question_id
+                      )}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setSelectedQueCnt((preNum) => preNum + 1);
+                          setSelectedQues((prevData) => [
+                            ...prevData,
+                            que?.lang + que?.question_id,
+                          ]);
+                        } else {
+                          setSelectedQueCnt((preNum) => preNum - 1);
+                          setSelectedQues((prevData) => {
+                            return prevData?.filter((id) => {
+                              return id !== que?.lang + que?.question_id;
+                            });
+                          });
+                        }
+                      }}
                       id={que?.question_id}
                     />
-                    <div className="coldiv">
-                      <label
-                        style={{
-                          color: "black",
-                          fontWeight: 100,
-                          fontSize: "12px",
-                        }}
-                      >
+                    <div className={styles.coldiv}>
+                      <label className={styles.question_text}>
                         {que?.question_text}
                       </label>
                       <br />
-                      <div className="project_id_and_internal_status">
+                      <div>
                         <span>{que?.question_type}</span>
                         <span
-                          style={{
-                            fontSize: "10px",
-                            color: "black",
-                            fontWeight: "lighter",
-                          }}
-                          className={styles.active_question_tag}
-                          // className={`survey_status_${project.internal_status} survey_status`}
+                          className={
+                            que?.question_status === "active"
+                              ? styles.active_question_tag
+                              : styles.inactive_question_tag
+                          }
                         >
-                          {que?.status ? "Active" : "Inactive"}
+                          {que?.question_status === "active"
+                            ? "Active"
+                            : "Inactive"}
                         </span>
                       </div>
                     </div>
@@ -292,7 +327,7 @@ const QuestionLibrary = () => {
                   </td>
                   {/* <td>{project.completes}</td> */}
                   <td>
-                    <span> {que?.status ? "Active" : "Disactive"}</span>
+                    <span> {que?.question_status ? "Active" : "Inactive"}</span>
                   </td>
                   <td>
                     {/* {project.IR} */}
@@ -308,7 +343,6 @@ const QuestionLibrary = () => {
               ))}
             </tbody>
           </table>
-
           <Pagination
             count={allQuestions?.length / rowsPerPage}
             page={currentPage}
@@ -316,7 +350,94 @@ const QuestionLibrary = () => {
           />
         </div>
       </div>
+
+      {/* edit / delete footer popup  */}
+      {selectedQueCnt ? (
+        <div className={styles.delete_edit_popup}>
+          <p className={styles.selected_grps_cnt}>{selectedQueCnt}</p>
+          <button
+            onClick={() => {
+              setDeleteConfirmationModal(true);
+            }}
+          >
+            Delete
+          </button>
+          {selectedQueCnt > 1 ? null : (
+            <button
+              onClick={() => {
+                setEditQueModal(true);
+              }}
+            >
+              Edit
+            </button>
+          )}
+        </div>
+      ) : null}
     </>
+  );
+};
+
+const DeleteConfirmModal = ({
+  open,
+  handleCloseDeleteModal,
+  data,
+  setSelectedQueCnt,
+  setSelectedQues,
+}) => {
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 400,
+    bgcolor: "white",
+    borderRadius: "20px",
+    boxShadow: 24,
+    p: 4,
+  };
+
+  const { handleQualificationDelete } = useQualificationLibraryContext();
+  return (
+    <Modal
+      open={open}
+      onClose={handleCloseDeleteModal}
+      aria-labelledby="modal-modal-title"
+      aria-describedby="modal-modal-description"
+    >
+      <Box sx={style}>
+        <div className={styles.confirmDelete_Modal}>
+          <MdDeleteOutline fontSize={50} color={"#f15e5e"} />
+          <p className={styles.modal_title}>Are you sure ? </p>
+          <p className={styles.modal_text}>
+            {" "}
+            You want to delete following <br /> survey groups?
+          </p>
+
+          {data?.map((queID) => (
+            <div className={styles.selected_dataContainer}>
+              <sapn className={styles.selected_data}>{queID.slice(6)}</sapn>
+            </div>
+          ))}
+
+          <div className={styles.btn_container}>
+            <button onClick={handleCloseDeleteModal}>Cancel</button>
+            <button
+              className={styles.btn_active}
+              onClick={() => {
+                handleCloseDeleteModal();
+                handleQualificationDelete(
+                  data,
+                  setSelectedQueCnt,
+                  setSelectedQues
+                );
+              }}
+            >
+              Confirm
+            </button>
+          </div>
+        </div>
+      </Box>
+    </Modal>
   );
 };
 

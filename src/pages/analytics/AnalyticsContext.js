@@ -238,8 +238,6 @@ const AnalyticsContextProvider = ({ children }) => {
     // });
   }, [allSessions]);
 
-  console.log(graphData);
-
   const value = {
     usersByOs,
     usersByDeviceTypes,

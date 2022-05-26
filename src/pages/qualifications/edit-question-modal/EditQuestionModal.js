@@ -277,14 +277,13 @@ export const AllowedResponses = ({
     set_allowed_responses(newArr);
   };
 
-  const handleRemoveInputBtn = (id) => {
-    const values = [...allowed_responses];
-    values.splice(
-      values.findIndex((value) => value.id === id),
-      1
-    );
-    set_allowed_responses(values);
+  const handleRemoveInputBtn = (index) => {
+    set_allowed_responses((prevData) => {
+      return prevData?.filter((data, i) => i !== index);
+    });
   };
+
+  console.log(allowed_responses);
 
   return (
     <div className={styles.response_container}>
@@ -314,7 +313,7 @@ export const AllowedResponses = ({
                 <TiDeleteOutline
                   size={30}
                   onClick={() => {
-                    handleRemoveInputBtn(response.id);
+                    handleRemoveInputBtn(index);
                   }}
                 />
               </div>

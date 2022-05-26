@@ -499,3 +499,63 @@ input:focus {
   border: 1px solid black;
   padding: 0px 4px;
 }
+
+/* delete confirmation modal  */
+.modal_title {
+  text-align: center;
+  font-size: 26px;
+  margin: 20px 0px;
+  color: #999;
+}
+.modal_text {
+  font-size: 16px;
+  color: #999;
+  margin-bottom: 10px;
+}
+
+.confirmDelete_Modal {
+  padding: 10px;
+  border: none;
+  text-align: center;
+  font-size: 12px;
+}
+
+.selected_dataContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.selected_data {
+  font-size: 12px;
+  padding: 1px 7px;
+  color: #30c73f;
+}
+
+.btn_container {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.btn_container button {
+  border: none;
+  color: white;
+  padding: 10px 32px;
+  text-align: center;
+  font-size: 18px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 4px;
+  background: #c1c1c1;
+  transition: all 0.4s;
+  color: #fff;
+  font-weight: 400;
+  opacity: 0.7;
+  font-weight: bold;
+}
+
+.btn_container button:hover {
+  opacity: 1;
+}

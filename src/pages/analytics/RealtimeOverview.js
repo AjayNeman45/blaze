@@ -170,8 +170,6 @@ const RealtimeOverview = () => {
     });
   }, [lastTimeSessions, survey, allSessions]);
 
-  console.log(inClientAcLast30Minutes);
-
   return (
     <>
       <div className={styles.realtime_overview_page}>

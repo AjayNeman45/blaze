@@ -28,42 +28,6 @@ export const AudienceGraph1 = ({ statusesCnt }) => {
     });
   }, [graphData, graphTab]);
 
-  const data = {
-    labels: labels,
-    datasets: [
-      {
-        label: graphTab,
-        data: yAxixData,
-        fill: false,
-        borderColor: "#1765DC",
-      },
-    ],
-  };
-
-  const options = {
-    plugins: {
-      legend: {
-        display: false,
-      },
-    },
-    scales: {
-      x: {
-        grid: {
-          display: false,
-        },
-      },
-      y: {
-        grid: {
-          display: false,
-        },
-        beginAtZero: true,
-      },
-    },
-    xaxis: {
-      range: 2,
-    },
-  };
-
   return (
     <div className={styles.graph1}>
       <div className={styles.graph1_stats}>
@@ -101,9 +65,6 @@ export const AudienceGraph1 = ({ statusesCnt }) => {
             chart: {
               height: 150,
               type: "line",
-              zoom: {
-                enabled: true,
-              },
             },
             dataLabels: {
               enabled: false,
@@ -215,9 +176,6 @@ export const AudiencesGraph2 = ({ statusesCnt }) => {
             chart: {
               height: 150,
               type: "line",
-              zoom: {
-                enabled: true,
-              },
             },
             dataLabels: {
               enabled: false,

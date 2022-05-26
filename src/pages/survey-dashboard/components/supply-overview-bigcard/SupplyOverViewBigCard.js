@@ -58,8 +58,6 @@ function SupplyOverViewBigCard({ supp }) {
     });
   }, []);
 
-  console.log(supp);
-
   return (
     <div
       className={styles.container}

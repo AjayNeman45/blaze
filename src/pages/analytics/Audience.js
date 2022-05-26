@@ -3,6 +3,7 @@ import styles from "./Analytics.module.css";
 import AnalyticsUserCountCard from "../../components/analyticsUserCountCard/AnalyticsUserCountCard";
 import { AudienceGraph1, AudiencesGraph2 } from "./AudienceGraphs";
 import { useAanalyticsContext } from "./AnalyticsContext";
+import { v4 as uuid } from "uuid";
 
 const Audience = () => {
   const {
@@ -67,7 +68,7 @@ const Audience = () => {
               </thead>
               <tbody>
                 {suppliers?.map((supp) => (
-                  <tr>
+                  <tr key={uuid()}>
                     <td>{supp?.supplier}</td>
                     <td>{supp?.completes}</td>
                     <td>{supp?.avgCompleteTime}</td>

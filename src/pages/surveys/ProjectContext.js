@@ -12,7 +12,6 @@ export const useProjectContext = () => {
 };
 
 const ProjectContextProvider = ({ children }) => {
-  console.log("in project context");
   const { activity } = useParams();
   const [projectData, setProjectData] = useState([]);
   const [currentProjects, setCurrentProjects] = useState([]);
@@ -89,7 +88,6 @@ const ProjectContextProvider = ({ children }) => {
   }, [projectData]);
 
   useEffect(() => {
-    console.log("in the useEffect of project filters ", activity);
     if (activity === "projects") filterProjects();
   }, [filters, activity]);
 

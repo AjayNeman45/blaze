@@ -6,82 +6,55 @@ import ProjectServiceCard from "./components/projectDashboardCard/ProjectService
 import AnalyticsUserCountCard from "../../components/analyticsUserCountCard/AnalyticsUserCountCard";
 import cx from "classnames";
 import { DashboardContext } from "./DashboardContext";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { DateRangePicker } from "rsuite";
 import "rsuite/dist/rsuite.min.css";
 import { addDays, subDays } from "date-fns";
 import { v4 as uuid } from "uuid";
+import NewManagerEnd from "../managerend/NewManagerEnd";
+import ReactApexChart from "react-apexcharts";
 // Chart.register(...registerables);
 
-const data = {
-  labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-
-  datasets: [
-    {
-      label: "First dataset",
-      data: [50, 66, 76, 43, 54, 75, 57, 64, 65],
-      fill: false,
-      borderColor: "#1765DC",
-    },
-  ],
-};
-
-const options = {
-  plugins: {
-    legend: {
-      display: false,
-    },
-  },
-  scales: {
-    x: {
-      grid: {
-        display: false,
-      },
-    },
-    y: {
-      grid: {
-        display: false,
-      },
-    },
-  },
-};
-
-const completedBySuppliers = [
+const series = [
   {
-    name: "Cint AB",
-    count: "222",
-    progress: "75",
-  },
-  {
-    name: "PureSpectrum",
-    count: "111",
-    progress: "50",
-  },
-  {
-    name: "Prodege",
-    count: "100",
-    progress: "40",
+    name: "Desktops",
+    data: [10, 41, 35, 51, 49, 62, 69, 91, 148],
   },
 ];
 
-const state = {
-  labels: ["January", "February", "March", "April", "May"],
-  datasets: [
-    {
-      label: "Rainfall",
-      fill: false,
-      lineTension: 0.5,
-      backgroundColor: "rgba(75,192,192,1)",
-      borderColor: "rgba(0,0,0,1)",
-      borderWidth: 2,
-      data: [65, 59, 80, 81, 56],
+const options = {
+  chart: {
+    height: 350,
+    type: "line",
+  },
+  dataLabels: {
+    enabled: false,
+  },
+  stroke: {
+    curve: "straight",
+  },
+  title: {
+    text: "Product Trends by Month",
+    align: "left",
+  },
+  grid: {
+    row: {
+      colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
+      opacity: 0.5,
     },
-  ],
+  },
+  xaxis: {
+    categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep"],
+  },
 };
 
 const Dashboard = () => {
-  let { allSurveys, FetchTodaySurveyCreated, basicStats } =
+  let { allSurveys, basicStats, financialOverview, dailyData, graphData } =
     useContext(DashboardContext);
+
+  const [showGraphFor, setShowGraphFor] = useState("completes");
+  const [xAxisData, setXaxisData] = useState([]);
+  const [yAxisData, setYaxisData] = useState([]);
   function CountProject() {
     let project = new Set();
     allSurveys?.map((survey) => project.add(survey?.project_id));
@@ -109,12 +82,15 @@ const Dashboard = () => {
       count: 112,
     },
   ];
-  const chartData = {
-    displayTitle: true,
-    displayLegend: true,
-    legendPosition: "right",
-    location: "City",
-  };
+
+  // useEffect(() => {
+  //   console.log("running");
+  //   Object.keys(graphData)?.map((key) => {
+  //     setYaxisData((prevData) => [...prevData, key]);
+  //     // setXaxisData((prevData) => [...prevData, graphData[key]?.completes]);
+  //   });
+  // }, []);
+
   return (
     <>
       <Header />
@@ -214,55 +190,90 @@ const Dashboard = () => {
             <div className={styles.financial_data_container_bigcard}>
               <div className={styles.big_card}>
                 <h1 className={styles.title}>Total Rev</h1>
-                <h3 className={styles.count}>$22</h3>
+                <h3 className={styles.count}>
+                  ${financialOverview?.total_rev}
+                </h3>
               </div>
               <div className={styles.big_card}>
                 <h1 className={styles.title}>Supply Cost</h1>
-                <h3 className={styles.count}>$16</h3>
+                <h3 className={styles.count}>
+                  ${financialOverview?.supply_cost}
+                </h3>
               </div>
               <div className={styles.big_card}>
                 <h1 className={styles.title}>Profit Cost</h1>
-                <h3 className={styles.count}>$6</h3>
+                <h3 className={styles.count}>${financialOverview?.profit}</h3>
               </div>
             </div>
             <div className={styles.financial_data_container_smallcard}>
               <div className={styles.small_card}>
                 <p className={styles.title}>Avg Supply CPI</p>
-                <p className={styles.count}>$4.00</p>
+                <p className={styles.count}>
+                  $
+                  {Math.round(
+                    financialOverview?.avg_supply_cpi / allSurveys?.length
+                  )}
+                </p>
               </div>
               <div className={styles.small_card}>
                 <p className={styles.title}>Avg Client CPI</p>
-                <p className={styles.count}>$5.00</p>
+                <p className={styles.count}>
+                  ${financialOverview?.avg_client_cpi}
+                </p>
               </div>
               <div className={styles.small_card}>
                 <p className={styles.title}>EPC Vendor</p>
-                <p className={styles.count}>$0.23</p>
+                <p className={styles.count}>${financialOverview?.epc_vendor}</p>
               </div>
             </div>
           </div>
           {/* graph */}
           <div className={styles.graph1}>
             <div className={styles.graph1_stats}>
-              <div className={cx(styles.users_stat, styles.active_stat)}>
+              <div
+                className={cx(styles.users_stat, styles.active_stat)}
+                onClick={() => showGraphFor("completes")}
+              >
                 <label className={styles.stat_label}>Daily Completes</label>
                 <span className={styles.stat_number}>
-                  85K <span className={styles.percent}>+1.6%</span>
+                  {dailyData?.completes}{" "}
+                  <span className={styles.percent}>
+                    +
+                    {!dailyData?.yesterdayCompleted
+                      ? dailyData?.completes * 100
+                      : ((dailyData?.completes -
+                          dailyData?.yesterdayCompleted) /
+                          dailyData?.yesterdayCompleted) *
+                        100}
+                    %
+                  </span>
                 </span>
               </div>
-              <div className={cx(styles.engaged_sessions_stat)}>
-                <label className={styles.stat_label}>Engaged Sessions</label>
+
+              <div
+                className={cx(styles.engaged_sessions_stat)}
+                onClick={() => setShowGraphFor("sessions")}
+              >
+                <label className={styles.stat_label}>Daily Sessions</label>
                 <span className={styles.stat_number}>
-                  99K <span className={styles.percent}>+1.6%</span>
+                  {dailyData?.hits}{" "}
+                  <span className={styles.percent}>
+                    {!dailyData?.yesterdayHits
+                      ? dailyData?.hits * 100
+                      : 0 +
+                        ((dailyData?.hits - dailyData?.yesterdayHits) /
+                          dailyData?.yesterdayHits) *
+                          100}
+                    %
+                  </span>
                 </span>
               </div>
-              {/* <div className={cx(styles.conversions_stat)}>
-                <label className={styles.stat_label}>conversions</label>
-                <span className={styles.stat_number}>5K</span>
-              </div> */}
             </div>
-            <div className={styles.graph}>
-              {/* <Line data={data} options={options} /> */}
-            </div>
+            {showGraphFor ? (
+              <DailyDataGraph series={series} options={options} />
+            ) : (
+              <></>
+            )}
           </div>
         </div>
         <div className={styles.dashboard_right_container}>
@@ -279,8 +290,16 @@ const Dashboard = () => {
               <p>Survey Created Today </p>
               <div className={styles.survey_numbers}>
                 <h1>
-                  <span>1.34%</span>
-                  {FetchTodaySurveyCreated()}
+                  <span>
+                    {!dailyData?.surveyCreatedYesterDayCnt
+                      ? dailyData?.surveyCreatedTodayCnt * 100
+                      : ((dailyData?.surveyCreatedTodayCnt -
+                          dailyData?.surveyCreatedYesterDayCnt) /
+                          dailyData?.surveyCreatedYesterDayCnt) *
+                        100}
+                    %
+                  </span>
+                  {dailyData?.surveyCreatedTodayCnt}
                 </h1>
               </div>
             </div>
@@ -302,6 +321,21 @@ const Dashboard = () => {
             /> */}
           </div>
         </div>
+      </div>
+    </>
+  );
+};
+
+const DailyDataGraph = ({ series, options }) => {
+  return (
+    <>
+      <div id="chart">
+        <ReactApexChart
+          options={options}
+          series={series}
+          type="line"
+          height={350}
+        />
       </div>
     </>
   );

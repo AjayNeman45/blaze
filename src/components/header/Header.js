@@ -3,7 +3,7 @@ import { Link, NavLink, useParams } from "react-router-dom";
 import Logo from "../../assets/images/mirats_console_logo.png";
 import Steve from "../../assets/images/steve.png";
 import "./Header.css";
-import {MdPayment} from 'react-icons/md'
+import { MdPayment } from "react-icons/md";
 // Header avatar
 import Box from "@mui/material/Box";
 import Avatar from "@mui/material/Avatar";
@@ -17,61 +17,101 @@ import Tooltip from "@mui/material/Tooltip";
 import PersonAdd from "@mui/icons-material/PersonAdd";
 import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
+import { useBaseContext } from "../../context/BaseContext";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
-const SurveysSubmenu = () => (
+const SurveysSubmenu = ({ history }) => (
   <>
     <ul className="nav__submenu">
-      <li className="nav__submenu_item">
-        <Link to="/mi/surveys?view=all">My Surveys</Link>
+      <li
+        className="nav__submenu_item"
+        onClick={() => history.push("/mi/surveys?view=all")}
+      >
+        My Surveys
       </li>
-      <li className="nav__submenu_item">
-        <Link to="/survey-groups">Survey Groups</Link>
+      <li
+        className="nav__submenu_item"
+        onClick={() => history.push("/survey-groups")}
+      >
+        Survey Groups
       </li>
-      <li className="nav__submenu_item">
-        <Link to="/mi/projects">My Projects</Link>
+      <li
+        className="nav__submenu_item"
+        onClick={() => history.push("/mi/projects")}
+      >
+        My Projects
       </li>
-      <li className="nav__submenu_item">
-        <Link to="/question-library">Question Library</Link>
+      <li
+        className="nav__submenu_item"
+        onClick={() => history.push("/question-library")}
+      >
+        Question Library
       </li>
     </ul>
   </>
 );
-const SupplierSubMenu = () => (
+const SupplierSubMenu = ({ history }) => {
+  return (
+    <>
+      <ul className="nav__submenu">
+        <li
+          className="nav__submenu_item"
+          onClick={() => history.push("/mi/surveys?view=all")}
+        >
+          Organisations
+        </li>
+        <li
+          className="nav__submenu_item"
+          onClick={() => history.push("/contacts")}
+        >
+          Contacts
+        </li>
+        <li
+          className="nav__submenu_item"
+          onClick={() => history.push("/mi/projects")}
+        >
+          Supplier Settings
+        </li>
+        <li
+          className="nav__submenu_item"
+          onClick={() => history.push("/question-library")}
+        >
+          Pricing
+        </li>
+      </ul>
+    </>
+  );
+};
+
+const ClientSubMenu = ({ history }) => (
   <>
     <ul className="nav__submenu">
-      <li className="nav__submenu_item">
-        <Link to="/mi/surveys?view=all">Organisations</Link>
+      <li
+        className="nav__submenu_item"
+        onClick={() => history.push("/mi/surveys?view=all")}
+      >
+        Organisations
       </li>
-      <li className="nav__submenu_item">
-        <Link to="/contacts">Contacts</Link>
+      <li
+        className="nav__submenu_item"
+        onClick={() => history.push("/contacts")}
+      >
+        Contacts
       </li>
-      <li className="nav__submenu_item">
-        <Link to="/mi/projects">Supplier Settings</Link>
-      </li>
-      <li className="nav__submenu_item">
-        <Link to="/question-library">Pricing</Link>
-      </li>
-    </ul>
-  </>
-);
-const ClientSubMenu = () => (
-  <>
-    <ul className="nav__submenu">
-      <li className="nav__submenu_item">
-        <Link to="/mi/surveys?view=all">Organisations</Link>
-      </li>
-      <li className="nav__submenu_item">
-        <Link to="/contacts">Contacts</Link>
-      </li>
-      <li className="nav__submenu_item">
-        <Link to="/mi/projects">Client Settings</Link>
+      <li
+        className="nav__submenu_item"
+        onClick={() => history.push("/mi/projects")}
+      >
+        Client Settings
       </li>
     </ul>
   </>
 );
 
 const Header = () => {
+  const history = useHistory();
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const { userData } = useBaseContext();
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -105,9 +145,8 @@ const Header = () => {
           >
             <span>
               <span>Surveys </span>
+              <SurveysSubmenu history={history} />
             </span>
-
-            <SurveysSubmenu />
           </NavLink>
           {/* <NavLink
             activeClassName="header_active_link"
@@ -124,7 +163,7 @@ const Header = () => {
             to="/supplier"
           >
             <span>Supplier</span>
-            <SupplierSubMenu />
+            <SupplierSubMenu history={history} />
           </NavLink>
           {/* <NavLink
             activeClassName="header_active_link"
@@ -139,7 +178,7 @@ const Header = () => {
             to="/clients"
           >
             <span>Clients</span>
-            <ClientSubMenu/>
+            <ClientSubMenu history={history} />
           </NavLink>
           {/* <NavLink
             activeClassName="header_active_link"
@@ -155,15 +194,16 @@ const Header = () => {
           >
             <span>Bid</span>
           </NavLink>
-         
         </div>
       </div>
 
       {/* User Profile */}
       <div className="header_right">
         <div>
-          <p className="userprofilename">Rohan Gupta</p>
-          <p className="userprofiledescription">Recruitment Coordinator</p>
+          <p className="userprofilename">
+            {userData?.firstname} {userData?.lastname}
+          </p>
+          <p className="userprofiledescription">{userData?.position}</p>
         </div>
         <div>
           <Box
@@ -184,7 +224,10 @@ const Header = () => {
               >
                 <Avatar sx={{ width: 40, height: 40 }}>
                   {" "}
-                  <img className="profile_image" src={Steve} />{" "}
+                  <img
+                    className="profile_image"
+                    src={userData?.profile_photo}
+                  />{" "}
                 </Avatar>
               </IconButton>
             </Tooltip>
@@ -231,17 +274,22 @@ const Header = () => {
             }}
           >
             <MenuItem>
-              <Avatar />My Profile
+              <Avatar />
+              My Profile
             </MenuItem>
             <MenuItem>
               <Avatar /> My account
             </MenuItem>
             <MenuItem>
-              <MdPayment size={30} style={{marginRight:"5px"}} color="gray"/> Payments
+              <MdPayment
+                size={30}
+                style={{ marginRight: "5px" }}
+                color="gray"
+              />{" "}
+              Payments
             </MenuItem>
             <Divider />
-            
-            
+
             <MenuItem>
               <ListItemIcon>
                 <Logout fontSize="small" />

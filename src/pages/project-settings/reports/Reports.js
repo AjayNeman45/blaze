@@ -2,23 +2,10 @@ import React, { useState } from "react";
 import styles from "./Reports.module.css";
 import Header from "../../components/header/Header";
 import Subheader from "../../components/subheader/Subheader";
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  LinearProgress,
-  MenuItem,
-  Select,
-} from "@mui/material";
+import { LinearProgress } from "@mui/material";
 import { Box } from "@mui/system";
-import { AiOutlineInfoCircle, AiOutlineCheck } from "react-icons/ai";
-import { BiChevronDown, BiInfoCircle } from "react-icons/bi";
-import {
-  RiUserFollowLine,
-  RiTimerLine,
-  RiFullscreenExitFill,
-  RiAncientGateLine,
-} from "react-icons/ri";
+import { AiOutlineCheck } from "react-icons/ai";
+import { RiFullscreenExitFill, RiAncientGateLine } from "react-icons/ri";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -34,6 +21,7 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import ExternalSupplier from "../../components/miratsExternalSupplier/ExternalSupplier";
 import { useReportsContext } from "./ReportsContext";
+import { v4 as uuid } from "uuid";
 
 ChartJS.register(
   CategoryScale,
@@ -349,14 +337,13 @@ const StatusCard = ({ cardTitle, cardData, statusesCnt }) => {
       <h4>{cardTitle}</h4>
       {cardData?.map((data) => {
         return (
-          <>
+          <div key={uuid()}>
             <div className={styles.clientStatus_title}>
               <div className={styles.clientStatus_div}>
                 <h3>{data?.title}</h3>
               </div>
               <p>{data?.statusCode}</p>
             </div>
-
             <div className={styles.clientStatus_progressDiv}>
               <p>
                 {data?.desc}
@@ -375,7 +362,7 @@ const StatusCard = ({ cardTitle, cardData, statusesCnt }) => {
                 </Box>
               </div>
             </div>
-          </>
+          </div>
         );
       })}
     </div>

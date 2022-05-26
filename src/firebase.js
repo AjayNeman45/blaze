@@ -1,6 +1,8 @@
 import firebase from "firebase/compat/app";
 import firestore from "firebase/compat/firestore";
 import { getStorage } from "firebase/storage";
+import { getAuth } from "firebase/auth";
+
 const fb = firebase.initializeApp({
   apiKey: "AIzaSyDZFy3EfjfgAc-yZflb7nY_xPWohp4YAeU",
   authDomain: "lucid2.firebaseapp.com",
@@ -12,3 +14,4 @@ const fb = firebase.initializeApp({
 });
 export const db = fb.firestore();
 export const storage = getStorage();
+export const auth = getAuth();

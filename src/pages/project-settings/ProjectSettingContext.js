@@ -41,7 +41,13 @@ const ProejctSettingProvider = ({ children }) => {
       });
     });
 
-    console.log(hashids.encode([1234567899]));
+    //-------- GMOR  --->>>  1234567900
+    //-------- Google Inc  --->>>  1234567899
+    //-------- ABC Enterprises  --->>>  1234567890
+    //-------- ZYX  --->>>  1234567888
+    //-------- MPL  --->>>  1234567901
+
+    console.log(hashids.encode([1234567907]));
   }, []);
 
   useEffect(() => {
@@ -52,7 +58,7 @@ const ProejctSettingProvider = ({ children }) => {
         surveyData?.encrypt?.pid +
         "-" +
         surveyData?.encrypt?.cid +
-        `/lightningStart?SRCID=5kr34wx&RID=794639`
+        `/lightningStart?SRCID=XyMBbGW&RID=vdfvfsd`
     );
   }, [surveyData]);
 

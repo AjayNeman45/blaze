@@ -11,6 +11,7 @@ const NerdySpecs = () => {
         <h1>Nerdy Specs</h1>
         <div className={styles.SpecsDataContainer}>
           <table className={styles.data_table}>
+            <tbody>
             <tr>
               <td className={styles.nerdyLeft}>Creation Date</td>
               <td className={styles.nerdyRight}>{survey?.creation_date?.toDate()?.toDateString()}</td>
@@ -75,6 +76,8 @@ const NerdySpecs = () => {
               <td className={styles.nerdyLeft}>External Survey</td>
               <td className={styles.nerdyRight}>{survey?.external_project_name}</td>
             </tr>
+            </tbody>
+
           </table>
 
           {/* 

@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import {
   addQuestion,
+  deleteLangFromQualification,
   getAllQuestionLibraryQuestions,
   getQuestions,
 } from "../../utils/firebaseQueries";
@@ -20,16 +21,16 @@ const QualificationLibraryContextProvider = ({ children }) => {
   const [snackbarData, setSnackbarData] = useState({});
 
   useEffect(() => {
-    getAllQuestionLibraryQuestions().then((questions) => {
-      console.log(questions);
-      let maxQuestionID = 0;
-      questions.forEach((question) => {
-        if (parseInt(question?.question_id) > maxQuestionID) {
-          maxQuestionID = parseInt(question?.question_id);
+    getAllQuestionLibraryQuestions().then((res) => {
+      let maxQuestionID = 0,
+        questionsTmp = [];
+      res.forEach((question) => {
+        if (parseInt(question.data()?.question_id) > maxQuestionID) {
+          maxQuestionID = parseInt(question.data()?.question_id);
         }
-        setQuestions(questions);
+        questionsTmp.push(question.data());
       });
-      console.log(maxQuestionID);
+      setQuestions(questionsTmp);
       setQualificationData((prevData) => {
         return {
           ...prevData,
@@ -67,6 +68,47 @@ const QualificationLibraryContextProvider = ({ children }) => {
       });
   };
 
+  const handleQualificationDelete = (
+    data,
+    setSelectedQueCnt,
+    setSelectedQues
+  ) => {
+    setSelectedQueCnt(0);
+    setSelectedQues([]);
+    data?.map((queCode) => {
+      let questionID = queCode.slice(6);
+      let questionCountryLang = queCode.slice(0, 6);
+
+      let deletedLangQue;
+      setQuestions(() => {
+        return questions?.map((que) => {
+          if (que?.question_id === parseInt(questionID)) {
+            delete que.lang[questionCountryLang];
+            deletedLangQue = que;
+          }
+          return que;
+        });
+      });
+      deleteLangFromQualification(questionID, deletedLangQue)
+        .then(() => {
+          console.log("question deleted");
+          setSnackbarData({
+            msg: "Qualifications deleted successfully...",
+            severity: "success",
+            show: true,
+          });
+        })
+        .catch((err) => {
+          setSnackbarData({
+            msg: "Qualification updated successfully...",
+            severity: "error",
+            show: true,
+          });
+          console.log(err.message);
+        });
+    });
+  };
+
   const value = {
     questions,
     addQualModal,
@@ -77,6 +119,7 @@ const QualificationLibraryContextProvider = ({ children }) => {
     handleAddQuestionBtn,
     snackbarData,
     handleCloseSnackbar,
+    handleQualificationDelete,
   };
   return (
     <QualificationContext.Provider value={value}>

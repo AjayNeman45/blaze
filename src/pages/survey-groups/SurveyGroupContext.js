@@ -19,6 +19,7 @@ const SurveyGroupContextProvider = ({ children }) => {
   const [addSurveyGrpModal, setAddSurveyGroupModal] = useState(false);
   const [snackbarData, setSnackbarData] = useState({ show: false });
   const [surveyGrps, setSurveyGrps] = useState([]);
+  const [surveyGrpsCopy, setSurveyGrpsCopy] = useState([]);
 
   const handleCloseSnackbar = () => {
     setSnackbarData((prevData) => {
@@ -49,7 +50,17 @@ const SurveyGroupContextProvider = ({ children }) => {
       groups.forEach((group) => {
         surveyGrps.push(group.data());
       });
+      setSurveyGrpsCopy(surveyGrps);
       setSurveyGrps(surveyGrps);
+    });
+  };
+
+  const handleSurveyGroupSearch = (e) => {
+    setSurveyGrps(surveyGrpsCopy);
+    setSurveyGrps((prevData) => {
+      return prevData.filter((grp) => {
+        return grp?.survey_group_name.includes(e.target.value);
+      });
     });
   };
 
@@ -88,8 +99,13 @@ const SurveyGroupContextProvider = ({ children }) => {
     }
   };
 
-  const updateSurveyGroup = async () => {
+  const updateSurveyGroup = async (
+    setSelectedGrpsCnt,
+    setSelectedSurveyGrps
+  ) => {
     setAddSurveyGroupModal(false);
+    setSelectedGrpsCnt(0);
+    setSelectedSurveyGrps([]);
     addSurveyGroup(surveyGrpData, surveyGrpData?.survey_grp_id)
       .then(() => {
         console.log("survey grp updated");
@@ -172,7 +188,9 @@ const SurveyGroupContextProvider = ({ children }) => {
     snackbarData,
     handleCloseSnackbar,
     surveyGrps,
+    setSurveyGrps,
     handleDeleteSurveyGrps,
+    handleSurveyGroupSearch,
   };
   return (
     <SurveyGroupContext.Provider value={value}>

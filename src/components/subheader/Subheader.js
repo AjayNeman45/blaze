@@ -83,6 +83,13 @@ const Subheader = () => {
         >
           Reconciliations
         </NavLink>
+        <NavLink
+          activeClassName="header_active_link"
+          className="subheader_link"
+          to={`/surveys/financials/${surveyID}`}
+        >
+          <span>Financials</span>
+        </NavLink>
       </div>
     </div>
   );

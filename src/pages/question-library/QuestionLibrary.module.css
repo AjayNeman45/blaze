@@ -1,6 +1,7 @@
 .question_library_page {
   /* border: 1px solid red; */
   padding: 4rem 2rem;
+  padding-bottom: 10rem;
 }
 .question_library_page .header_container {
   display: flex;
@@ -46,6 +47,31 @@
   padding: 4px;
   border-radius: 5px;
   margin-left: 10px;
+  font-size: 11px;
+}
+.inactive_question_tag {
+  background-color: rgb(245, 175, 175);
+  padding: 4px;
+  border-radius: 5px;
+  margin-left: 10px;
+  color: rgb(99, 6, 6);
+  font-weight: bold;
+  font-size: 11px;
+}
+.question_text {
+  font-size: 15px;
+  font-weight: 500;
+}
+.table_first_column {
+  /* border: 1px solid red; */
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+.table_first_column .coldiv {
+  /* border: 1px solid red; */
+  width: 18rem;
+  text-align: start;
 }
 
 .project_table_div table tbody tr {
@@ -67,4 +93,115 @@
   width: 10rem;
   height: 48px;
   padding: 0 7px;
+}
+.filters_container .left {
+  /* border: 1px solid red; */
+  width: 30%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* delete edit pop up footer  */
+.delete_edit_popup {
+  width: 100%;
+  height: 80px;
+  position: fixed;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 10px 2px rgb(102, 101, 101);
+  background-color: white;
+  z-index: 999;
+}
+.selected_grps_cnt {
+  background-color: rgb(201, 201, 201);
+  color: white;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.delete_edit_popup button {
+  width: 6rem;
+  height: 2.5rem;
+  font-size: 16px;
+  margin: 0 8px;
+  background-color: white;
+  border: 1px solid rgb(40, 131, 235);
+  color: rgb(40, 131, 235);
+  border-radius: 2px;
+}
+.delete_edit_popup button:hover {
+  background-color: rgb(241, 245, 255);
+  transition: all 0.3s linear;
+}
+.delete_edit_popup .delete_btn {
+  background-color: white;
+  border: 1px solid rgb(40, 131, 235);
+  color: rgb(40, 131, 235);
+  border-radius: 2px;
+}
+
+/* delete confirmation modal  */
+.modal_title {
+  text-align: center;
+  font-size: 26px;
+  margin: 20px 0px;
+  color: #999;
+}
+.modal_text {
+  font-size: 16px;
+  color: #999;
+  margin-bottom: 10px;
+}
+
+.confirmDelete_Modal {
+  padding: 10px;
+  border: none;
+  text-align: center;
+  font-size: 12px;
+}
+
+.selected_dataContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.selected_data {
+  font-size: 12px;
+  padding: 1px 7px;
+  color: #30c73f;
+}
+
+.btn_container {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.btn_container button {
+  border: none;
+  color: white;
+  padding: 10px 32px;
+  text-align: center;
+  font-size: 18px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 4px;
+  background: #c1c1c1;
+  transition: all 0.4s;
+  color: #fff;
+  font-weight: 400;
+  opacity: 0.7;
+  font-weight: bold;
+}
+
+.btn_container button:hover {
+  opacity: 1;
 }

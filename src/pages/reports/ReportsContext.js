@@ -57,11 +57,6 @@ const ReportsContextProvider = ({ children }) => {
           internalSuppliresData = [];
         data?.external_suppliers?.map((supp) => {
           sessions.forEach((session) => {
-            console.log(
-              supp?.supplier_account_id,
-              session.data()?.supplier_account_id,
-              session.data()?.client_status
-            );
             if (
               supp?.supplier_account_id ===
                 session.data()?.supplier_account_id &&
@@ -71,7 +66,6 @@ const ReportsContextProvider = ({ children }) => {
               cpiCnt1 += session.data()?.client_cpi;
             }
           });
-          console.log(completesCnt1);
           externalSupplersData.push({
             supplier_name: supp?.supplier_account,
             completed: completesCnt1,

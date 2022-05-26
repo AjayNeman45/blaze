@@ -109,7 +109,6 @@ const AudienceResponse = () => {
           userResp = resp?.user_response;
         }
       });
-      console.log(sd?.date.toDate(), userResp);
 
       userResp &&
         getQuestion("22467").then((res) => {

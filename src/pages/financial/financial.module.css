@@ -1,0 +1,267 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter&display=swap");
+
+.financial_container {
+  width: 100%;
+  /* border: 1px solid red; */
+  display: grid;
+  grid-template-columns: repeat(4, 1fr (max-content));
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+.top_financialContainer {
+  /* border: 1.5px solid rgb(68, 0, 128); */
+  display: flex;
+  align-items: start;
+  justify-content: space-evenly;
+  /* gap: 10px; */
+  /* height: 70vh; */
+  padding: 2vmax;
+}
+.bottom_financialContainer {
+  /* border: 1.5px solid rgb(68, 0, 128); */
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  /* gap: 0px; */
+  /* height: 70vh; */
+  width: 100%;
+  padding: 1vmax 3vmax;
+}
+.financial_overview {
+  height: 60vh;
+  width: 65%;
+  border-radius: 23px;
+  border: 1px solid #eaeaea;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  padding: 2vmax;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-around;
+  /* gap: 10px; */
+}
+.financial_stats {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e0e0e0;
+  height: 50vh;
+  width: 30%;
+  border-radius: 32px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  padding: 2vmax;
+}
+.create_invoices {
+  border: 1px solid #e0e0e0;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  /* height: 65vh; */
+  /* height: auto; */
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: space-between;
+  gap: 30px !important;
+  border-radius: 32px;
+  padding: 2vmax;
+}
+.stats_title {
+  font-family: "Poppins", sans-serif;
+  font-size: 30px;
+  font-weight: 600;
+  margin-bottom: 0.5vmax;
+}
+.paragraph {
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  font-weight: 550;
+  color: #484848;
+  margin: 4px 0;
+}
+.financialOverview_smallBox {
+  /* border: 1px solid purple; */
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  width: 100%;
+}
+.financialOverview_smallEllipse {
+  /* border: 1px solid gold; */
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  width: 100%;
+  gap: 10px;
+}
+.smallbox {
+  border: 1px solid #828282;
+  border-radius: 21px;
+  height: 22vh;
+  width: 32%;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  text-align: center;
+  padding: 1vmax;
+}
+.smallEllipse {
+  border: 1px solid #828282;
+  border-radius: 21px;
+  height: 9vh;
+  width: 32%;
+  padding: 1vmax;
+  text-align: center;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  display: flex;
+  justify-content: space-evenly;
+}
+.financialOverview_title {
+  font-family: "Poppins", sans-serif;
+  font-size: 30px;
+  font-weight: 600;
+  text-align: center;
+}
+.smallbox_title {
+  color: #484848;
+  font-size: 36px;
+  font-weight: 500;
+  margin-bottom: 0.5vmax;
+  text-align: center;
+  font-family: "Poppins", sans-serif;
+}
+.smallbox_title2,
+.smallbox_title3 {
+  color: #484848;
+  font-size: 28px;
+  font-weight: 500;
+  margin-bottom: 0.5vmax;
+  text-align: center;
+  font-family: "Poppins", sans-serif;
+}
+
+.smallbox_number {
+  color: #3f3f3f;
+  text-align: center;
+  font-size: 36px;
+  font-weight: 700;
+  font-family: "Poppins", sans-serif;
+}
+.ellipse_title {
+  color: #484848;
+  font-family: "Poppins", sans-serif;
+  font-size: 22px;
+  font-weight: 500;
+  text-align: center;
+}
+.ellipse_number {
+  text-align: center;
+  color: #3f3f3f;
+  font-size: 22px;
+  font-weight: 600;
+  font-family: "Poppins", sans-serif;
+}
+.create_invoiceTitle {
+  font-size: 30px;
+  font-weight: 600;
+  font-family: "Poppins", sans-serif;
+}
+.leftInput,
+.middleInput,
+.rightInput {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 30%;
+  /* border: 1px solid red; */
+  align-items: start;
+  gap: 6px;
+}
+.single_input_data {
+  display: flex;
+  align-items: start;
+  justify-content: start;
+  width: 100%;
+}
+.middle_input_data {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  width: 100%;
+}
+.DateinputField {
+  width: 45%;
+  border: 1px solid #696969;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+  padding: 0.5vmax;
+}
+.input_Container {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  /* border: 1px solid green; */
+  width: 100%;
+}
+
+.table_Container {
+  overflow-x: auto;
+  /* border: 1px solid green; */
+  width: 100%;
+}
+.table {
+  width: 85%;
+  border: 1px solid #333333;
+  border-collapse: collapse;
+}
+.table_row {
+  background-color: #333333;
+  color: #fff;
+}
+
+.table_data {
+  border: 1px solid #333333;
+  height: 43px;
+  text-align: center;
+  font-size: 21px;
+  font-weight: 400;
+  color: #333;
+  font-family: "Inter", sans-serif;
+}
+.table_head {
+  border: 1px solid #333333;
+  height: 43px;
+  text-align: center;
+  width: 10%;
+  font-size: 21px;
+  font-weight: 350;
+  font-family: "Inter", sans-serif;
+}
+.label {
+  color: #484848;
+  font-weight: 600;
+  font-size: 20px;
+  font-family: "Poppins", sans-serif;
+  text-align: center;
+  margin-right: 1vmax;
+}
+.inputField {
+  border: 1px solid #696969;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+  padding: 0.5vmax;
+  width: 45%;
+}
+.textarea {
+  border: 1px solid #696969;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+}
+.btn {
+  background: #333333;
+  border: 1px solid #333333;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+  color: #fff;
+  font-family: "Inter";
+  font-weight: 400;
+  font-size: 16px;
+  padding: 0.8vmax 1.2vmax;
+}

@@ -1,4 +1,5 @@
 import React from "react";
+import { v4 as uuid } from "uuid";
 import styles from "./projectServiceCard.module.css";
 const ProjectServiceCard = () => {
   const projectCoordinator = [
@@ -20,7 +21,7 @@ const ProjectServiceCard = () => {
     <div className={styles.projectCardContainer}>
       {projectCoordinator.map((e, i) => {
         return (
-          <div className={styles.projectCard} key={i}>
+          <div className={styles.projectCard} key={uuid()}>
             <h1>{e.title}</h1>
             <p>{e.desc}</p>
           </div>

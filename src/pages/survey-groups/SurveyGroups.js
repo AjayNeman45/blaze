@@ -19,14 +19,14 @@ const SurveyGroups = () => {
     snackbarData,
     handleCloseSnackbar,
     surveyGrps,
+    handleSurveyGroupSearch,
   } = useSurveyGroupContext();
 
   const [selectedGrpsCnt, setSelectedGrpsCnt] = useState(0);
   const [selectedSurveyGrps, setSelectedSurveyGrps] = useState([]);
   const [deleteSurveyGrpModal, setDeleteSureveyGrpModal] = useState(false);
-
   const history = useHistory();
-  console.log(snackbarData);
+
   return (
     <>
       <SnackbarMsg
@@ -42,6 +42,8 @@ const SurveyGroups = () => {
           openModal={addSurveyGrpModal}
           setOpenModal={setAddSurveyGroupModal}
           surveyGrpNumber={selectedSurveyGrps}
+          setSelectedGrpsCnt={setSelectedGrpsCnt}
+          setSelectedSurveyGrps={setSelectedSurveyGrps}
         />
       ) : null}
 
@@ -55,7 +57,11 @@ const SurveyGroups = () => {
             <button onClick={() => setAddSurveyGroupModal(true)}>
               Add Survey Groups
             </button>
-            <input type="search" placeholder="search survey groups" />
+            <input
+              type="search"
+              placeholder="search survey groups"
+              onChange={handleSurveyGroupSearch}
+            />
           </div>
         </div>
 

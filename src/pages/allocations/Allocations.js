@@ -254,19 +254,19 @@ const Allocations = () => {
                       <td>{CountConversion(supplier?.supplier_account_id)}</td>
                       <td>0</td>
                       <td>
-                        {/* {CalculateCompletes(supplier?.supplier_account_id) ? ( */}
-                        <a>
-                          <RiDeleteBin5Line
-                            className={styles.delete_icon}
-                            onClick={() => {
-                              setDeleteSupplierModal(true);
-                              setSupplierIDToDelete(
-                                supplier?.supplier_account_id
-                              );
-                            }}
-                          />
-                        </a>
-                        {/* // ) : null} */}
+                        {!CalculateCompletes(supplier?.supplier_account_id) ? (
+                          <a>
+                            <RiDeleteBin5Line
+                              className={styles.delete_icon}
+                              onClick={() => {
+                                setDeleteSupplierModal(true);
+                                setSupplierIDToDelete(
+                                  supplier?.supplier_account_id
+                                );
+                              }}
+                            />
+                          </a>
+                        ) : null}
                         &nbsp;
                         <a>
                           <BiEdit

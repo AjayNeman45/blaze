@@ -19,6 +19,7 @@ import {
   studyTypesData,
   industryData,
 } from "../../utils/commonData";
+import { useHistory } from "react-router-dom";
 
 const businessUnitData = [
   { label: "MIRATS-API", value: "mirats-api" },
@@ -44,6 +45,7 @@ const projectCoordinatorsData = [
 ];
 
 const NewProjectSettings = () => {
+  const history = useHistory();
   const { surveyID } = useParams();
   const { surveyData, changes, setChanges, clients } =
     useProjectSettingsContext();
@@ -148,8 +150,6 @@ const NewProjectSettings = () => {
       textAlign: "center",
     }),
   };
-
-  console.log(sData);
 
   return (
     <>
@@ -314,7 +314,9 @@ const NewProjectSettings = () => {
                   }}
                 >
                   {clients?.map((client) => (
-                    <option value={client?.value}>{client.label}</option>
+                    <option value={client?.value} key={uuid()}>
+                      {client.label}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -479,7 +481,10 @@ const NewProjectSettings = () => {
               Build Client's URL
             </button>{" "}
             <br />
-            <button className={styles.black_btn}>
+            <button
+              className={styles.black_btn}
+              onClick={() => history.push(`/viewredirects/${surveyID}`)}
+            >
               View Redirect/Endpoints
             </button>
           </div>
@@ -602,16 +607,12 @@ const InputFieldCard = ({
           case "select":
             return (
               <select onChange={(e) => handleInputChange(e, value, prevVal)}>
-                <option selected disabled hidden>
+                <option value="" selected disabled hidden>
                   Select {title}
                 </option>
                 {dropDownData?.map((data) => {
                   return (
-                    <option
-                      selected={data?.value === selectedData}
-                      key={uuid()}
-                      value={data?.value}
-                    >
+                    <option key={uuid()} selected={data?.value}>
                       {data.label}
                     </option>
                   );

@@ -8,6 +8,7 @@ import Card from "./components/Card";
 import { SourceContext } from "./SourcesContext";
 import Snackbar from "@mui/material/Snackbar";
 import { Alert } from "@mui/material";
+import { v4 as uuid } from "uuid";
 
 function Sources() {
   let { surveydata, setSurveydata } = useContext(SourceContext);
@@ -48,7 +49,7 @@ function Sources() {
         <div className={styles.cards_container}>
           {surveydata?.external_suppliers?.map((data, index) => {
             return (
-              <div className={styles.single_card}>
+              <div className={styles.single_card} key={uuid()}>
                 <Card
                   data={data}
                   title={data?.supplier_account}

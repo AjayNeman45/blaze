@@ -59,8 +59,6 @@ function AudienceResponse_BarChart() {
     });
   }, [suppliers, allSessions, graphStatus]);
 
-  console.log(yAxisData);
-
   return (
     <div className={styles.AudiResBarChart_container}>
       <div className={styles.AudiResBarChart_heading}>

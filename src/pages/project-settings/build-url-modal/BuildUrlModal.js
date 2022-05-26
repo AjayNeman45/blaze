@@ -30,7 +30,6 @@ const BuildUrlModal = ({ openModal, setOpenModal }) => {
     response_ID: { status: true, value: "" },
   });
 
-  console.log(variables);
   const handleVariableCatChange = (e, variablCat) => {
     setVariables((prevData) => {
       if (e.target.checked) {

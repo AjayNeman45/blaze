@@ -10,7 +10,6 @@ const RealtimeOverviewDoughnutChart = ({
 }) => {
   const [deviceTypeUser, setDeviceTypeUsers] = useState([0, 0]);
 
-  console.log(data, inClientAcLast30Minutes);
   useEffect(() => {
     if (inClientAcLast30Minutes) {
       setDeviceTypeUsers([
