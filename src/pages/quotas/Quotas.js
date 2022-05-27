@@ -28,53 +28,24 @@ const tableHeadData = {
 
 const Quotas = () => {
   const [showQuotaModal, setShowQuotaModal] = useState(false);
-  const [qualifications, setQualifications] = useState([]);
-  const [quotas, setQuotas] = useState({});
   const [quotasChange, setQuotasChange] = useState(false);
   const { surveyID } = useParams();
-  const { survey } = useQuotasContext();
-
-  useEffect(() => {
-    getQualificationsForQuotas();
-  }, []);
+  const {
+    survey,
+    qualifications,
+    getQualificationsForQuotas,
+    setQualifications,
+    totalData,
+  } = useQuotasContext();
 
   useEffect(() => {
     if (quotasChange) {
       console.log("fetching qualifications");
-      getQualificationsForQuotas();
+      getQualificationsForQuotas(survey);
     }
   }, [quotasChange]);
 
-  const getQualificationsForQuotas = () => {
-    setQualifications([]);
-    getDoc(doc(db, "mirats", "surveys", "survey", surveyID))
-      .then((res) => {
-        res.data()?.qualifications?.questions?.map(async (question) => {
-          const qid = question?.question_id;
-          setQuotas((prevData) => {
-            return {
-              ...prevData,
-              [question?.question_name]: {
-                ...question?.conditions?.quotas,
-              },
-            };
-          });
-          if (!question?.status) return;
-          const questionData = await getQuestion(qid);
-          setQualifications((prevData) => [
-            ...prevData,
-            {
-              ...question,
-              ...questionData.data()?.lang["ENG-IN"],
-              question_type: questionData.data()?.question_type,
-              question_name: questionData.data()?.name,
-              conditions: question?.conditions ? question?.conditions : null,
-            },
-          ]);
-        });
-      })
-      .catch((err) => console.log(err.message));
-  };
+  console.log("qualifications", qualifications);
 
   return (
     <>
@@ -156,7 +127,7 @@ const Quotas = () => {
               <tr>
                 <th>Question Name</th>
                 <th>Quota Name</th>
-                <th>Field Target</th>
+                {/* <th>Field Target</th> */}
                 <th>Quota</th>
                 <th>Prescreens</th>
                 <th>Completes</th>
@@ -168,14 +139,14 @@ const Quotas = () => {
             <tbody>
               <tr>
                 <td colSpan={2}>Total</td>
-                <td>
+                {/* <td>
                   <input
                     className={styles.table_input}
                     type="number"
                     disabled
-                    value={tableHeadData.field_target}
+                    // value={tableHeadData.field_target}
                   />
-                </td>
+                </td> */}
                 <td>
                   <input
                     className={styles.table_input}
@@ -184,10 +155,10 @@ const Quotas = () => {
                     disabled
                   />
                 </td>
-                <td>{tableHeadData.prescreens}</td>
-                <td>{tableHeadData.completes}</td>
-                <td>{tableHeadData.total_remaining}</td>
-                <td>{tableHeadData.conversion} %</td>
+                <td>{totalData?.total_prescreens}</td>
+                <td>{totalData?.total_completes}</td>
+                <td>{totalData.total_remaining}</td>
+                <td>{totalData?.total_conversion} %</td>
                 {/* <td>
                   <IoMdLock size={20} />
                 </td> */}
@@ -202,7 +173,7 @@ const Quotas = () => {
                           return data?.conditions?.quotas.hasOwnProperty(
                             indx
                           ) ? (
-                            <tr>
+                            <tr key={uuid()}>
                               <td>{data?.question_name}</td>
                               <td>
                                 {response?.from} to {response?.to}
@@ -210,14 +181,8 @@ const Quotas = () => {
                               <td>
                                 <input
                                   className={styles.table_input}
-                                  type="number"
-                                />
-                              </td>
-                              <td>
-                                <input
-                                  className={styles.table_input}
                                   type="text"
-                                  value={data?.conditions?.quotas[indx]}
+                                  value={data?.conditions?.quotas?.[indx]}
                                   onChange={(e) => {
                                     setQualifications((prear) => {
                                       return qualifications?.filter((q, i) => {
@@ -246,10 +211,18 @@ const Quotas = () => {
                                 />
                               </td>
 
-                              <td>{data.prescreens}</td>
-                              <td>{data.completes}</td>
-                              <td>{data.total_remaining}</td>
-                              <td>{data.conversion}</td>
+                              <td>{data?.prescreens}</td>
+                              <td>{data?.completes[indx]}</td>
+                              <td>
+                                {data?.prescreens - data?.completes[indx]}
+                              </td>
+                              <td>
+                                {Math.round(
+                                  (data.completes[indx] / data?.prescreens) *
+                                    100
+                                )}{" "}
+                                %
+                              </td>
                               {/* <td>
                                 <IoMdLock size={20} />
                               </td> */}
@@ -260,30 +233,29 @@ const Quotas = () => {
                     case "Single Punch":
                       return data?.conditions?.valid_options?.map(
                         (option, indx) => {
-                          return data?.conditions?.quotas.hasOwnProperty(
+                          return data?.conditions?.quotas?.hasOwnProperty(
                             indx
                           ) ? (
-                            <tr>
+                            <tr key={uuid()}>
                               <td>{data?.question_name}</td>
-                              <td>{data?.options[option]}</td>
-                              <td>
-                                <input
-                                  className={styles.table_input}
-                                  type="number"
-                                  value={data.quota}
-                                />
-                              </td>
+                              <td>{data?.options?.[option]}</td>
                               <td>
                                 <input
                                   type="text"
                                   className={styles.table_input}
-                                  value={data?.conditions?.quotas[indx]}
+                                  value={data?.conditions?.quotas?.[indx]}
                                 />
                               </td>
                               <td>{data.prescreens}</td>
-                              <td>{data.completes}</td>
-                              <td>{data.total_remaining}</td>
-                              <td>{data.conversion}</td>
+                              <td>{data.completes[indx]}</td>
+                              <td>
+                                {data?.prescreens - data?.completes[indx]}
+                              </td>
+                              <td>
+                                {(data?.completes[indx] / data?.prescreens) *
+                                  100}{" "}
+                                %
+                              </td>
                               {/* <td>
                                 <IoMdLock size={20} />
                               </td> */}
@@ -341,7 +313,9 @@ const QuotaModal = ({
                   questionType === "Single Punch"
                 )
                   return (
-                    <Radio value={question}>{question?.question_name}</Radio>
+                    <div key={uuid()}>
+                      <Radio value={question}>{question?.question_name}</Radio>
+                    </div>
                   );
               })}
             </Radio.Group>

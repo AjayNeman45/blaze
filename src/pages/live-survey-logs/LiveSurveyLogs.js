@@ -10,10 +10,8 @@ import Snackbar from "@mui/material/Snackbar";
 import { Alert } from "@mui/material";
 import Table from "./components/table/Table";
 import { getAllSessions } from "../../utils/firebaseQueries";
-import {
-  getErrorCodesForClientStatus,
-  getErrorCodesForMiratsStatus,
-} from "../../utils/firebaseQueries";
+import cx from "classnames";
+
 function LiveSurveyLogs() {
   let {
     liveSurveyLogsFilter,
@@ -43,7 +41,6 @@ function LiveSurveyLogs() {
   const logtype = new URLSearchParams(location.search).get("logtype");
 
   const supplier_id = new URLSearchParams(location.search).get("supplier_id");
-  console.log(supplier_id);
 
   // Set All the filters after useeffect and set all the sessions
   useEffect(() => {
@@ -76,7 +73,6 @@ function LiveSurveyLogs() {
       }));
     }
   }, [liveSurveyLogsFilter?.logtype]);
-  console.log(liveSurveyLogsFilter);
   // Setting the sessions according to live and test
   useEffect(() => {
     setFilteredSessions([]);
@@ -154,7 +150,6 @@ function LiveSurveyLogs() {
             a[e.fingerprint] = ++a[e.fingerprint] || 0;
             return a;
           }, {});
-          console.log("sess is", sess);
           setFilteredSessions((prear) => {
             return prear?.filter((session) => sess[session?.fingerprint] === 0);
           });
@@ -186,8 +181,7 @@ function LiveSurveyLogs() {
       }
     }
   }, [liveSurveyLogsFilter, allSessions]);
-  console.log(filteredSessions);
-  console.log(liveSurveyLogsFilter);
+
   // console.log("Sessions", allSessions);
 
   // console.log(liveSurveyLogsFilter)
@@ -588,8 +582,8 @@ function LiveSurveyLogs() {
                 </button>
               </CopyToClipboard>
             </div>
-            <div className={styles.linkbody}>
-              <h1>LIVE LINK</h1>
+            <div className={cx(styles.linkbody, styles.live_link_container)}>
+              <p>LIVE LINK</p>
               <div className={styles.linkCard}>
                 <input
                   type="text"
@@ -612,8 +606,8 @@ function LiveSurveyLogs() {
                 </CopyToClipboard>
               </div>
             </div>
-            <div className={styles.linkbody}>
-              <h1>TEST LINK</h1>
+            <div className={cx(styles.linkbody, styles.test_link_container)}>
+              <p>TEST LINK</p>
               <div className={styles.linkCard}>
                 <input
                   type="text"

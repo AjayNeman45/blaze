@@ -38,8 +38,6 @@ const SecuritySettings = ({ setOpenSnackbar }) => {
     func();
   }, []);
 
-  console.log(securityChecks);
-
   return (
     <div className={styles.security_settings}>
       <div className={styles.validation_setting_header}>
@@ -49,14 +47,14 @@ const SecuritySettings = ({ setOpenSnackbar }) => {
           You can update settings for each survey as needed.
         </p>
       </div>
-      <div class={styles.validation_settings_content}>
-        <h1 class={styles.validation_settings_legend}>Survey Validation</h1>
+      <div className={styles.validation_settings_content}>
+        <h1 className={styles.validation_settings_legend}>Survey Validation</h1>
 
-        <ul class={styles.validation_settings_list}>
-          <li class={styles.validation_settings_item}>
+        <ul className={styles.validation_settings_list}>
+          <li className={styles.validation_settings_item}>
             <FormControlLabel control={<Checkbox />} label="Verify Callback" />
           </li>
-          <li class={styles.validation_settings_item}>
+          <li className={styles.validation_settings_item}>
             <FormControlLabel
               control={
                 <Checkbox checked={securityChecks?.unique_ip ? true : false} />
@@ -70,7 +68,7 @@ const SecuritySettings = ({ setOpenSnackbar }) => {
               }}
             />
           </li>
-          <li class={styles.validation_settings_item}>
+          <li className={styles.validation_settings_item}>
             <FormControlLabel
               control={
                 <Checkbox checked={securityChecks?.unique_rid ? true : false} />
@@ -84,7 +82,7 @@ const SecuritySettings = ({ setOpenSnackbar }) => {
               }
             />
           </li>
-          <li class={styles.validation_settings_item}>
+          <li className={styles.validation_settings_item}>
             <FormControlLabel
               control={
                 <Checkbox

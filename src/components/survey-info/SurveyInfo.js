@@ -36,22 +36,7 @@ const style = {
   bgcolor: "white",
   border: "none",
   outline: "none",
-  borderRadius: "10px",
-  boxShadow: 24,
-  p: 4,
-};
-
-const clonedMsgModalStyle = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 500,
-  height: 300,
-  bgcolor: "white",
-  border: "none",
-  outline: "none",
-  borderRadius: "30px",
+  borderRadius: "20px",
   boxShadow: 24,
   p: 4,
 };
@@ -155,9 +140,11 @@ function SurveyInfo() {
     let body = {};
     getAllSurveys().then((surveys) => {
       surveys.forEach((survey) => {
+        if (survey.id === surveyID) {
+          body = survey.data();
+        }
         if (parseInt(survey.id) > lastSurveyID) {
           lastSurveyID = parseInt(survey.id);
-          body = survey.data();
         }
       });
       setNewSurveyID(lastSurveyID + 1);
@@ -169,12 +156,12 @@ function SurveyInfo() {
       }
       body.encrypt.sid = encryptText(String(lastSurveyID + 1));
       setSurveyCloneModal(true);
-      // addSurvey(lastSurveyID + 1, body)
-      //   .then(() => {
-      //     setSurveyCloneModal(true);
-      //     console.log("survey cloned successfully....");
-      //   })
-      //   .catch((err) => console.log(err.message));
+      addSurvey(lastSurveyID + 1, body)
+        .then(() => {
+          setSurveyCloneModal(true);
+          console.log("survey cloned successfully....");
+        })
+        .catch((err) => console.log(err.message));
     });
   };
 
@@ -255,13 +242,13 @@ function SurveyInfo() {
           <div className={styles.survey_info_name}>
             <h1 onClick={() => setSurveyNameEditModal(!surveyNameEditModal)}>
               {newSurveyName}
+              <span
+                className={styles.edit_btn}
+                onClick={() => setSurveyNameEditModal(!surveyNameEditModal)}
+              >
+                Edit
+              </span>
             </h1>
-            <span
-              className={styles.edit_btn}
-              onClick={() => setSurveyNameEditModal(!surveyNameEditModal)}
-            >
-              Edit
-            </span>
           </div>
 
           <div className={styles.btns}>
@@ -367,15 +354,15 @@ function SurveyInfo() {
         >
           <div className={styles.clonedMsgModalStyle}>
             <BsCheckCircle size={100} color="#45e645" />
-            <h2>Survey Clone successfully.</h2>
+            <p>Survey Clone successfully.</p>
             <div className={styles.btns}>
               <button onClick={() => setSurveyCloneModal(false)}>Close</button>
-              <a
-                href={`localhost:3000/projects/settings/${newSurveyID}`}
-                target="_blank"
+              <p
+                className={styles.go_to_settings_btn}
+                onClick={() => history.push(`/surveys/settings/${newSurveyID}`)}
               >
                 Go to Settings
-              </a>
+              </p>
             </div>
           </div>
         </Modal>
@@ -392,7 +379,7 @@ function SurveyInfo() {
       )}
       {surveyNameEditModal && (
         <NameModal
-          title="Change Survey name"
+          title="Edit Survey name"
           changeName={changedSurveyName}
           setChangeName={setChangeSurveyName}
           handleSaveBtn={handleChangeSurveyNameBtn}
@@ -431,35 +418,38 @@ export const NameModal = ({
       aria-describedby="modal-modal-description"
     >
       <Box sx={style}>
-        <h3>{title}</h3> <br />
-        <form onSubmit={handleSaveBtn}>
-          <input
-            type="text"
-            value={changeName}
-            className={styles.change_survey_name_input}
-            onChange={handleChange}
-          />
-          <div className={styles.btns}>
-            <button
-              className={
-                disabledSaveBtn ? styles.deactivate_btn : styles.change_btn
-              }
-              disabled={disabledSaveBtn}
-              type="submit"
-            >
-              Change
-            </button>
-            <button
-              className={styles.cancel_btn}
-              onClick={() => {
-                setOpenModal(false);
-                setDisabledSaveBtn(true);
-              }}
-            >
-              Cancel
-            </button>
-          </div>
-        </form>
+        <div className={styles.change_survey_name_modal}>
+          <p className={styles.modal_title}>{title}</p> <br />
+          <form onSubmit={handleSaveBtn}>
+            <input
+              type="text"
+              value={changeName}
+              className={styles.change_survey_name_input}
+              onChange={handleChange}
+            />
+            <div className={styles.btns}>
+              <button
+                className={
+                  disabledSaveBtn ? styles.deactivate_btn : styles.change_btn
+                }
+                disabled={disabledSaveBtn}
+                type="submit"
+              >
+                Change
+              </button>
+              <button
+                className={styles.cancel_btn}
+                onClick={() => {
+                  setOpenModal(false);
+                  setDisabledSaveBtn(true);
+                  setChangeName(prevName);
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
       </Box>
     </Modal>
   );

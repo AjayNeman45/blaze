@@ -65,7 +65,6 @@ const Documents = () => {
   };
 
   const handleFileDelete = (fileName) => {
-    console.log(fileName);
     const documentRef = ref(
       storage,
       `Survey-attachement-documents/${surveyID}/${fileName}`

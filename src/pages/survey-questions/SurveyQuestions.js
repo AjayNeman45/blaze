@@ -73,27 +73,26 @@ const SurveyQuestions = () => {
       user_response: parseInt(response),
     };
 
-    let cntSessions = 0;
+    let completes = 0,
+      prescreens = 0;
 
     sessions.forEach((session) => {
-      if (session?.mirats_status === 3) {
-        session?.responses?.map((response) => {
-          if (String(question?.question_id) === response?.question_id) {
-            if (parseInt(response?.user_response) === user_res) cntSessions++;
-          }
-        });
-      }
+      session?.response?.map((resp) => {
+        if (resp?.question_id === questionNumber) {
+          prescreens++;
+        }
+        if (resp?.client_status === 10) {
+          completes++;
+        }
+      });
     });
-
-    console.log(cntSessions);
 
     if (flag) {
       setError("");
-      console.log(isFinalQuestion);
       isFinalQuestion ? (mirats_status = 3) : (mirats_status = 1);
       addQualificationResponseInSessions(body, mirats_status);
       if (question?.conditions?.quotas?.hasOwnProperty(index)) {
-        if (question?.conditions?.quotas?.[index] < cntSessions) {
+        if (!(question?.conditions?.quotas?.[index] - completes)) {
           setErrCode(40);
           setErrMsg("reach maximum limit for this option");
           console.log("quota is full for this input");
@@ -101,7 +100,6 @@ const SurveyQuestions = () => {
         }
       }
       if (isFinalQuestion) {
-        console.log(refereneUrl);
         if (gamma === "alpha") history.push(predirectUrl);
         else history.push(refereneUrl);
         console.log("Cangrats You are qualify for the survey");

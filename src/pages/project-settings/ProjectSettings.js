@@ -606,13 +606,16 @@ const InputFieldCard = ({
         switch (inputType) {
           case "select":
             return (
-              <select onChange={(e) => handleInputChange(e, value, prevVal)}>
-                <option value="" selected disabled hidden>
+              <select
+                value={selectedData}
+                onChange={(e) => handleInputChange(e, value, prevVal)}
+              >
+                <option value="" disabled hidden>
                   Select {title}
                 </option>
                 {dropDownData?.map((data) => {
                   return (
-                    <option key={uuid()} selected={data?.value}>
+                    <option key={uuid()} value={data?.value}>
                       {data.label}
                     </option>
                   );

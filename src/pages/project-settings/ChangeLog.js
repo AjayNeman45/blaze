@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useProjectSettingsContext } from "./ProjectSettingContext";
 import "./ChangeLog.css";
+import { v4 as uuid } from "uuid";
 
 const ChangeLogComponent = () => {
   const [displaychanges, setDisplayChanges] = useState([]);
@@ -40,7 +41,7 @@ const ChangeLogComponent = () => {
             <tbody>
               {displaychanges?.map((change) => {
                 return (
-                  <tr>
+                  <tr key={uuid()}>
                     {/* {/ <td>{change?.updated_date.toDate()}</td> /} */}
                     <td>{change?.updated_date.toDate().toLocaleString()}</td>
                     <td>

@@ -20,36 +20,41 @@ import Logout from "@mui/icons-material/Logout";
 import { useBaseContext } from "../../context/BaseContext";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
-const SurveysSubmenu = ({ history }) => (
-  <>
-    <ul className="nav__submenu">
-      <li
-        className="nav__submenu_item"
-        onClick={() => history.push("/mi/surveys?view=all")}
-      >
-        My Surveys
-      </li>
-      <li
-        className="nav__submenu_item"
-        onClick={() => history.push("/survey-groups")}
-      >
-        Survey Groups
-      </li>
-      <li
-        className="nav__submenu_item"
-        onClick={() => history.push("/mi/projects")}
-      >
-        My Projects
-      </li>
-      <li
-        className="nav__submenu_item"
-        onClick={() => history.push("/question-library")}
-      >
-        Question Library
-      </li>
-    </ul>
-  </>
-);
+const SurveysSubmenu = ({ history }) => {
+  return (
+    <>
+      <ul className="nav__submenu">
+        <li
+          className="nav__submenu_item"
+          onClick={() => history.push("/mi/surveys?view=all")}
+        >
+          My Surveys
+        </li>
+        <li
+          className="nav__submenu_item"
+          onClick={() => history.push("/survey-groups")}
+        >
+          Survey Groups
+        </li>
+        <li
+          className="nav__submenu_item"
+          onClick={() => history.push("/mi/projects")}
+        >
+          My Projects
+        </li>
+        <p
+          className="nav__submenu_item"
+          onClick={() => {
+            console.log("redirecting to question library", history);
+            history.push("/question-library");
+          }}
+        >
+          Question Library
+        </p>
+      </ul>
+    </>
+  );
+};
 const SupplierSubMenu = ({ history }) => {
   return (
     <>

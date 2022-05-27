@@ -97,7 +97,7 @@ export const ReconciliationTable = ({ sessionsCopy, showTable }) => {
   return (
     <>
       {!sessionsCopy.length ? (
-        <p style={{ textAlign: "center", color: "gray" }}>No Result Found</p>
+        <h4 style={{ textAlign: "center", color: "gray" }}>No Result Found</h4>
       ) : (
         <div className={styles.reconciliation_table_container}>
           <table id="table-to-xls" style={{ display: showTable ? "" : "none" }}>

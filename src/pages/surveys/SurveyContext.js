@@ -80,7 +80,6 @@ const SurveyContextProvider = ({ children }) => {
     });
   };
 
-  console.log(surveys);
   const value = {
     surveys,
     clients,

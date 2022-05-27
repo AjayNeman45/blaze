@@ -113,7 +113,6 @@ const Surveys = () => {
 
   // ---->>>> for checkbox of every row
   const handleSelect = (e) => {
-    console.log(e.target.checked);
     if (e.target.checked) {
       setCountCheckProjects(countCheckedProjects + 1);
       setCheckRows([...checkRows, e.target.name]);
@@ -124,7 +123,6 @@ const Surveys = () => {
       });
     }
   };
-  console.log(checkRows);
 
   useEffect(() => {
     document.querySelectorAll("tr").forEach((tr) => {
@@ -159,7 +157,6 @@ const Surveys = () => {
   // ---->>>> filter all the surveys according to pm, study type and all other filters....
   const filterSurveys = () => {
     Object.keys(filters).forEach((key) => {
-      console.log("filtering surveys");
       if (key === "study_type" || key === "survey_type") {
         setCurrentSurveys((prevData) => {
           return prevData.filter((survey) => {
@@ -655,7 +652,6 @@ const ProjectTable = ({
             </thead>
             <tbody>
               {currentProjects?.map((project, index) => {
-                console.log(project);
                 return (
                   <tr key={uuid()} className="dataRow">
                     <td className="project_table_first_col">

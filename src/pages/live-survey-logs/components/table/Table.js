@@ -56,7 +56,8 @@ function createData(
 
 const Root = styled("div")`
   table {
-    // border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 10px;
     width: 100%;
   }
 
@@ -69,15 +70,13 @@ const Root = styled("div")`
   }
 
   td {
-    width: 150px;
-    height: 20px;
-    border: 1px solid #828282;
+    padding: 10px 30px;
     border-radius: 21px;
     text-align: center;
     color: #484848;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    margin: 20px;
-    font-size: 22px;
+    font-size: 15px;
+    margin-right: 50px;
   }
 `;
 
@@ -194,7 +193,6 @@ const Table = ({
               : allSessions
             )?.map((row) => (
               <>
-              {console.log(row)}
                 {/* <div className={styles.gap}> */}
                 <tr key={row?.date.toDate().toDateString()}>
                   <td>{row?.date.toDate().toDateString()}</td>
