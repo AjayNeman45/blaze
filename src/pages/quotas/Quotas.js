@@ -376,10 +376,28 @@ const QuotaModal = ({
 }) => {
   const [showQuotaAddModal, setShowQuotaAddModal] = useState(false);
   const [selectQuestion, setSelectQuestion] = useState({});
+  const [qualificationsCopy, setQualificationsCopy] = useState([]);
+
+  useEffect(() => {
+    setQualificationsCopy(qualifications);
+  }, [qualifications]);
   const handleBtnChange = () => {
     setShowQuotaModal(false);
     setShowQuotaAddModal(true);
   };
+
+  const handleSearchInputChange = (e) => {
+    setQualificationsCopy(qualifications);
+    const value = e.target.value.toLowerCase();
+    let qualificationsTmp = [];
+    qualifications?.map((qual) => {
+      if (qual?.question_name.toLowerCase().includes(value)) {
+        qualificationsTmp.push(qual);
+      }
+    });
+    setQualificationsCopy(qualificationsTmp);
+  };
+
   return (
     <>
       <Modal
@@ -389,10 +407,16 @@ const QuotaModal = ({
         aria-describedby="modal-modal-description"
       >
         <div className={styles.quotas_modal}>
-          <h3>Change Quota of Qualifications</h3>
+          <p className={styles.title}>Change Quota of Qualifications</p>
+          <input
+            type="search"
+            className={styles.search_input}
+            placeholder="search for question"
+            onChange={handleSearchInputChange}
+          />
           <div className={styles.qualifications_list}>
             <Radio.Group onChange={(e) => setSelectQuestion(e)}>
-              {qualifications?.map((question) => {
+              {qualificationsCopy?.map((question) => {
                 return (
                   <div key={uuid()}>
                     <Radio value={question}>{question?.question_name}</Radio>

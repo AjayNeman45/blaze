@@ -140,7 +140,6 @@ const QuotasContextProvider = ({ children }) => {
                   if (flag) prescreens++;
                 });
               break;
-
             default:
               return;
           }
