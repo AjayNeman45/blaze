@@ -39,10 +39,18 @@ const Reference = () => {
       .then((data) => {
         getSessionBasedOnType(surveyID, sessionID, "Sessions").then(
           (sessionData) => {
-            const x = data?.live_url.split("[%rid%]")[0];
-            const y = data?.live_url.split("[%rid%]")[1];
+            const x = data?.live_url?.split("[%rid%]")?.[0]
+              ? data?.live_url?.split("[%rid%]")?.[0]
+              : "";
+            const y = data?.live_url?.split("[%rid%]")?.[1]
+              ? data?.live_url?.split("[%rid%]")?.[1]
+              : "";
             let z = x + sessionData.data()?.ref_id + y;
-            console.log(z);
+            console.log("ref id is ", z);
+            console.log(
+              "endpoint is ",
+              `https://mirats-blaze.netlify.app/7e08091a73b14e034889265e41ba796f91c766ad/${z}/10`
+            );
             // window.location.href(z)
           }
         );
