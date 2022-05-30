@@ -33,19 +33,32 @@ const QuotasContextProvider = ({ children }) => {
 
     surveyData?.qualifications?.questions?.map(async (question) => {
       const qid = question?.question_id;
-      let completes = [],
+      let completes = {},
         totalCompletes = 0,
         totalPrescreens = 0,
         prescreens = 0;
-      let quotasLen = Object.keys(question?.conditions?.quotas)?.length;
-      for (let i = 0; i < quotasLen; i++) {
-        completes.push(0);
-      }
 
+      let quotasLen =
+        question?.conditions?.quotas &&
+        Object.keys(question?.conditions?.quotas)?.length;
       if (!question?.status) return;
 
       // --->>> fetch all the sessions and the find out complete and prescreens sessions
       const questionData = await getQuestion(qid);
+
+      if (question?.conditions?.hasOwnProperty("valid_responses")) {
+        question?.conditions?.valid_responses?.map((valid_res) => {
+          completes[`${valid_res?.from}-${valid_res?.to}`] = 0;
+        });
+      } else {
+        question?.conditions?.valid_options?.map((valid_opt) => {
+          completes[
+            questionData.data()?.lang[surveyData?.country?.code]?.options?.[
+              valid_opt
+            ]
+          ] = 0;
+        });
+      }
 
       getAllSessions(surveyID).then(async (sessions) => {
         sessions.forEach((session) => {
@@ -60,6 +73,7 @@ const QuotasContextProvider = ({ children }) => {
                   user_resp = parseInt(resp?.user_response);
                 }
               });
+
               question?.conditions?.valid_responses?.map(
                 (valid_resp, index) => {
                   if (
@@ -67,39 +81,76 @@ const QuotasContextProvider = ({ children }) => {
                     user_resp >= valid_resp?.from &&
                     user_resp <= valid_resp?.to
                   ) {
-                    console.log("yess....");
                     prescreens++;
                     if (parseInt(sd?.client_status) === 10) {
-                      completes[index]++;
+                      completes[`${valid_resp?.from}-${valid_resp?.to}`]++;
                     }
                   }
                 }
               );
+              break;
             case "Single Punch":
               sd?.responses?.map((resp) => {
                 if (parseInt(resp?.question_id) === qid) {
                   user_resp = parseInt(resp?.user_response);
                 }
               });
-              user_resp < quotasLen &&
-                question?.conditions?.valid_options?.map((valid_opt, index) => {
-                  if (user_resp === valid_opt) {
-                    prescreens++;
-                    if (parseInt(sd?.client_status) === 10) {
-                      completes[index]++;
-                    }
+              question?.conditions?.valid_options?.map((valid_opt, index) => {
+                if (user_resp === parseInt(valid_opt)) {
+                  prescreens++;
+                  if (
+                    sd?.client_status === 10 &&
+                    question?.conditions?.quotas?.hasOwnProperty(String(index))
+                  ) {
+                    completes[
+                      questionData.data()?.lang[surveyData?.country?.code]
+                        ?.options?.[valid_opt]
+                    ]++;
                   }
+                }
+              });
+              break;
+            case "Multi Punch":
+              sd?.responses?.map((resp) => {
+                if (parseInt(resp?.question_id) === qid) {
+                  user_resp = resp?.user_response;
+                }
+              });
+              user_resp?.length &&
+                user_resp?.map((ans) => {
+                  let flag = false;
+                  question?.conditions?.valid_options?.map(
+                    (valid_opt, index) => {
+                      if (ans === valid_opt) {
+                        flag = true;
+                        if (
+                          sd?.client_status === 10 &&
+                          question?.conditions?.quotas?.hasOwnProperty(
+                            String(index)
+                          )
+                        ) {
+                          completes[
+                            questionData.data()?.lang[surveyData?.country?.code]
+                              ?.options?.[valid_opt]
+                          ]++;
+                        }
+                      }
+                    }
+                  );
+                  if (flag) prescreens++;
                 });
+              break;
+
             default:
               return;
           }
         });
-        console.log(question?.question_id, completes, prescreens);
+
         setQualifications((prevData) => [
           ...prevData,
           {
             ...question,
-            ...questionData.data()?.lang["ENG-IN"],
+            ...questionData.data()?.lang[surveyData?.country?.code],
             question_type: questionData.data()?.question_type,
             question_name: questionData.data()?.name,
             conditions: question?.conditions ? question?.conditions : null,
@@ -110,12 +161,17 @@ const QuotasContextProvider = ({ children }) => {
         setTotalData({
           total_completes: totalCompletes,
           total_prescreens: totalPrescreens,
-          total_remaining: totalPrescreens - totalCompletes,
-          total_conversion: (totalCompletes / totalPrescreens) * 100,
+          total_remaining:
+            parseInt(surveyData?.no_of_completes) - parseInt(totalCompletes),
+          total_conversion: Math.round(
+            (totalCompletes / totalPrescreens) * 100
+          ),
         });
       });
     });
   };
+
+  console.log(qualifications);
 
   const value = {
     survey,

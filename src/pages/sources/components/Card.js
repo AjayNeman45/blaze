@@ -27,14 +27,14 @@ function Card({
   const [redirectsopenDialog, setRedirectsOpenDialog] = useState(false);
   const [viewLinkopenDialog, setViewLinkOpenDialog] = useState(false);
   const [copyText, setCopyText] = useState({});
-  // console.log(surveyid)
+  console.log(supplier_id);
 
   useEffect(() => {
     setCopyText({
       // live_url: surveydata?.live_url,
-      live_url: `Live URL= https://miratsblaze.netlify.com/blaze/${surveydata?.encrypt?.sid}-${surveydata?.encrypt?.pid}-${surveydata?.encrypt?.cid}/lightningStart?SRCID=${data?.supplier_account_id}&RID=[%rid%]`,
-      test_url: `Test URL= https://miratsblaze.netlify.com/blaze/${surveydata?.encrypt?.sid}-${surveydata?.encrypt?.pid}-${surveydata?.encrypt?.cid}/lightningStart?SRCID=${data?.supplier_account_id}&alpha=gamma&RID=$[%rid%]`,
-      both_url: `Live url = ${`https://miratsblaze.netlify.com/blaze/${surveydata?.encrypt?.sid}-${surveydata?.encrypt?.pid}-${surveydata?.encrypt?.cid}/lightningStart?SRCID=${data?.supplier_account_id}&RID=[%rid%]`}\nTest url = ${`https://miratsblaze.netlify.com/blaze/${surveydata?.encrypt?.sid}-${surveydata?.encrypt?.pid}-${surveydata?.encrypt?.cid}/lightningStart?SRCID=${data?.supplier_account_id}&alpha=gamma&RID=[%rid%]`}`,
+      live_url: `Live URL= https://mirats-blaze.netlify.com/blaze/${surveydata?.encrypt?.sid}-${surveydata?.encrypt?.pid}-${surveydata?.encrypt?.cid}/lightningStart?SRCID=${supplier_id}&RID=[%rid%]`,
+      test_url: `Test URL= https://mirats-blaze.netlify.com/blaze/${surveydata?.encrypt?.sid}-${surveydata?.encrypt?.pid}-${surveydata?.encrypt?.cid}/lightningStart?SRCID=${supplier_id}&gamma=alpha&RID=$[%rid%]`,
+      both_url: `Live url = ${`https://mirats-blaze.netlify.com/blaze/${surveydata?.encrypt?.sid}-${surveydata?.encrypt?.pid}-${surveydata?.encrypt?.cid}/lightningStart?SRCID=${supplier_id}&RID=[%rid%]`}\nTest url = ${`https://mirats-blaze.netlify.com/blaze/${surveydata?.encrypt?.sid}-${surveydata?.encrypt?.pid}-${surveydata?.encrypt?.cid}/lightningStart?SRCID=${supplier_id}&gamma=alpha&RID=[%rid%]`}`,
     });
   }, [surveydata]);
   const copyToClipboard = (type) => {
@@ -224,7 +224,7 @@ function Card({
                 fullWidth
                 variant="outlined"
                 disabled
-                value={`https://miratsblaze.netlify.com/blaze/${surveydata?.encrypt?.sid}-${surveydata?.encrypt?.pid}-${surveydata?.encrypt?.cid}/lightningStart?SRCID=${data?.supplier_account_id}&RID=[%rid%]`}
+                value={`https://miratsblaze.netlify.com/blaze/${surveydata?.encrypt?.sid}-${surveydata?.encrypt?.pid}-${surveydata?.encrypt?.cid}/lightningStart?SRCID=${supplier_id}&RID=[%rid%]`}
                 // inputProps={{ sx: { color: "#fff" } }}
               />
               <button
@@ -245,7 +245,7 @@ function Card({
                 fullWidth
                 variant="outlined"
                 disabled
-                value={`https://miratsblaze.netlify.com/blaze/${surveydata?.encrypt?.sid}-${surveydata?.encrypt?.pid}-${surveydata?.encrypt?.cid}/lightningStart?SRCID=${data?.supplier_account_id}&alpha=gamma&RID=$[%rid%]`}
+                value={`https://miratsblaze.netlify.com/blaze/${surveydata?.encrypt?.sid}-${surveydata?.encrypt?.pid}-${surveydata?.encrypt?.cid}/lightningStart?SRCID=${supplier_id}&alpha=gamma&RID=$[%rid%]`}
                 // inputProps={{ sx: { color: "#fff" } }}
               />
               <button

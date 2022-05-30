@@ -73,41 +73,38 @@ const SurveyQuestions = () => {
       user_response: parseInt(response),
     };
 
-    let completes = 0,
-      prescreens = 0;
-
+    let cntCompleted = 0;
     sessions.forEach((session) => {
-      session?.response?.map((resp) => {
-        if (resp?.question_id === questionNumber) {
-          prescreens++;
-        }
-        if (resp?.client_status === 10) {
-          completes++;
+      let response;
+      session?.responses?.map((resp) => {
+        if (parseInt(question?.question_id) === parseInt(resp?.question_id)) {
+          response = resp?.user_response;
         }
       });
+      if (response === user_res && session?.client_status === 10)
+        cntCompleted++;
     });
 
     if (flag) {
       setError("");
       isFinalQuestion ? (mirats_status = 3) : (mirats_status = 1);
-      addQualificationResponseInSessions(body, mirats_status);
       if (question?.conditions?.quotas?.hasOwnProperty(index)) {
-        if (!(question?.conditions?.quotas?.[index] - completes)) {
+        if (!(question?.conditions?.quotas?.[index] - cntCompleted)) {
+          mirats_status = 40;
           setErrCode(40);
-          setErrMsg("reach maximum limit for this option");
-          console.log("quota is full for this input");
+          setErrMsg("Respondent went over quota within the Lucid Marketplac");
+          addQualificationResponseInSessions(body, mirats_status);
           return;
         }
       }
+      addQualificationResponseInSessions(body, mirats_status);
+
       if (isFinalQuestion) {
         if (gamma === "alpha") history.push(predirectUrl);
         else history.push(refereneUrl);
         console.log("Cangrats You are qualify for the survey");
-        return;
-      }
-      history.push(nextQuestionUrl);
+      } else history.push(nextQuestionUrl);
     } else {
-      addQualificationResponseInSessions(body, mirats_status);
       if (gamma === "alpha") history.push(predirectUrl);
       else {
         setErrCode(mirats_status);
@@ -122,10 +119,8 @@ const SurveyQuestions = () => {
   };
 
   const handleMultiPunch = () => {
-    let count = 0,
-      mirats_status,
+    let mirats_status,
       flag = true;
-    let wanted_cnt = question?.conditions?.valid_options?.length;
 
     multiPunchResp?.map((res) => {
       const user_res = parseInt(res);
@@ -140,8 +135,37 @@ const SurveyQuestions = () => {
     };
     question?.is_core_demographic ? (mirats_status = 23) : (mirats_status = 24);
 
-    // conditions for right answer
+    let cntCompleted = {};
+    for (let i = 0; i < multiPunchResp?.length; i++) {
+      cntCompleted[multiPunchResp[i]] = 0;
+    }
+    sessions?.map((session) => {
+      let ans = [];
+      session?.responses?.map((resp) => {
+        if (parseInt(resp?.question_id) === parseInt(question?.question_id))
+          ans = resp?.user_response;
+      });
+      Object.keys(cntCompleted).map((key) => {
+        if (ans.indexOf(parseInt(key)) !== -1 && session?.client_status === 10)
+          cntCompleted[key]++;
+      });
+    });
+    let checkOverQuotaFlag = true;
+    Object.keys(cntCompleted).map((key) => {
+      let optionNumber;
+      question?.conditions?.valid_options?.map((option, index) => {
+        if (option === parseInt(key)) {
+          optionNumber = index;
+        }
+      });
+      if (
+        cntCompleted[key] >=
+        question?.conditions?.quotas?.[String(optionNumber)]
+      )
+        checkOverQuotaFlag = false;
+    });
 
+    // conditions for right answer
     if (multiPunchResp.length < question?.conditions?.how_many?.min) {
       if (gamma === "alpha") history.push(predirectUrl);
       else
@@ -169,14 +193,19 @@ const SurveyQuestions = () => {
       setMultiPunchRes("");
       setError("");
       isFinalQuestion ? (mirats_status = 3) : (mirats_status = 1);
+      if (!checkOverQuotaFlag) {
+        mirats_status = 40;
+        setErrCode(40);
+        setErrMsg("Respondent went over quota within the Lucid Marketplace");
+        addQualificationResponseInSessions(body, mirats_status);
+        return;
+      }
       addQualificationResponseInSessions(body, mirats_status);
       if (isFinalQuestion) {
         if (gamma === "alpha") history.push(predirectUrl);
         else history.push(refereneUrl);
         console.log("Cangrats You are qualify for the survey");
-        return;
-      }
-      history.push(nextQuestionUrl);
+      } else history.push(nextQuestionUrl);
     }
   };
 
@@ -191,27 +220,32 @@ const SurveyQuestions = () => {
     question?.is_core_demographic ? (mirats_status = 23) : (mirats_status = 24);
 
     let flag = false,
-      index;
+      optIndexForUserAns,
+      rangeForUserAns;
     question?.conditions?.valid_responses?.map((res, i) => {
       if (res.from <= user_res && user_res <= res.to) {
-        index = i;
+        optIndexForUserAns = i;
+        rangeForUserAns = res;
         flag = true;
       }
     });
 
-    let cntSessions = 0;
+    let cntCompleted = 0;
     sessions.forEach((session) => {
       if (session?.mirats_status === 3) {
-        session?.responses?.map((response) => {
-          if (question?.question_id === response?.question_id) {
-            let user_res = parseInt(response?.user_response);
-            let from = question?.conditions?.valid_responses[index]?.from;
-            let to = question?.conditions?.valid_responses[index]?.to;
-            if (from <= user_res && user_res <= to) {
-              cntSessions++;
-            }
+        let response;
+        session?.responses?.map((resp) => {
+          if (parseInt(question?.question_id) === parseInt(resp?.question_id)) {
+            response = parseInt(resp?.user_response);
           }
         });
+        if (
+          response >= rangeForUserAns?.from &&
+          response <= rangeForUserAns?.to &&
+          session?.client_status === 10
+        ) {
+          cntCompleted++;
+        }
       }
     });
 
@@ -219,25 +253,24 @@ const SurveyQuestions = () => {
       setResponse("");
       setError("");
       isFinalQuestion ? (mirats_status = 3) : (mirats_status = 1);
-      addQualificationResponseInSessions(body, mirats_status);
-      if (question?.conditions?.quotas?.hasOwnProperty(index)) {
-        if (question?.conditions?.quotas[index] < cntSessions) {
+      if (question?.conditions?.quotas?.hasOwnProperty(optIndexForUserAns)) {
+        if (
+          !(question?.conditions?.quotas[optIndexForUserAns] - cntCompleted)
+        ) {
+          mirats_status = 40;
           setErrCode(40);
-          setErrMsg("reach maximum limit for this option");
-          console.log("quota is full for this input");
+          setErrMsg("Respondent went over quota within the Lucid Marketplace");
+          addQualificationResponseInSessions(body, mirats_status);
           return;
         }
       }
+      addQualificationResponseInSessions(body, mirats_status);
       if (isFinalQuestion) {
         if (gamma === "alpha") history.push(predirectUrl);
         else history.push(refereneUrl);
         console.log("Cangrats You are qualify for the survey");
-        return;
-      }
-      console.log(nextQuestionUrl);
-      history.push(nextQuestionUrl);
+      } else history.push(nextQuestionUrl);
     } else {
-      addQualificationResponseInSessions(body, mirats_status);
       if (gamma === "alpha") history.push(predirectUrl);
       else {
         setErrCode(mirats_status);
@@ -321,15 +354,25 @@ const SurveyQuestions = () => {
         sessionType
       );
 
-      // don't open the question page if mirats mirats_status is 24 or 23
-      if (
-        session.data()?.mirats_status === 24 ||
-        session.data()?.mirats_status === 23
-      ) {
+      // ---- >>>>> don't open the question page if mirats mirats_status is 24 or 23 or 40
+      if (session.data()?.mirats_status === 24) {
         // history.push(
         // 	`/blaze/${encryptedID}/lightningStart?SRCID=${srcID}&RID=${rID}&gamma=${gamma}`
         // )
-        console.log("your disqualified for the survey.....");
+        setErrCode(24);
+        setErrMsg("Respondent failed on a custom qualification");
+        return;
+      }
+      if (session.data()?.mirats_status === 23) {
+        setErrCode(23);
+        setErrMsg(
+          "Respondent failed on a standard qualification such as age, gender, etc qualification"
+        );
+        return;
+      }
+      if (session.data()?.mirats_status === 40) {
+        setErrCode(40);
+        setErrMsg("Respondent went over quota within the Lucid Marketplace");
         return;
       }
       let moveToQuestionNo;

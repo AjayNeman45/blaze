@@ -9,6 +9,7 @@ import { SourceContext } from "./SourcesContext";
 import Snackbar from "@mui/material/Snackbar";
 import { Alert } from "@mui/material";
 import { v4 as uuid } from "uuid";
+import { hashids } from "../../index";
 
 function Sources() {
   let { surveydata, setSurveydata } = useContext(SourceContext);
@@ -21,6 +22,8 @@ function Sources() {
 
     setOpenSnackbar({});
   };
+
+  console.log(surveydata);
   return (
     <>
       {opensnackbar?.show && (
@@ -53,7 +56,7 @@ function Sources() {
                 <Card
                   data={data}
                   title={data?.supplier_account}
-                  supplier_id={data?.supplier_account_id}
+                  supplier_id={hashids.encode([data?.supplier_account_id])}
                   surveyid={surveyID}
                   index={index}
                   surveydata={surveydata}
@@ -74,9 +77,11 @@ function Sources() {
               <div className={styles.single_card}>
                 <Card
                   data={data}
+                  supplier_id={hashids.encode([data?.supplier_account_id])}
                   index={index}
                   title={data?.supplier_account}
                   surveyid={surveyID}
+                  surveydata={surveydata}
                 />
               </div>
             );

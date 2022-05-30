@@ -14,7 +14,7 @@ import { useParams } from "react-router-dom";
 import { addQuota, getQuestion } from "../../utils/firebaseQueries";
 import { v4 as uuid } from "uuid";
 import SnackbarMsg from "../../components/Snackbar";
-import { toNumber } from "lodash";
+import { set, toNumber } from "lodash";
 import { Radio } from "@nextui-org/react";
 
 const tableHeadData = {
@@ -45,7 +45,29 @@ const Quotas = () => {
     }
   }, [quotasChange]);
 
-  console.log("qualifications", qualifications);
+  const handleQuotasChange = (e, indx, index) => {
+    setQualifications((prear) => {
+      return qualifications?.filter((q, i) => {
+        let obj = {};
+        if (i === index) {
+          obj = {
+            ...q,
+            conditions: {
+              ...q?.conditions,
+              quotas: {
+                ...q?.conditions?.quotas,
+                [indx]: parseInt(e.target.value),
+              },
+            },
+          };
+        } else {
+          obj = q;
+        }
+        console.log(obj);
+        return obj;
+      });
+    });
+  };
 
   return (
     <>
@@ -184,41 +206,31 @@ const Quotas = () => {
                                   type="text"
                                   value={data?.conditions?.quotas?.[indx]}
                                   onChange={(e) => {
-                                    setQualifications((prear) => {
-                                      return qualifications?.filter((q, i) => {
-                                        let obj = {};
-                                        if (i === index) {
-                                          obj = {
-                                            ...q,
-                                            conditions: {
-                                              ...q?.conditions,
-                                              quotas: {
-                                                ...q?.conditions?.quotas,
-                                                [indx]: parseInt(
-                                                  e.target.value
-                                                ),
-                                              },
-                                            },
-                                          };
-                                        } else {
-                                          obj = q;
-                                        }
-                                        console.log(obj);
-                                        return obj;
-                                      });
-                                    });
+                                    handleQuotasChange(e, indx, index);
                                   }}
                                 />
                               </td>
 
                               <td>{data?.prescreens}</td>
-                              <td>{data?.completes[indx]}</td>
                               <td>
-                                {data?.prescreens - data?.completes[indx]}
+                                {
+                                  data.completes[
+                                    `${data?.conditions?.valid_responses?.[indx]?.from}-${data?.conditions?.valid_responses?.[indx]?.to}`
+                                  ]
+                                }
+                              </td>
+                              <td>
+                                {data?.conditions?.quotas?.[indx] -
+                                  data.completes[
+                                    `${data?.conditions?.valid_responses?.[indx]?.from}-${data?.conditions?.valid_responses?.[indx]?.to}`
+                                  ]}
                               </td>
                               <td>
                                 {Math.round(
-                                  (data.completes[indx] / data?.prescreens) *
+                                  (data.completes[
+                                    `${data?.conditions?.valid_responses?.[indx]?.from}-${data?.conditions?.valid_responses?.[indx]?.to}`
+                                  ] /
+                                    data?.prescreens) *
                                     100
                                 )}{" "}
                                 %
@@ -233,34 +245,108 @@ const Quotas = () => {
                     case "Single Punch":
                       return data?.conditions?.valid_options?.map(
                         (option, indx) => {
-                          return data?.conditions?.quotas?.hasOwnProperty(
-                            indx
-                          ) ? (
-                            <tr key={uuid()}>
-                              <td>{data?.question_name}</td>
-                              <td>{data?.options?.[option]}</td>
-                              <td>
-                                <input
-                                  type="text"
-                                  className={styles.table_input}
-                                  value={data?.conditions?.quotas?.[indx]}
-                                />
-                              </td>
-                              <td>{data.prescreens}</td>
-                              <td>{data.completes[indx]}</td>
-                              <td>
-                                {data?.prescreens - data?.completes[indx]}
-                              </td>
-                              <td>
-                                {(data?.completes[indx] / data?.prescreens) *
-                                  100}{" "}
-                                %
-                              </td>
-                              {/* <td>
+                          if (data?.conditions?.quotas?.hasOwnProperty(indx)) {
+                            return (
+                              <tr key={uuid()}>
+                                <td>{data?.question_name}</td>
+                                <td>{data?.options?.[option]}</td>
+                                <td>
+                                  <input
+                                    type="text"
+                                    className={styles.table_input}
+                                    value={data?.conditions?.quotas?.[indx]}
+                                  />
+                                </td>
+                                <td>{data?.prescreens}</td>
+                                <td>
+                                  {
+                                    data?.completes[
+                                      data?.options[
+                                        data?.conditions?.valid_options?.[indx]
+                                      ]
+                                    ]
+                                  }
+                                </td>
+                                <td>
+                                  {data?.conditions?.quotas?.[indx] -
+                                    data?.completes[
+                                      data?.options[
+                                        data?.conditions?.valid_options?.[indx]
+                                      ]
+                                    ]}
+                                </td>
+                                <td>
+                                  {Math.round(
+                                    (data?.completes[
+                                      data?.options[
+                                        data?.conditions?.valid_options?.[indx]
+                                      ]
+                                    ] /
+                                      data?.prescreens) *
+                                      100
+                                  )}{" "}
+                                  %
+                                </td>
+                                {/* <td>
                                 <IoMdLock size={20} />
                               </td> */}
-                            </tr>
-                          ) : null;
+                              </tr>
+                            );
+                          }
+                        }
+                      );
+                    case "Multi Punch":
+                      console.log(data?.prescreens, data?.completes);
+                      return data?.conditions?.valid_options?.map(
+                        (option, indx) => {
+                          if (data?.conditions?.quotas?.hasOwnProperty(indx)) {
+                            return (
+                              <tr key={uuid()}>
+                                <td>{data?.question_name}</td>
+                                <td>{data?.options?.[option]}</td>
+                                <td>
+                                  <input
+                                    type="text"
+                                    className={styles.table_input}
+                                    value={data?.conditions?.quotas?.[indx]}
+                                  />
+                                </td>
+                                <td>{data?.prescreens}</td>
+                                <td>
+                                  {
+                                    data?.completes[
+                                      data?.options[
+                                        data?.conditions?.valid_options?.[indx]
+                                      ]
+                                    ]
+                                  }
+                                </td>
+                                <td>
+                                  {data?.conditions?.quotas?.[indx] -
+                                    data?.completes[
+                                      data?.options[
+                                        data?.conditions?.valid_options?.[indx]
+                                      ]
+                                    ]}
+                                </td>
+                                <td>
+                                  {Math.round(
+                                    (data?.completes[
+                                      data?.options[
+                                        data?.conditions?.valid_options?.[indx]
+                                      ]
+                                    ] /
+                                      data?.prescreens) *
+                                      100
+                                  )}{" "}
+                                  %
+                                </td>
+                                {/* <td>
+                                <IoMdLock size={20} />
+                              </td> */}
+                              </tr>
+                            );
+                          }
                         }
                       );
                   }
@@ -307,16 +393,11 @@ const QuotaModal = ({
           <div className={styles.qualifications_list}>
             <Radio.Group onChange={(e) => setSelectQuestion(e)}>
               {qualifications?.map((question) => {
-                let questionType = question?.question_type;
-                if (
-                  questionType === "Numeric - Open-end" ||
-                  questionType === "Single Punch"
-                )
-                  return (
-                    <div key={uuid()}>
-                      <Radio value={question}>{question?.question_name}</Radio>
-                    </div>
-                  );
+                return (
+                  <div key={uuid()}>
+                    <Radio value={question}>{question?.question_name}</Radio>
+                  </div>
+                );
               })}
             </Radio.Group>
           </div>
@@ -349,14 +430,21 @@ const AddQuotaModal = ({
   const [snackbarData, setSnackbarData] = useState({});
   const [remainingQuota, setRemainingQuota] = useState();
   const [quotasUsed, setQuotaUsed] = useState(0);
-  const [disabledBtn, setDisabledBtn] = useState(true);
 
   useEffect(() => {
     setRemainingQuota(survey?.no_of_completes);
   }, [survey]);
 
+  useEffect(() => {
+    setQuotaValues(qualification);
+  }, [qualification]);
+
   const handleSaveBtnClick = () => {
-    addQuota(surveyID, qualification?.question_id, quotaValues)
+    addQuota(
+      surveyID,
+      qualification?.question_id,
+      quotaValues?.conditions?.quotas
+    )
       .then(() => {
         setShowSnackbar(true);
         console.log("quota updated...");
@@ -372,26 +460,18 @@ const AddQuotaModal = ({
           severity: "error",
         });
       });
-    setQuotaValues([]);
+    setQuotaValues({});
     setShowQuotaAddModal(false);
-
-    // .then(res => {
-    //   console.log(res)
-    // }).catch(err => {
-    //   console.log(err)
-    // })
   };
 
   const handleInputChange = (e, indx) => {
     let value = parseInt(e.target.value);
-    setQuotaValues((prevData) => {
-      let data = prevData;
-      data[indx] = isNaN(value) ? 0 : value;
-      return data;
-    });
+    let newData = { ...quotaValues };
+    if (isNaN(value)) {
+      delete newData.conditions.quotas[indx];
+    } else newData.conditions.quotas[indx] = value;
+    setQuotaValues(newData);
   };
-
-  // console.log(quotaValues)
 
   const handleSnackbar = () => {
     setShowSnackbar(!showSnackbar);
@@ -419,44 +499,39 @@ const AddQuotaModal = ({
 
           <p className={styles.question_text}>{qualification.question_text}</p>
           {(() => {
-            switch (qualification?.question_type) {
-              case "Numeric - Open-end": {
-                return qualification?.conditions?.valid_responses?.map(
-                  (response, indx) => {
-                    return (
-                      <div className={styles.numeric_conditions} key={uuid()}>
-                        <span>{response.from}</span> To
-                        <span>{response.to}</span> - &nbsp;{" "}
-                        <input
-                          type="number"
-                          placeholder="add quota"
-                          value={quotaValues[indx]}
-                          onChange={(e) => handleInputChange(e, indx)}
-                        />
-                      </div>
-                    );
-                  }
-                );
-              }
-              case "Single Punch":
-                return qualification?.conditions?.valid_options?.map(
-                  (option, indx) => {
-                    return (
-                      <div
-                        key={uuid()}
-                        className={styles.single_punch_condition}
-                      >
-                        <span>{qualification?.options[option]}</span> &nbsp; -
-                        <input
-                          type="number"
-                          placeholder="add quota"
-                          value={quotaValues?.[indx]}
-                          onChange={(e) => handleInputChange(e, indx)}
-                        />
-                      </div>
-                    );
-                  }
-                );
+            if (qualification?.question_type === "Numeric - Open-end") {
+              return quotaValues?.conditions?.valid_responses?.map(
+                (response, indx) => {
+                  return (
+                    <div className={styles.numeric_conditions} key={response}>
+                      <span>{response.from}</span> To
+                      <span>{response.to}</span> - &nbsp;{" "}
+                      <input
+                        type="number"
+                        placeholder="add quota"
+                        value={quotaValues?.conditions?.quotas?.[indx]}
+                        onChange={(e) => handleInputChange(e, indx)}
+                      />
+                    </div>
+                  );
+                }
+              );
+            } else {
+              return quotaValues?.conditions?.valid_options?.map(
+                (option, indx) => {
+                  return (
+                    <div key={option} className={styles.single_punch_condition}>
+                      <span>{quotaValues?.options?.[option]}</span> &nbsp; -
+                      <input
+                        type="number"
+                        placeholder="add quota"
+                        value={quotaValues?.conditions?.quotas?.[indx]}
+                        onChange={(e) => handleInputChange(e, indx)}
+                      />
+                    </div>
+                  );
+                }
+              );
             }
           })()}
           <button className={styles.save_btn} onClick={handleSaveBtnClick}>

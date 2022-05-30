@@ -283,8 +283,6 @@ export const AllowedResponses = ({
     });
   };
 
-  console.log(allowed_responses);
-
   return (
     <div className={styles.response_container}>
       <div className={styles.responses}>

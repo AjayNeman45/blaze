@@ -46,8 +46,9 @@ const ProejctSettingProvider = ({ children }) => {
     //-------- ABC Enterprises  --->>>  1234567890
     //-------- ZYX  --->>>  1234567888
     //-------- MPL  --->>>  1234567901
+    //-------- Mirats  --->>>  1234567907
 
-    console.log(hashids.encode([1234567907]));
+    console.log(hashids.encode([1234567899]));
   }, []);
 
   useEffect(() => {
@@ -58,7 +59,7 @@ const ProejctSettingProvider = ({ children }) => {
         surveyData?.encrypt?.pid +
         "-" +
         surveyData?.encrypt?.cid +
-        `/lightningStart?SRCID=XyMBbGW&RID=vdfvfsd`
+        `/lightningStart?SRCID=NGA2xo2&RID=vdfvfsd`
     );
   }, [surveyData]);
 
