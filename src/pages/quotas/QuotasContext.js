@@ -63,7 +63,7 @@ const QuotasContextProvider = ({ children }) => {
       getAllSessions(surveyID).then(async (sessions) => {
         sessions.forEach((session) => {
           const sd = session.data();
-          if (sd?.mirats_status === 3) totalPrescreens++;
+          totalPrescreens++;
           if (sd?.client_status === 10) totalCompletes++;
           let user_resp;
           switch (questionData.data()?.question_type) {

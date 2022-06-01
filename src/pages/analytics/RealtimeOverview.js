@@ -158,15 +158,18 @@ const RealtimeOverview = () => {
         });
       };
       //for gender by completes card
-      if (session?.client_status === 10) {
-        if (session?.responses[1]?.user_response === 0) {
-          handleUsersByGender("Male");
-        } else if (session?.responses[1]?.user_response === 1) {
-          handleUsersByGender("Female");
-        } else {
-          handleUsersByGender("Other");
+      session?.responses?.map((resp) => {
+        if (
+          parseInt(resp?.question_id) === 43 &&
+          session?.client_status === 10
+        ) {
+          if (session?.responses[1]?.user_response === 0) {
+            handleUsersByGender("Male");
+          } else if (session?.responses[1]?.user_response === 1) {
+            handleUsersByGender("Female");
+          }
         }
-      }
+      });
     });
   }, [lastTimeSessions, survey, allSessions]);
 

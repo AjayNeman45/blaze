@@ -79,7 +79,11 @@ const Surveys = () => {
   const { activity } = useParams();
 
   useEffect(() => {
-    setCurrentSurveys(surveys);
+    setCurrentSurveys(() => {
+      surveys?.sort((a, b) => {
+        return b?.creation_date - a?.creation_date;
+      });
+    });
 
     // ------>>>>  storing the status cnts (live, awarded, paused,.....) of the surveys
     let tmp = {};

@@ -311,9 +311,8 @@ const BlazeContextProvider = ({ children }) => {
   //  verify ip, rid , fingerprint for uniqueness
   const verifyTechnicalDetails = async () => {
     console.log("verifying techincal details ");
-    let techincalDetailsVerification = false;
+    let techincalDetailsVerification = true;
     const securityChecks = survey?.security_checks;
-    const device_type = sessionTechnicalDetails?.deviceType.toLowerCase();
     console.log(ip);
 
     // directly move on to the blocked data verification when there in no session
@@ -350,8 +349,6 @@ const BlazeContextProvider = ({ children }) => {
           "TrueSample Fingerprint Risk Level exceeds acceptable threshold"
         );
         techincalDetailsVerification = false;
-      } else {
-        techincalDetailsVerification = true;
       }
     });
     techincalDetailsVerification && verifyBlockedData();
@@ -431,6 +428,23 @@ const BlazeContextProvider = ({ children }) => {
         setErrCodeAndMsg();
       }
     });
+    if (!flag) {
+      survey?.internal_suppliers?.forEach((d) => {
+        console.log(
+          d?.vendor_status,
+          d.supplier_account_id,
+          supplier_account_id
+        );
+        if (
+          d?.vendor_status?.toLowerCase() === "active" &&
+          d.supplier_account_id === supplier_account_id
+        ) {
+          flag = true;
+          supplier = d;
+          setErrCodeAndMsg();
+        }
+      });
+    }
 
     if (flag) {
       let completedSessionsCnt = 0;

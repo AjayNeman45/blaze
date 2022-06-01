@@ -17,15 +17,6 @@ import SnackbarMsg from "../../components/Snackbar";
 import { set, toNumber } from "lodash";
 import { Radio } from "@nextui-org/react";
 
-const tableHeadData = {
-  field_target: 200,
-  quota: 200,
-  prescreens: 450,
-  completes: 1,
-  total_remaining: 199,
-  conversion: 1,
-};
-
 const Quotas = () => {
   const [showQuotaModal, setShowQuotaModal] = useState(false);
   const [quotasChange, setQuotasChange] = useState(false);
@@ -491,6 +482,7 @@ const AddQuotaModal = ({
   const handleInputChange = (e, indx) => {
     let value = parseInt(e.target.value);
     let newData = { ...quotaValues };
+    if (newData.conditions.quotas === undefined) newData.conditions.quotas = {};
     if (isNaN(value)) {
       delete newData.conditions.quotas[indx];
     } else newData.conditions.quotas[indx] = value;
@@ -500,6 +492,8 @@ const AddQuotaModal = ({
   const handleSnackbar = () => {
     setShowSnackbar(!showSnackbar);
   };
+
+  console.log(quotaValues?.conditions?.quotas);
 
   return (
     <>

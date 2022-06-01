@@ -98,8 +98,8 @@ function SurveyDashboard() {
     } else if (mainStatus?.toLowerCase() === "awarded") {
       setBatti(2);
     } else if (mainStatus?.toLowerCase() === "live") {
-      if (internalStatus.toLowerCase() === "soft_launch") setBatti(3);
-      else if (internalStatus.toLowerCase() === "full_launch") setBatti(4);
+      if (internalStatus.toLowerCase() === "soft launch") setBatti(3);
+      else if (internalStatus.toLowerCase() === "full launch") setBatti(4);
     } else if (mainStatus?.toLowerCase() === "complete") {
       setBatti(5);
     } else if (mainStatus?.toLowerCase() === "billed") {

@@ -27,14 +27,18 @@ const businessUnitData = [
 ];
 
 const surveyStatusData = statusOptions;
-const surveyInternStatusData = [
+const currencyData = [
   {
-    label: "Ongoing",
-    value: "ongoing",
+    label: "USD",
+    value: "USD",
   },
   {
-    label: "Full Launch",
-    value: "full_launch",
+    label: "EURO",
+    value: "EURO",
+  },
+  {
+    label: "INR",
+    value: "INR",
   },
 ];
 const projectCoordinatorsData = [
@@ -270,9 +274,37 @@ const NewProjectSettings = () => {
                 selectedData={sData?.internal_status}
                 handleInputChange={handleInputChange}
               />
+              <div className={styles.input_component}>
+                <label>currency</label>
+                <select
+                  value={sData?.client_info?.client_cost_currency}
+                  onChange={(e) => {
+                    setShowChangesBtn(true);
+                    setChanges({
+                      ...changes,
+                      client_cost_currency: {
+                        changed_to: e.target.value,
+                        previous_change:
+                          surveyData?.client_info?.client_cost_currency,
+                      },
+                    });
+                    setSData({
+                      ...sData,
+                      client_info: {
+                        ...sData?.client_info,
+                        client_cost_currency: e.target.value,
+                      },
+                    });
+                  }}
+                >
+                  <option value="USD">USD</option>
+                  <option value="INR">INR</option>
+                  <option value="EURO">EURO</option>
+                </select>
+              </div>
               <InputFieldCard
                 title="external survey name"
-                value="external_project_name"
+                value="external_survey_name"
                 inputType="input"
                 defaultVal={sData?.external_survey_name}
                 handleInputChange={handleInputChange}

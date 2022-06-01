@@ -46,6 +46,16 @@
 .external_supply_sources .top {
   display: flex;
 }
+.disable_add_supplier_btn {
+  border: none;
+  background: none;
+  display: flex;
+  align-items: center;
+  font-size: 17px;
+  color: rgb(163, 192, 237);
+  font-weight: bold;
+  cursor: pointer;
+}
 .btns_filters {
   display: flex;
   align-items: center;

@@ -29,11 +29,13 @@ const SurveyContextProvider = ({ children }) => {
   useEffect(() => {
     const func = async () => {
       const querySnapshot = await getDocs(
-        collection(db, "mirats", "surveys", "survey")
+        query(
+          collection(db, "mirats", "surveys", "survey"),
+          orderBy("creation_date", "desc")
+        )
       );
 
       // ------>>>>  storing the status cnts (live, awarded, paused,.....) of the surveys
-      let tmp = {};
       querySnapshot?.forEach(async (doc) => {
         let completes = 0,
           inClients = 0;
@@ -79,6 +81,8 @@ const SurveyContextProvider = ({ children }) => {
       }
     });
   };
+
+  console.log(surveys);
 
   const value = {
     surveys,

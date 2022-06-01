@@ -189,7 +189,10 @@ const Reports = () => {
                         : 0
                     }
                     unit="min"
-                    expectedCount={(10 / 100) * survey?.expected_completion_loi}
+                    expectedCount={(
+                      (10 / 100) *
+                      survey?.expected_completion_loi
+                    ).toFixed(0)}
                     alertMsg={"alert: HIGH LOI"}
                   />
                 </Grid>

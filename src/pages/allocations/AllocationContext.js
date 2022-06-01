@@ -42,6 +42,7 @@ const AllocationContextProvider = ({ children }) => {
   // console.log(internalsupplierModal);
 
   const [internalSupplierState, setInternalSupplierState] = useState({
+    vendor_status: "active",
     unreserved_completes: false,
     supplier_account_id: 1234567890,
     project_manager: project_manager,

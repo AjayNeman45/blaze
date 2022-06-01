@@ -120,13 +120,24 @@ const Allocations = () => {
     });
     return count;
   }
-  const open = Boolean(supplierTableMenu);
-  const handleTableRowEditMenu = (event) => {
-    setSupplierTableMenu(event.currentTarget);
-  };
-  const handleClose = () => {
-    setSupplierTableMenu(null);
-  };
+  function getLastCompleteDate(supplierID) {
+    let lastDate = new Date(1950, 1, 1);
+    let flag = true;
+    sessions?.map((session) => {
+      if (
+        session?.supplier_account_id === supplierID &&
+        session?.survey_end_time?.toDate() > lastDate &&
+        session?.client_status === 10
+      ) {
+        flag = false;
+        lastDate = session?.survey_end_time.toDate();
+      }
+    });
+    let date = lastDate?.toDateString();
+    if (flag) return "-";
+    return date;
+  }
+
   return (
     <>
       <Header />
@@ -235,7 +246,9 @@ const Allocations = () => {
                     <tr key={uuid()}>
                       <td>{supplier?.supplier_account}</td>
                       <td>{supplier?.tcpi}</td>
-                      <td></td>
+                      <td>
+                        {getLastCompleteDate(supplier?.supplier_account_id)}
+                      </td>
                       <td>{supplier?.allocation?.number}</td>
                       <td>
                         {CalculatePreScreener(supplier?.supplier_account_id)}
@@ -292,7 +305,11 @@ const Allocations = () => {
             <p className={styles.title}>Internal Supply Sources</p>
 
             <button
-              className={styles.add_supplier_btn}
+              className={
+                internalSuppliers?.length
+                  ? styles.disable_add_supplier_btn
+                  : styles.add_supplier_btn
+              }
               onClick={handleInternalSupplierModal}
               disabled={internalSuppliers?.length}
             >
@@ -342,7 +359,9 @@ const Allocations = () => {
                     <tr key={uuid()}>
                       <td>{supplier?.supplier_account}</td>
                       <td>{supplier?.tcpi}</td>
-                      <td></td>
+                      <td>
+                        {getLastCompleteDate(supplier?.supplier_account_id)}
+                      </td>
                       <td>{supplier?.allocation?.number}</td>
                       <td>0</td>
                       <td>0</td>
@@ -415,8 +434,6 @@ const DeleteConfirmationModal = ({
     boxShadow: 24,
     p: 4,
   };
-
-  console.log(supplier);
   const { handleSupplierDelete } = useAllocationContext();
 
   return (

@@ -32,8 +32,8 @@ function Card({
   useEffect(() => {
     setCopyText({
       // live_url: surveydata?.live_url,
-      live_url: `Live URL= https://mirats-blaze.netlify.com/blaze/${surveydata?.encrypt?.sid}-${surveydata?.encrypt?.pid}-${surveydata?.encrypt?.cid}/lightningStart?SRCID=${supplier_id}&RID=[%rid%]`,
-      test_url: `Test URL= https://mirats-blaze.netlify.com/blaze/${surveydata?.encrypt?.sid}-${surveydata?.encrypt?.pid}-${surveydata?.encrypt?.cid}/lightningStart?SRCID=${supplier_id}&gamma=alpha&RID=$[%rid%]`,
+      live_url: `https://mirats-blaze.netlify.com/blaze/${surveydata?.encrypt?.sid}-${surveydata?.encrypt?.pid}-${surveydata?.encrypt?.cid}/lightningStart?SRCID=${supplier_id}&RID=[%rid%]`,
+      test_url: `https://mirats-blaze.netlify.com/blaze/${surveydata?.encrypt?.sid}-${surveydata?.encrypt?.pid}-${surveydata?.encrypt?.cid}/lightningStart?SRCID=${supplier_id}&gamma=alpha&RID=$[%rid%]`,
       both_url: `Live url = ${`https://mirats-blaze.netlify.com/blaze/${surveydata?.encrypt?.sid}-${surveydata?.encrypt?.pid}-${surveydata?.encrypt?.cid}/lightningStart?SRCID=${supplier_id}&RID=[%rid%]`}\nTest url = ${`https://mirats-blaze.netlify.com/blaze/${surveydata?.encrypt?.sid}-${surveydata?.encrypt?.pid}-${surveydata?.encrypt?.cid}/lightningStart?SRCID=${supplier_id}&gamma=alpha&RID=[%rid%]`}`,
     });
   }, [surveydata]);

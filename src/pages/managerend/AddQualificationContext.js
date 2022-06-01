@@ -66,6 +66,7 @@ const AddQualificationContextProvider = ({ children }) => {
 
   const handleSetQuestionBtn = () => {
     setInsertLoading(true);
+    setCompulsaryOpt([]);
     let body = {
       question_id: selectedQuestion?.question_id,
       status: true,

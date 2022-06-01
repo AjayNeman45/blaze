@@ -70,12 +70,14 @@ function InternalSupplierModal() {
       body.percentage = (user_res * 100) / survey?.no_of_completes;
       body.number = user_res;
     }
-    setInternalSupplierState({
-      ...internalSupplierState,
-      allocation: {
-        ...internalSupplierState.allocation,
-        ...body,
-      },
+    setInternalSupplierState((prevData) => {
+      return {
+        ...prevData,
+        allocation: {
+          ...prevData.allocation,
+          ...body,
+        },
+      };
     });
   };
   return (
@@ -122,12 +124,14 @@ function InternalSupplierModal() {
               </label>
               <input
                 onChange={(e) =>
-                  setInternalSupplierState({
-                    ...internalSupplierState,
-                    tcpi: e.target.value,
+                  setInternalSupplierState((prevData) => {
+                    return {
+                      ...prevData,
+                      tcpi: e.target.value,
+                    };
                   })
                 }
-                value={survey?.client_info?.client_cpi * 0.5}
+                value={internalSupplierState?.tcpi}
                 type="text"
                 className={styles.cpi_field}
               />

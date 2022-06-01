@@ -56,7 +56,7 @@ const Audience = () => {
 
         {/* supplier by comlpetes by average time  */}
         <div className={styles.supplier_by_completes_card}>
-          <h1>supplier by completes by average time</h1>
+          <p className={styles.title}>supplier by completes by average time</p>
           <div className={styles.supplier_by_completes_table}>
             <table>
               <thead>
