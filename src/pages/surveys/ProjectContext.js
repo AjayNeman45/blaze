@@ -58,16 +58,16 @@ const ProjectContextProvider = ({ children }) => {
               });
               projectData.avg_cpi = (
                 client_cpi_sum / inClientSessionCnt
-              ).toFixed(0);
+              ).toFixed(2);
               projectData.completedSessionsCnt = completedSessionsCnt;
               projectData.inClientSessionsCnt = inClientSessionCnt;
               projectData.ir = (
                 (completedSessionsCnt / inClientSessionCnt) *
                 100
-              ).toFixed(0);
+              ).toFixed(2);
               projectData.loi = (
                 total_survey_time_sum / inClientSessionCnt
-              ).toFixed(0);
+              ).toFixed(2);
               projectData.study_type = sd?.study_type;
               projectData.survey_type = sd?.survey_type;
               projectData.pm = sd?.mirats_insights_team?.lead_project_managers;

@@ -259,7 +259,7 @@ function SupplierOverview() {
                         {(
                           (statusesCnt?.completed / inClientSurveySessions) *
                           100
-                        ).toFixed(0)}{" "}
+                        ).toFixed(2)}{" "}
                         %
                       </span>{" "}
                       <span>incidence</span>{" "}
@@ -285,7 +285,7 @@ function SupplierOverview() {
                         {(
                           (statusesCnt?.overQuota / inClientSurveySessions) *
                           100
-                        ).toFixed(0)}{" "}
+                        ).toFixed(2)}{" "}
                         %
                       </span>{" "}
                       <span>overquota</span>{" "}
@@ -304,7 +304,7 @@ function SupplierOverview() {
                       {(
                         (statusesCnt?.completed / inClientSurveySessions) *
                         100
-                      ).toFixed(0)}{" "}
+                      ).toFixed(2)}{" "}
                       %
                     </span>{" "}
                   </p>

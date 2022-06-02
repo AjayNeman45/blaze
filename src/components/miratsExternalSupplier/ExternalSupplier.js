@@ -13,7 +13,7 @@ function ExternalSupplier({ tableTitle, data }) {
       completes_total += d?.completed;
       avg_cpi_total += d?.avg_cpi;
     });
-    avg_cpi_total = (avg_cpi_total / data?.length).toFixed(0);
+    avg_cpi_total = (avg_cpi_total / data?.length).toFixed(2);
     amount_total = completes_total * avg_cpi_total;
 
     setTotal({ completes_total, avg_cpi_total, amount_total });

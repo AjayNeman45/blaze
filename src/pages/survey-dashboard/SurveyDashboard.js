@@ -248,7 +248,7 @@ function SurveyDashboard() {
                       {(
                         (statusesCnt?.completed / statusesCnt?.hits) *
                         100
-                      ).toFixed(0)}{" "}
+                      ).toFixed(2)}{" "}
                       %
                     </span>{" "}
                     <span>conversion</span>{" "}
@@ -263,7 +263,7 @@ function SurveyDashboard() {
                         (
                           (statusesCnt?.completed / inClientSurveySessions) *
                           100
-                        ).toFixed(0)
+                        ).toFixed(2)
                       }{" "}
                       %
                     </span>{" "}
@@ -289,7 +289,7 @@ function SurveyDashboard() {
                         (
                           (statusesCnt?.overQuota / inClientSurveySessions) *
                           100
-                        ).toFixed(0)
+                        ).toFixed(2)
                       }{" "}
                       %
                     </span>{" "}
@@ -313,7 +313,7 @@ function SurveyDashboard() {
                     {(
                       (statusesCnt?.completed * 100) /
                       survey?.no_of_completes
-                    ).toFixed(0)}{" "}
+                    ).toFixed(2)}{" "}
                     %
                   </span>{" "}
                 </p>
@@ -478,18 +478,22 @@ function SurveyDashboard() {
                 <h1 className={styles.title}>Supply Cost</h1>
                 <h3 className={styles.count}>
                   {survey?.client_info?.client_cost_currency_symbol}{" "}
-                  {statusesCnt?.completed *
-                    getSupplAvgCPI(completedSessions, statusesCnt?.completed)}
+                  {(
+                    statusesCnt?.completed *
+                    getSupplAvgCPI(completedSessions, statusesCnt?.completed)
+                  ).toFixed(2)}
                 </h3>
               </div>
               <div className={styles.big_card}>
                 <h1 className={styles.title}>Profit</h1>
                 <h3 className={styles.count}>
                   {survey?.client_info?.client_cost_currency_symbol}{" "}
-                  {statusesCnt?.completed *
-                    getAvgCPI(completedSessions, statusesCnt?.completed) -
+                  {(
                     statusesCnt?.completed *
-                      getSupplAvgCPI(completedSessions, statusesCnt?.completed)}
+                      getAvgCPI(completedSessions, statusesCnt?.completed) -
+                    statusesCnt?.completed *
+                      getSupplAvgCPI(completedSessions, statusesCnt?.completed)
+                  ).toFixed(2)}
                 </h3>
               </div>
             </div>

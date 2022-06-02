@@ -232,6 +232,23 @@ input:focus {
   margin: 0px 5px;
   padding: 5px 35px;
 }
+.applied_filters_container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+.applied_filter {
+  border: 1px solid gray;
+  font-size: 12px;
+  border-radius: 30px;
+  padding: 2px 10px;
+  background-color: rgb(230, 230, 230);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 33px;
+}
 
 /* ----------------------------------------------------------------
                     Project Filter search button

@@ -24,32 +24,17 @@ const SurveysSubmenu = ({ history }) => {
   return (
     <>
       <ul className="nav__submenu">
-        <li
-          className="nav__submenu_item"
-          onClick={() => history.push("/mi/surveys?view=all")}
-        >
-          My Surveys
+        <li className="nav__submenu_item">
+          <Link to="/mi/surveys?view=all">My Surveys</Link>
         </li>
-        <li
-          className="nav__submenu_item"
-          onClick={() => history.push("/survey-groups")}
-        >
-          Survey Groups
+        <li className="nav__submenu_item">
+          <Link to="/survey-groups">Survey Groups</Link>
         </li>
-        <li
-          className="nav__submenu_item"
-          onClick={() => history.push("/mi/projects")}
-        >
-          My Projects
+        <li className="nav__submenu_item">
+          <Link to="/mi/projects">My Projects</Link>
         </li>
-        <p
-          className="nav__submenu_item"
-          onClick={() => {
-            console.log("redirecting to question library", history);
-            history.push("/question-library");
-          }}
-        >
-          Question Library
+        <p className="nav__submenu_item">
+          <Link to="/question-library">Question Library</Link>
         </p>
       </ul>
     </>

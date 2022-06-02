@@ -209,7 +209,7 @@ const Reports = () => {
                             (statusesCnt?.completed /
                               miratsStatusesCnt?.in_client_survey) *
                             100
-                          ).toFixed(0)
+                          ).toFixed(2)
                         : 0
                     }
                     unit="%"
@@ -236,7 +236,7 @@ const Reports = () => {
                         ? (
                             (statusesCnt?.overQuota * 100) /
                             miratsStatusesCnt?.in_client_survey
-                          ).toFixed(0)
+                          ).toFixed(2)
                         : 0
                     }
                     unit="%"
@@ -268,7 +268,7 @@ const Reports = () => {
             <div className={styles.total_survey_cost_card}>
               <span className={styles.legend}>Total Survey Cost</span>
               <span className={styles.value}>
-                $ {(clientCpiSum / statusesCnt?.completed).toFixed(0)}
+                $ {(clientCpiSum / statusesCnt?.completed).toFixed(2)}
               </span>
             </div>
           </div>
@@ -492,22 +492,22 @@ const StatusCard = ({ cardTitle, cardData, inClientCnt, statusesCnt }) => {
                       variant="determinate"
                       value={
                         data?.value === "in_client_survey"
-                          ? ((inClientCnt * 100) / statusesCnt?.hits).toFixed(0)
+                          ? ((inClientCnt * 100) / statusesCnt?.hits).toFixed(2)
                           : (
                               (statusesCnt?.[data?.value] * 100) /
                               statusesCnt?.hits
-                            ).toFixed(0)
+                            ).toFixed(2)
                       }
                     />
                   </Box>
                   <Box sx={{ minWidth: 35 }}>
                     <Typography variant="body2" color="text.secondary">
                       {data?.value === "in_client_survey"
-                        ? ((inClientCnt * 100) / statusesCnt?.hits).toFixed(0)
+                        ? ((inClientCnt * 100) / statusesCnt?.hits).toFixed(2)
                         : (
                             (statusesCnt?.[data?.value] * 100) /
                             statusesCnt?.hits
-                          ).toFixed(0)}
+                          ).toFixed(2)}
                       %
                     </Typography>
                   </Box>

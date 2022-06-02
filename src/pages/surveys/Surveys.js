@@ -4,19 +4,15 @@ import {
   useHistory,
   useLocation,
 } from "react-router-dom/cjs/react-router-dom.min";
-import { MdDeleteOutline, MdEdit } from "react-icons/md";
+import { MdDeleteOutline } from "react-icons/md";
 import { MdContentCopy } from "react-icons/md";
 import { FiDownload } from "react-icons/fi";
 import "./Surveys.css";
 import { useEffect, useState } from "react";
-import Subheader from "../../components/subheader/Subheader";
 import { useSurveyContext } from "./SurveyContext";
-import Hashids from "hashids";
 import styles from "./Survey.module.css";
-import { AiOutlineSearch } from "react-icons/ai";
 import facewithmask from "../../assets/images/facewithmask.png";
 import { Loading, Switch, Tooltip } from "@nextui-org/react";
-import { getAvgCPI } from "../survey-dashboard/SurveyDashboardContext";
 import {
   studyTypesData,
   surveyTypesData,
@@ -28,7 +24,6 @@ import Select from "react-select";
 import { default as Muiselect } from "@mui/material/Select";
 import { FormControl, InputLabel, MenuItem, Modal } from "@mui/material";
 import { DateRangePicker } from "rsuite";
-import { addDays, subDays } from "date-fns";
 import { useParams } from "react-router-dom";
 import { useProjectContext } from "./ProjectContext";
 import { CSVLink } from "react-csv";
@@ -36,6 +31,8 @@ import { RiDeleteBin5Line } from "react-icons/ri";
 import { Box } from "@mui/system";
 import { deleteSurveys } from "../../utils/firebaseQueries";
 import { v4 as uuid } from "uuid";
+import { RiCloseCircleFill } from "react-icons/ri";
+import { subDays } from "rsuite/esm/utils/dateUtils";
 
 const selectCountryStyle = {
   menu: (provided, state) => ({
@@ -73,6 +70,7 @@ const Surveys = () => {
   const countries = useMemo(() => countryList().getData(), []);
   const [openDelConfirmationModal, setOpenDelConfirmationModal] =
     useState(false);
+  const [surveyLoading, setSurveyLoading] = useState(true);
   const handleCloseDeleteModal = () => {
     setOpenDelConfirmationModal(false);
   };
@@ -80,6 +78,7 @@ const Surveys = () => {
 
   useEffect(() => {
     setCurrentSurveys(() => {
+      setSurveyLoading(false);
       surveys?.sort((a, b) => {
         return b?.creation_date - a?.creation_date;
       });
@@ -240,6 +239,8 @@ const Surveys = () => {
     // }
   };
 
+  console.log(filters);
+
   return (
     <>
       <Header />
@@ -292,9 +293,9 @@ const Surveys = () => {
                   }}
                 >
                   {projectManagersData?.map((pm) => (
-                    <div key={uuid()}>
-                      <MenuItem value={pm}>{pm}</MenuItem>
-                    </div>
+                    <MenuItem value={pm} key={uuid()}>
+                      {pm}
+                    </MenuItem>
                   ))}
                 </Muiselect>
               </FormControl>
@@ -319,12 +320,11 @@ const Surveys = () => {
                     })
                   }
                 >
-                  {studyTypesData?.map((type) => {
-                    return;
-                    <div key={uuid()}>
-                      <MenuItem value={type.label}>{type.label}</MenuItem>;
-                    </div>;
-                  })}
+                  {studyTypesData?.map((type) => (
+                    <MenuItem value={type.label} key={uuid()}>
+                      {type.label}
+                    </MenuItem>
+                  ))}
                 </Muiselect>
               </FormControl>
 
@@ -364,9 +364,9 @@ const Surveys = () => {
                   }
                 >
                   {surveyTypesData?.map((surveyType) => (
-                    <div key={uuid()}>
-                      <MenuItem value={surveyType}>{surveyType}</MenuItem>;
-                    </div>
+                    <MenuItem value={surveyType?.label} key={uuid()}>
+                      {surveyType?.label}
+                    </MenuItem>
                   ))}
                 </Muiselect>
               </FormControl>
@@ -390,11 +390,9 @@ const Surveys = () => {
                   }}
                 >
                   {clients?.map((client) => (
-                    <div key={uuid()}>
-                      <MenuItem value={client?.company_name}>
-                        {client?.company_name}
-                      </MenuItem>
-                    </div>
+                    <MenuItem value={client?.company_name} key={uuid()}>
+                      {client?.company_name}
+                    </MenuItem>
                   ))}
                 </Muiselect>
               </FormControl>
@@ -410,6 +408,8 @@ const Surveys = () => {
                   margin: ".5rem",
                 }}
                 onChange={(e) => {
+                  console.log(e?.["0"]);
+                  console.log(typeof e);
                   setFilters((prevData) => {
                     return { ...prevData, dateRange: e };
                   });
@@ -433,6 +433,60 @@ const Surveys = () => {
                   },
                 ]}
               />
+            </div>
+            <div className={styles.applied_filters_container}>
+              {Object.keys(filters).map((key) => {
+                if (key === "country") {
+                  return (
+                    <div className={styles.applied_filter}>
+                      <span>{filters[key]?.label}</span> &nbsp;
+                      <RiCloseCircleFill
+                        size={20}
+                        onClick={() =>
+                          setFilters((prevData) => {
+                            delete prevData?.[key];
+                            return prevData;
+                          })
+                        }
+                      />
+                    </div>
+                  );
+                } else if (key === "dateRange") {
+                  return (
+                    <div className={styles.applied_filter}>
+                      <span>{filters[key]?.["0"].toLocaleDateString()}</span> To{" "}
+                      <span>{filters[key]?.["0"].toLocaleDateString()}</span>{" "}
+                      &nbsp;
+                      <RiCloseCircleFill
+                        size={20}
+                        onClick={() =>
+                          setFilters((prevData) => {
+                            return Object.keys(prevData)?.filter((x) => {
+                              delete prevData?.[key];
+                              return prevData;
+                            });
+                          })
+                        }
+                      />
+                    </div>
+                  );
+                } else {
+                  return (
+                    <div className={styles.applied_filter}>
+                      <span>{filters[key]}</span> &nbsp;
+                      <RiCloseCircleFill
+                        size={20}
+                        onClick={() =>
+                          setFilters((prevData) => {
+                            delete prevData?.[key];
+                            return prevData;
+                          })
+                        }
+                      />
+                    </div>
+                  );
+                }
+              })}
             </div>
           </div>
           <div className={styles.right}>
@@ -533,6 +587,7 @@ const Surveys = () => {
             handleDeleteSurvey={handleDeleteSurvey}
             setCountCheckProjects={setCountCheckProjects}
             checkRows={checkRows}
+            surveyLoading={surveyLoading}
           />
         )}
 
@@ -774,7 +829,7 @@ const ProjectTable = ({
                           (new Date().getTime() -
                             project?.launchDate?.getTime()) /
                           (1000 * 3600 * 24)
-                        ).toFixed(0)}{" "}
+                        ).toFixed(2)}{" "}
                         Days ago
                       </span>
                     </td>
@@ -799,6 +854,7 @@ const SurveyTable = ({
   handleDeleteSurvey,
   setCountCheckProjects,
   checkRows,
+  surveyLoading,
 }) => {
   const style = {
     position: "absolute",
@@ -856,7 +912,7 @@ const SurveyTable = ({
         </Modal>
       ) : null}
 
-      {!currentSurveys?.length ? (
+      {surveyLoading ? (
         <div style={{ textAlign: "center", marginTop: "5rem" }}>
           <Loading type="gradient" />
         </div>
@@ -1061,7 +1117,7 @@ const SurveyTable = ({
                           (new Date().getTime() -
                             project?.creation_date?.toDate().getTime()) /
                           (1000 * 3600 * 24)
-                        ).toFixed(0)}{" "}
+                        ).toFixed(2)}{" "}
                         Days ago
                       </span>
                     </td>
@@ -1072,6 +1128,11 @@ const SurveyTable = ({
           </table>
         </div>
       )}
+      {!currentSurveys?.length ? (
+        <div style={{ textAlign: "center" }}>
+          <p>No surveys found</p>
+        </div>
+      ) : null}
     </>
   );
 };
