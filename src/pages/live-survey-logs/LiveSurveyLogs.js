@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import styles from "./livesurveylogs.module.css";
 import Header from "../../components/header/Header";
 import Subheader from "../../components/subheader/Subheader";
@@ -11,6 +11,9 @@ import { Alert } from "@mui/material";
 import Table from "./components/table/Table";
 import { getAllSessions } from "../../utils/firebaseQueries";
 import cx from "classnames";
+import ExportAsModal from "./components/exportAsModal/ExportAsModal";
+import { utils, writeFile } from "xlsx";
+import XLSX from "xlsx";
 
 function LiveSurveyLogs() {
   let {
@@ -36,11 +39,13 @@ function LiveSurveyLogs() {
   let [allSessions, setAllSessions] = useState([]);
   let [filteredSessions, setFilteredSessions] = useState([]);
   let [allSuppliers, setAllSuppliers] = useState([]);
-
+  const [openExportAsModal, setOpenExportAsModal] = useState(false);
   const location = useLocation();
   const logtype = new URLSearchParams(location.search).get("logtype");
-
+  let [particularSupplierData, setParticularSupplierdata] = useState({});
   const supplier_id = new URLSearchParams(location.search).get("supplier_id");
+  let [browsers, setBrowsers] = useState([]);
+  let [OS, setOS] = useState([]);
 
   // Set All the filters after useeffect and set all the sessions
   useEffect(() => {
@@ -50,17 +55,16 @@ function LiveSurveyLogs() {
         setLiveSurveyLogsFilter((preob) => ({ ...preob, logtype: "test" }));
       else setLiveSurveyLogsFilter((preob) => ({ ...preob, logtype: "live" }));
     }
-    console.log(liveSurveyLogsFilter?.logtype);
-    getAllSessions(
-      surveyID,
-      liveSurveyLogsFilter?.logtype === "test" ? "alpha" : ""
-    ).then((querysnapshot) => {
-      querysnapshot.forEach((doc) => {
-        setAllSessions((prear) => [...prear, doc.data()]);
-        setFilteredSessions((prear) => [...prear, doc.data()]);
-      });
-    });
-
+    getAllSessions(surveyID, logtype === "test" ? "alpha" : "").then(
+      (querysnapshot) => {
+        querysnapshot.forEach((doc) => {
+          setAllSessions((prear) => [...prear, doc.data()]);
+          if (doc.data()?.supplier_account_id === parseInt(supplier_id)) {
+            setFilteredSessions((prear) => [...prear, doc.data()]);
+          }
+        });
+      }
+    );
     if (supplier_id) {
       setLiveSurveyLogsFilter((preob) => ({
         ...preob,
@@ -72,7 +76,7 @@ function LiveSurveyLogs() {
         supplier_id: "all",
       }));
     }
-  }, [liveSurveyLogsFilter?.logtype]);
+  }, [logtype, supplier_id]);
   // Setting the sessions according to live and test
   useEffect(() => {
     setFilteredSessions([]);
@@ -180,13 +184,8 @@ function LiveSurveyLogs() {
         });
       }
     }
-  }, [liveSurveyLogsFilter, allSessions]);
+  }, [liveSurveyLogsFilter]);
 
-  // console.log("Sessions", allSessions);
-
-  // console.log(liveSurveyLogsFilter)
-  let [browsers, setBrowsers] = useState([]);
-  let [OS, setOS] = useState([]);
   // Set browser and OS select option useEffect
   useEffect(() => {
     allSessions?.map((session) => {
@@ -215,7 +214,6 @@ function LiveSurveyLogs() {
       });
     });
   }, [allSessions]);
-  // console.log(browsers);
 
   useEffect(() => {
     setAllSuppliers([]);
@@ -236,7 +234,6 @@ function LiveSurveyLogs() {
     }
   }, [surveydata, liveSurveyLogsFilter]);
 
-  let [particularSupplierData, setParticularSupplierdata] = useState({});
   useEffect(() => {
     if (supplier_id) {
       allSuppliers?.map((supplier) => {
@@ -247,9 +244,25 @@ function LiveSurveyLogs() {
     }
   }, [allSuppliers]);
 
+  const DownloadAsExcel = () => {
+    var elt = document.getElementById("survey-log-table");
+    var wb = utils.table_to_book(elt, { sheet: "Sheet JS" });
+    return writeFile(
+      wb,
+      `survey-logs-${particularSupplierData?.supplier_account}-${surveyID}.xlsx`
+    );
+  };
+
   return (
     <>
-      {opensnackbar?.show && (
+      {openExportAsModal ? (
+        <ExportAsModal
+          visible={openExportAsModal}
+          handleClose={() => setOpenExportAsModal(false)}
+          downloadAsExcel={DownloadAsExcel}
+        />
+      ) : null}
+      {opensnackbar?.show ? (
         <Snackbar
           open={opensnackbar?.show}
           autoHideDuration={6000}
@@ -263,7 +276,7 @@ function LiveSurveyLogs() {
             {opensnackbar?.msg}
           </Alert>
         </Snackbar>
-      )}
+      ) : null}
       <Header />
       <Subheader />
       <SurveyInfo />
@@ -469,7 +482,12 @@ function LiveSurveyLogs() {
         {/* Right Container  */}
         <div className={styles.right_container}>
           <div>
-            <button className={styles.download_logbtn}>Download Logs</button>
+            <button
+              className={styles.download_logbtn}
+              onClick={() => setOpenExportAsModal(true)}
+            >
+              Download Logs
+            </button>
           </div>
           <div>
             <select

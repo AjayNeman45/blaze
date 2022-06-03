@@ -54,7 +54,6 @@ const Quotas = () => {
         } else {
           obj = q;
         }
-        console.log(obj);
         return obj;
       });
     });
@@ -251,8 +250,8 @@ const Quotas = () => {
                                 <td>{data?.prescreens}</td>
                                 <td>
                                   {
-                                    data?.completes[
-                                      data?.options[
+                                    data?.completes?.[
+                                      data?.options?.[
                                         data?.conditions?.valid_options?.[indx]
                                       ]
                                     ]
@@ -260,16 +259,16 @@ const Quotas = () => {
                                 </td>
                                 <td>
                                   {data?.conditions?.quotas?.[indx] -
-                                    data?.completes[
-                                      data?.options[
+                                    data?.completes?.[
+                                      data?.options?.[
                                         data?.conditions?.valid_options?.[indx]
                                       ]
                                     ]}
                                 </td>
                                 <td>
                                   {Math.round(
-                                    (data?.completes[
-                                      data?.options[
+                                    (data?.completes?.[
+                                      data?.options?.[
                                         data?.conditions?.valid_options?.[indx]
                                       ]
                                     ] /
@@ -287,7 +286,6 @@ const Quotas = () => {
                         }
                       );
                     case "Multi Punch":
-                      console.log(data?.prescreens, data?.completes);
                       return data?.conditions?.valid_options?.map(
                         (option, indx) => {
                           if (data?.conditions?.quotas?.hasOwnProperty(indx)) {
@@ -305,8 +303,8 @@ const Quotas = () => {
                                 <td>{data?.prescreens}</td>
                                 <td>
                                   {
-                                    data?.completes[
-                                      data?.options[
+                                    data?.completes?.[
+                                      data?.options?.[
                                         data?.conditions?.valid_options?.[indx]
                                       ]
                                     ]
@@ -314,16 +312,16 @@ const Quotas = () => {
                                 </td>
                                 <td>
                                   {data?.conditions?.quotas?.[indx] -
-                                    data?.completes[
-                                      data?.options[
+                                    data?.completes?.[
+                                      data?.options?.[
                                         data?.conditions?.valid_options?.[indx]
                                       ]
                                     ]}
                                 </td>
                                 <td>
                                   {Math.round(
-                                    (data?.completes[
-                                      data?.options[
+                                    (data?.completes?.[
+                                      data?.options?.[
                                         data?.conditions?.valid_options?.[indx]
                                       ]
                                     ] /
@@ -492,8 +490,6 @@ const AddQuotaModal = ({
   const handleSnackbar = () => {
     setShowSnackbar(!showSnackbar);
   };
-
-  console.log(quotaValues?.conditions?.quotas);
 
   return (
     <>

@@ -167,10 +167,15 @@ const Table = ({
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+
   return (
     <div className={styles.table}>
       <Root sx={{ maxWidth: "100%" }}>
-        <table aria-label="custom pagination table" cellSpacing={10}>
+        <table
+          id="survey-log-table"
+          aria-label="custom pagination table"
+          cellSpacing={10}
+        >
           <thead>
             <tr>
               <th>Date</th>

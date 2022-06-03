@@ -127,10 +127,16 @@ function DashboardContextProvider({ children }) {
         }
       });
 
-      let avgCpi = getAvgCPI(completedSessions, completedSessionCnt);
-      let supplyCost = getSupplAvgCPI(completedSessions, completedSessionCnt);
+      let avgCpi = parseFloat(
+        getAvgCPI(completedSessions, completedSessionCnt)
+      );
+      let supplyCost = parseFloat(
+        getSupplAvgCPI(completedSessions, completedSessionCnt)
+      );
 
+      console.log(avgCpi);
       setFinancialOverview((prevData) => {
+        console.log(prevData?.avg_client_cpi);
         return {
           total_rev: prevData?.total_rev + completedSessionCnt * avgCpi,
           supply_cost: prevData?.supply_cost + completedSessionCnt * supplyCost,

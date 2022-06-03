@@ -8,7 +8,7 @@ const ChangeLogComponent = () => {
   const { surveyData } = useProjectSettingsContext();
 
   useEffect(() => {
-    setDisplayChanges(surveyData?.changes?.slice(0, 5).reverse());
+    setDisplayChanges(surveyData?.changes?.reverse()?.slice(0, 5));
   }, [surveyData]);
   return (
     <>

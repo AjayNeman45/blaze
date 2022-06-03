@@ -147,7 +147,6 @@ const DataAnalysis = () => {
   };
   // handles Download To Excel btn
   const DownloadToExcel = () => {
-    console.log("download excel function called");
     var elt = document.getElementById("table-to-xls");
     var wb = utils.table_to_book(elt, { sheet: "Sheet JS" });
     return writeFile(wb, `DataAnalysis_${surveyID}_${surveyName}.xlsx`);

@@ -170,8 +170,6 @@ const QuotasContextProvider = ({ children }) => {
     });
   };
 
-  console.log(qualifications);
-
   const value = {
     survey,
     qualifications,

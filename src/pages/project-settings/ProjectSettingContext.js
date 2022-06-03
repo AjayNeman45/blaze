@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import { db } from "../../firebase";
 import { decryptText, encryptText } from "../../utils/enc-dec.utils";
 import { hashids } from "../../index";
-import { getClients } from "../../utils/firebaseQueries";
+import { getAllSessions, getClients } from "../../utils/firebaseQueries";
 
 const ProjectSettingContext = createContext();
 
@@ -19,7 +19,7 @@ const ProejctSettingProvider = ({ children }) => {
   let [surveyData, setSurveyData] = useState({});
   const [changes, setChanges] = useState({ updated_date: new Date() });
   const [clients, setClients] = useState([]);
-
+  const [completedSessions, setCompletedSessions] = useState([]);
   useEffect(() => {
     const DB = db.collection("mirats").doc("surveys").collection("survey");
     const unsub = onSnapshot(
@@ -28,6 +28,14 @@ const ProejctSettingProvider = ({ children }) => {
         setSurveyData(doc.data());
       }
     );
+    getAllSessions(surveyID).then((sessions) => {
+      let completedSessionsTmp = [];
+      sessions?.forEach((session) => {
+        if (session.data()?.client_status === 10)
+          completedSessionsTmp.push(session.data());
+      });
+      setCompletedSessions(completedSessionsTmp);
+    });
 
     getClients().then((clients) => {
       clients.docs.forEach((client) => {
@@ -49,7 +57,7 @@ const ProejctSettingProvider = ({ children }) => {
     //-------- Mirats  --->>>  1234567907
 
     console.log(hashids.encode([1234567899]));
-  }, []);
+  }, [surveyID]);
 
   useEffect(() => {
     console.log(
@@ -72,6 +80,7 @@ const ProejctSettingProvider = ({ children }) => {
         changes,
         setChanges,
         clients,
+        completedSessions,
       }}
     >
       {children}

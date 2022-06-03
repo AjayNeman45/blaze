@@ -1,0 +1,30 @@
+.buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.buttons button {
+  width: 10rem;
+  height: 2.5rem;
+  font-size: 15px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+.buttons .export_as_excel {
+  background-color: rgb(126, 170, 247);
+  border: 1px solid rgb(126, 170, 247);
+  color: rgb(6, 71, 184);
+}
+.export_as_excel:hover {
+  transition: all 0.3s linear;
+  background-color: rgb(98, 148, 235);
+}
+.export_as_pdf:hover {
+  transition: all 0.3s linear;
+  background-color: rgb(223, 223, 223);
+}
+.title {
+  text-align: center;
+  margin-bottom: 2rem;
+}

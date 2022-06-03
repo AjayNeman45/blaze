@@ -191,18 +191,20 @@ const Dashboard = () => {
               <div className={styles.big_card}>
                 <h1 className={styles.title}>Total Rev</h1>
                 <h3 className={styles.count}>
-                  ${financialOverview?.total_rev}
+                  ${(financialOverview?.total_rev).toFixed(2)}
                 </h3>
               </div>
               <div className={styles.big_card}>
                 <h1 className={styles.title}>Supply Cost</h1>
                 <h3 className={styles.count}>
-                  ${financialOverview?.supply_cost}
+                  ${(financialOverview?.supply_cost).toFixed(2)}
                 </h3>
               </div>
               <div className={styles.big_card}>
                 <h1 className={styles.title}>Profit Cost</h1>
-                <h3 className={styles.count}>${financialOverview?.profit}</h3>
+                <h3 className={styles.count}>
+                  ${(financialOverview?.profit).toFixed(2)}
+                </h3>
               </div>
             </div>
             <div className={styles.financial_data_container_smallcard}>
@@ -210,9 +212,9 @@ const Dashboard = () => {
                 <p className={styles.title}>Avg Supply CPI</p>
                 <p className={styles.count}>
                   $
-                  {Math.round(
+                  {(
                     financialOverview?.avg_supply_cpi / allSurveys?.length
-                  )}
+                  ).toFixed(2)}
                 </p>
               </div>
               <div className={styles.small_card}>
@@ -223,7 +225,9 @@ const Dashboard = () => {
               </div>
               <div className={styles.small_card}>
                 <p className={styles.title}>EPC Vendor</p>
-                <p className={styles.count}>${financialOverview?.epc_vendor}</p>
+                <p className={styles.count}>
+                  ${financialOverview?.epc_vendor.toFixed(2)}
+                </p>
               </div>
             </div>
           </div>

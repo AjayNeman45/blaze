@@ -32,7 +32,7 @@ function ViewRedirectsEndpoints() {
               <td>Terminate</td>
               <td>
                 <a>
-                  https://miratsblaze.netlify.app/7e08091a73b14e034889265e41ba796f91c766ad/I%RID%]/10{" "}
+                  https://miratsblaze.netlify.app/7e08091a73b14e034889265e41ba796f91c766ad/I%RID%]/20{" "}
                 </a>{" "}
               </td>
             </tr>
@@ -40,7 +40,7 @@ function ViewRedirectsEndpoints() {
               <td>Over-Quota</td>
               <td>
                 <a>
-                  https://miratsblaze.netlify.app/7e08091a73b14e034889265e41ba796f91c766ad/I%RID%]/10{" "}
+                  https://miratsblaze.netlify.app/7e08091a73b14e034889265e41ba796f91c766ad/I%RID%]/30{" "}
                 </a>{" "}
               </td>
             </tr>
@@ -48,7 +48,7 @@ function ViewRedirectsEndpoints() {
               <td>Security Terminate / Sniff-outs</td>
               <td>
                 <a>
-                  https://miratsblaze.netlify.app/7e08091a73b14e034889265e41ba796f91c766ad/I%RID%]/10{" "}
+                  https://miratsblaze.netlify.app/7e08091a73b14e034889265e41ba796f91c766ad/I%RID%]/40{" "}
                 </a>{" "}
               </td>
             </tr>

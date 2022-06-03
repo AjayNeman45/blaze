@@ -20,6 +20,10 @@ import {
   industryData,
 } from "../../utils/commonData";
 import { useHistory } from "react-router-dom";
+import {
+  getAvgCPI,
+  getSupplAvgCPI,
+} from "../survey-dashboard/SurveyDashboardContext";
 
 const businessUnitData = [
   { label: "MIRATS-API", value: "mirats-api" },
@@ -51,7 +55,7 @@ const projectCoordinatorsData = [
 const NewProjectSettings = () => {
   const history = useHistory();
   const { surveyID } = useParams();
-  const { surveyData, changes, setChanges, clients } =
+  const { surveyData, changes, setChanges, clients, completedSessions } =
     useProjectSettingsContext();
   const [sData, setSData] = useState();
   const [country, setCountry] = useState("");
@@ -72,6 +76,7 @@ const NewProjectSettings = () => {
   }, [surveyData]);
 
   const handleInputChange = (e, changingEle, prevVal) => {
+    console.log(changingEle, prevVal);
     let resp = e.target.value;
     if (resp === "true") resp = true;
     else if (resp === "false") resp = false; // ---->>> this is just becoz input type radio giving value in string format
@@ -277,13 +282,13 @@ const NewProjectSettings = () => {
               <div className={styles.input_component}>
                 <label>currency</label>
                 <select
-                  value={sData?.client_info?.client_cost_currency}
+                  value={`${sData?.client_info?.client_cost_currency}-${sData?.client_info?.client_cost_currency_symbol}`}
                   onChange={(e) => {
                     setShowChangesBtn(true);
                     setChanges({
                       ...changes,
                       client_cost_currency: {
-                        changed_to: e.target.value,
+                        changed_to: e.target.value.split("-")[0],
                         previous_change:
                           surveyData?.client_info?.client_cost_currency,
                       },
@@ -292,14 +297,16 @@ const NewProjectSettings = () => {
                       ...sData,
                       client_info: {
                         ...sData?.client_info,
-                        client_cost_currency: e.target.value,
+                        client_cost_currency: e.target.value.split("-")[0],
+                        client_cost_currency_symbol:
+                          e.target.value.split("-")[1],
                       },
                     });
                   }}
                 >
-                  <option value="USD">USD</option>
-                  <option value="INR">INR</option>
-                  <option value="EURO">EURO</option>
+                  <option value="USD-$">USD</option>
+                  <option value="INR-₹">INR</option>
+                  <option value="EURO-€">EURO</option>
                 </select>
               </div>
               <InputFieldCard
@@ -355,9 +362,22 @@ const NewProjectSettings = () => {
               <InputFieldCard
                 title="client avg cost"
                 inputType="input"
-                defaultVal={sData?.client_info?.client_cpi}
+                defaultVal={`${
+                  sData?.client_info?.client_cost_currency_symbol
+                } ${getAvgCPI(completedSessions, completedSessions.length)}`}
+                disabled={true}
               />
-              <InputFieldCard title="supply avg cost" inputType="input" />
+              <InputFieldCard
+                title="supply avg cost"
+                inputType="input"
+                defaultVal={`${
+                  sData?.client_info?.client_cost_currency_symbol
+                } ${getSupplAvgCPI(
+                  completedSessions,
+                  completedSessions.length
+                )} `}
+                disabled={true}
+              />
               <InputFieldCard
                 title="client coverage email"
                 inputType="select"
@@ -484,7 +504,7 @@ const NewProjectSettings = () => {
                 checked={collectUserData ? true : false}
                 onChange={(e) => {
                   setCollectUserData(true);
-                  handleInputChange(e, "collect_user_data", false);
+                  handleInputChange(e, "collect_user_data", "false");
                 }}
               />
               <label htmlFor="yes">Yes</label>
@@ -498,7 +518,7 @@ const NewProjectSettings = () => {
                 checked={!collectUserData ? true : false}
                 onChange={(e) => {
                   setCollectUserData(false);
-                  handleInputChange(e, "collect_user_data", true);
+                  handleInputChange(e, "collect_user_data", "true");
                 }}
               />
               <label htmlFor="no">No</label>
@@ -617,11 +637,13 @@ const InputFieldCard = ({
   selectedData,
   defaultVal,
   handleInputChange,
+  disabled,
 }) => {
   const [prevVal, setPrevVal] = useState();
   useEffect(() => {
     setPrevVal(defaultVal ? defaultVal : selectedData);
   }, [defaultVal, selectedData]);
+  const { surveyData } = useProjectSettingsContext();
 
   let mydate = new Date(defaultVal);
   mydate =
@@ -640,7 +662,9 @@ const InputFieldCard = ({
             return (
               <select
                 value={selectedData}
-                onChange={(e) => handleInputChange(e, value, prevVal)}
+                onChange={(e) =>
+                  handleInputChange(e, value, surveyData?.[value])
+                }
               >
                 <option value="" disabled hidden>
                   Select {title}
@@ -659,7 +683,10 @@ const InputFieldCard = ({
               <input
                 type="text"
                 value={defaultVal}
-                onChange={(e) => handleInputChange(e, value, prevVal)}
+                onChange={(e) =>
+                  handleInputChange(e, value, surveyData?.[value])
+                }
+                disabled={disabled}
               />
             );
           case "date":
