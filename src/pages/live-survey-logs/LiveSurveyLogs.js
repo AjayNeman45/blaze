@@ -13,7 +13,10 @@ import { getAllSessions } from "../../utils/firebaseQueries";
 import cx from "classnames";
 import ExportAsModal from "./components/exportAsModal/ExportAsModal";
 import { utils, writeFile } from "xlsx";
-import XLSX from "xlsx";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+import { projectBaseURL } from "../../utils/commonData";
+import { hashids } from "../../index";
 
 function LiveSurveyLogs() {
   let {
@@ -52,8 +55,15 @@ function LiveSurveyLogs() {
     setAllSessions([]);
     if (!liveSurveyLogsFilter?.logtype) {
       if (logtype === "test")
-        setLiveSurveyLogsFilter((preob) => ({ ...preob, logtype: "test" }));
-      else setLiveSurveyLogsFilter((preob) => ({ ...preob, logtype: "live" }));
+        setLiveSurveyLogsFilter((preob) => ({
+          ...preob,
+          logtype: "test",
+        }));
+      else
+        setLiveSurveyLogsFilter((preob) => ({
+          ...preob,
+          logtype: "live",
+        }));
     }
     getAllSessions(surveyID, logtype === "test" ? "alpha" : "").then(
       (querysnapshot) => {
@@ -222,14 +232,15 @@ function LiveSurveyLogs() {
       surveydata?.external_suppliers?.map((supplier) => {
         setAllSuppliers((prear) => [...prear, supplier]);
       });
+      let encryptedSrcID = hashids.encode([parseInt(supplier_id)]);
       setLinks({
-        live_link: `Live URL= https://miratsblaze.netlify.com/blaze/${surveydata?.encrypt?.sid}-${surveydata?.encrypt?.pid}-${surveydata?.encrypt?.cid}/lightningStart?SRCID=${supplier_id}&RID=[%rid%]`,
-        test_link: `Test URL= https://miratsblaze.netlify.com/blaze/${surveydata?.encrypt?.sid}-${surveydata?.encrypt?.pid}-${surveydata?.encrypt?.cid}/lightningStart?SRCID=${supplier_id}&alpha=gamma&RID=$[%rid%]`,
+        live_link: `${projectBaseURL}/blaze/${surveydata?.encrypt?.sid}-${surveydata?.encrypt?.pid}-${surveydata?.encrypt?.cid}/lightningStart?SRCID=${encryptedSrcID}&RID=[%rid%]`,
+        test_link: `${projectBaseURL}/blaze/${surveydata?.encrypt?.sid}-${surveydata?.encrypt?.pid}-${surveydata?.encrypt?.cid}/lightningStart?SRCID=${encryptedSrcID}&alpha=gamma&RID=$[%rid%]`,
       });
     } else {
       setLinks({
-        live_link: `Live URL= https://miratsblaze.netlify.com/blaze/${surveydata?.encrypt?.sid}-${surveydata?.encrypt?.pid}-${surveydata?.encrypt?.cid}/lightningStart?SRCID=${surveydata?.internal_suppliers?.[0]?.supplier_account_id}&RID=[%rid%]`,
-        test_link: `Test URL= https://miratsblaze.netlify.com/blaze/${surveydata?.encrypt?.sid}-${surveydata?.encrypt?.pid}-${surveydata?.encrypt?.cid}/lightningStart?SRCID=${surveydata?.internal_suppliers?.[0]?.supplier_account_id}}&alpha=gamma&RID=$[%rid%]`,
+        live_link: `https://mirats-blaze.netlify.com/blaze/${surveydata?.encrypt?.sid}-${surveydata?.encrypt?.pid}-${surveydata?.encrypt?.cid}/lightningStart?SRCID=${surveydata?.internal_suppliers?.[0]?.supplier_account_id}&RID=[%rid%]`,
+        test_link: `https://mirats-blaze.netlify.com/blaze/${surveydata?.encrypt?.sid}-${surveydata?.encrypt?.pid}-${surveydata?.encrypt?.cid}/lightningStart?SRCID=${surveydata?.internal_suppliers?.[0]?.supplier_account_id}}&alpha=gamma&RID=$[%rid%]`,
       });
     }
   }, [surveydata, liveSurveyLogsFilter]);
@@ -252,7 +263,52 @@ function LiveSurveyLogs() {
       `survey-logs-${particularSupplierData?.supplier_account}-${surveyID}.xlsx`
     );
   };
+  const surveyLogTable = useRef();
 
+  const DownloadToPDF = () => {
+    const unit = "pt";
+    const size = "A4"; // Use A1, A2, A3 or A4
+    const orientation = "landscape"; // portrait or landscape
+
+    const marginLeft = 40;
+    const doc = new jsPDF(orientation, unit, size);
+    doc.setFontSize(15);
+
+    var tableHeader = document
+      .getElementById("survey-log-table")
+      .getElementsByTagName("thead")[0];
+
+    let tableHeaderData = [];
+    for (var j = 0; j < tableHeader.rows[0].cells.length; j++) {
+      tableHeaderData.push(tableHeader.rows[0].cells[j].innerHTML);
+    }
+
+    const headers = [tableHeaderData];
+    const title = `survey logs for supplier "${particularSupplierData?.supplier_account}" and for survey ${surveyID}`;
+    var tableBody = document
+      .getElementById("survey-log-table")
+      .getElementsByTagName("tbody")[0];
+
+    let tableData = [];
+    for (var i = 0; i < tableBody.rows.length; i++) {
+      let row = [];
+      for (var j = 0; j < tableBody.rows[i].cells.length; j++) {
+        row.push(tableBody.rows[i].cells[j].innerHTML);
+      }
+      tableData.push(row);
+      row = [];
+    }
+    let content = {
+      startY: 50,
+      head: headers,
+      body: tableData,
+    };
+    doc.text(title, marginLeft, 40);
+    doc.autoTable(content);
+    doc.save(
+      `survey-logs-${particularSupplierData?.supplier_account}-${surveyID}.pdf`
+    );
+  };
   return (
     <>
       {openExportAsModal ? (
@@ -260,6 +316,7 @@ function LiveSurveyLogs() {
           visible={openExportAsModal}
           handleClose={() => setOpenExportAsModal(false)}
           downloadAsExcel={DownloadAsExcel}
+          downloadToPDF={DownloadToPDF}
         />
       ) : null}
       {opensnackbar?.show ? (
@@ -658,6 +715,7 @@ function LiveSurveyLogs() {
             project_no={surveydata?.project_id}
             miratsCodes={miratsCodes}
             clientCodes={clientCodes}
+            surveyLogTableRef={surveyLogTable}
           />
         </div>
       </div>
