@@ -39,6 +39,10 @@
   height: 1rem;
   margin-right: 10px;
 }
+.compulsaryOpt_and_selected_opt_container {
+  border: 1px solid red;
+  /* display: flex; */
+}
 /* compulsary options , ans */
 .conditions_container {
   border-radius: 40px;

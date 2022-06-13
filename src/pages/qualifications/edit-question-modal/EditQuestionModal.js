@@ -201,6 +201,7 @@ export const Conditions = ({
         : [...prevArr, option];
     });
   };
+  console.log(question);
   return (
     <div className={styles.conditions_container}>
       {question?.question_type === "Multi Punch" && (
@@ -237,30 +238,37 @@ export const Conditions = ({
       <div className={styles.compulsary_options_container}>
         <label className={styles.legend}>One or More from</label>
       </div>
-      <div className={styles.compulsary_options}>
-        {!displayOpt?.length ? (
-          <span style={{ color: "gray" }}>
-            Select display options first to make it complusary
-          </span>
-        ) : (
-          displayOpt?.map((option, index) => {
-            return (
-              <div key={uuid()}>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      defaultChecked={compulsaryOpt?.includes(option)}
-                    />
-                  }
-                  onChange={(_, checked) =>
-                    handleCheckboxChange(checked, option)
-                  }
-                  label={`${question?.options?.[option]}`}
-                />
-              </div>
-            );
-          })
-        )}
+      <div className={styles.compulsaryOpt_and_selected_opt_container}>
+        <div className={styles.compulsary_options}>
+          {!displayOpt?.length ? (
+            <span style={{ color: "gray" }}>
+              Select display options first to make it complusary
+            </span>
+          ) : (
+            displayOpt?.map((option, index) => {
+              return (
+                <div key={uuid()}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        defaultChecked={compulsaryOpt?.includes(option)}
+                      />
+                    }
+                    onChange={(_, checked) =>
+                      handleCheckboxChange(checked, option)
+                    }
+                    label={`${question?.options?.[option]}`}
+                  />
+                </div>
+              );
+            })
+          )}
+        </div>
+        <div>
+          {compulsaryOpt?.map((opt) => {
+            return <p>{question?.options[opt]}</p>;
+          })}
+        </div>
       </div>
     </div>
   );

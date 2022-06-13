@@ -219,6 +219,8 @@ const CreateNewProjectProvider = ({ children }) => {
       });
   };
 
+  console.log(surveyData);
+
   const insertPeoplesData = () => {
     setInsertLoading(true);
     const survey_id = decryptText(encryptedID.split("-")[0]);
@@ -232,7 +234,7 @@ const CreateNewProjectProvider = ({ children }) => {
           data.ref
             .set(
               {
-                clients_team: surveyData?.clients_team,
+                // clients_team: surveyData?.clients_team,
                 mirats_insights_team: surveyData?.mirats_insights_team,
                 status: "bidding",
                 changes: [],

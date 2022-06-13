@@ -19,6 +19,8 @@ import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
 import { useBaseContext } from "../../context/BaseContext";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import { signOut } from "firebase/auth";
+import { auth } from "../../firebase";
 
 const SurveysSubmenu = ({ history }) => {
   return (
@@ -115,6 +117,19 @@ const Header = () => {
     const { pathname } = location;
     return pathname === "/";
   };
+
+  const handleLogout = () => {
+    signOut(auth)
+      .then(() => {
+        // Sign-out successful.
+        console.log("user logged out");
+      })
+      .catch((error) => {
+        // An error happened.
+        console.log(error.message);
+      });
+  };
+
   return (
     <div className="header">
       <div className="header_left">
@@ -280,7 +295,7 @@ const Header = () => {
             </MenuItem>
             <Divider />
 
-            <MenuItem>
+            <MenuItem onClick={handleLogout}>
               <ListItemIcon>
                 <Logout fontSize="small" />
               </ListItemIcon>

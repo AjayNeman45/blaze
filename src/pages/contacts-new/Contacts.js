@@ -87,7 +87,7 @@ const headerData = [
   },
 ];
 
-const Accounts = () => {
+const Contacts = () => {
   const [expanded, setExpanded] = useState("panel1");
 
   const handleChange = (panel) => (event, newExpanded) => {
@@ -502,4 +502,4 @@ const Accounts = () => {
   );
 };
 
-export default Accounts;
+export default Contacts;

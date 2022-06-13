@@ -54,7 +54,10 @@ const Question = ({
                             </span>
                           )}
                           {question?.display_options?.map((option, index) => (
-                            <div className="survey_question_option" key={index}>
+                            <div
+                              className="survey_question_option"
+                              key={uuid()}
+                            >
                               <input
                                 type="radio"
                                 id={option}
@@ -92,7 +95,7 @@ const Question = ({
                             </span>
                           )}
                           {question?.display_options?.map((option, index) => (
-                            <div className="inputGroup">
+                            <div className="inputGroup" key={uuid()}>
                               <input
                                 id={index}
                                 name="option"

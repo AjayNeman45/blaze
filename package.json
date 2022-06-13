@@ -22,6 +22,7 @@
     "encrypt-rsa": "^1.1.0",
     "firebase": "^9.6.5",
     "hashids": "^2.2.10",
+    "html2canvas": "^1.4.1",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.5.25",
     "moment": "^2.29.3",

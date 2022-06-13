@@ -37,7 +37,6 @@ function LiveSurveyLogsContextProvider({ children }) {
   };
 
   useEffect(() => {
-    console.log("Entered this useEffect");
     getErrorCodesForClientStatus().then((querysnapshot) => {
       querysnapshot.forEach((doc) => {
         // setErrorCodes({

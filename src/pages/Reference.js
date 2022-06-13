@@ -45,13 +45,14 @@ const Reference = () => {
             const y = data?.live_url?.split("[%rid%]")?.[1]
               ? data?.live_url?.split("[%rid%]")?.[1]
               : "";
-            let z = x + sessionData.data()?.ref_id + y;
-            console.log("ref id is ", z);
-            console.log(
-              "endpoint is ",
-              `https://mirats-blaze.netlify.app/7e08091a73b14e034889265e41ba796f91c766ad/${z}/10`
-            );
-            // window.location.href(z)
+            let url = x + sessionData.data()?.ref_id + y;
+            console.log("client url with ref id is", url);
+            window.location.href = url;
+            // window.open(url, "_blank");
+            // console.log(
+            //   "endpoint is ",
+            //   `https://mirats-blaze.netlify.app/7e08091a73b14e034889265e41ba796f91c766ad/${url}/10`
+            // );
           }
         );
       })

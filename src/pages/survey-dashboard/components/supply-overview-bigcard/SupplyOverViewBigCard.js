@@ -94,7 +94,7 @@ function SupplyOverViewBigCard({ supp }) {
         <span style={{ color: "#27D44D" }}>
           {supp?.completed === 0
             ? 0
-            : (timeDetails?.sum_of_completed_time / supp?.completed).toFixed(2)}
+            : (timeDetails?.sum_of_completed_time / supp?.completed).toFixed(0)}
           m
         </span>
         <span style={{ color: "#F4554A" }}>
@@ -103,7 +103,7 @@ function SupplyOverViewBigCard({ supp }) {
             : (
                 timeDetails?.sum_of_terminated_time /
                 vendorSessionStatusesCnt?.terminated
-              ).toFixed(2)}
+              ).toFixed(0)}
           m
         </span>
         <span style={{ color: "#606060" }}>{supp?.sessions?.length} hits</span>

@@ -3,7 +3,6 @@ import Surveys from "./pages/surveys/Surveys";
 // import Dashboard from "./pages/dashboard/Dashboard";
 import Dashboard from "./pages/dashboard-new/Dashboard";
 import Accounts from "./pages/accounts-new/Accounts";
-import Contacts from "./pages/contacts-new/Contacts";
 import Leads from "./pages/leads/Leads";
 import CreateNewProject from "./pages/create-new-project/CreateNewProject";
 import Loader from "./components/loader/Loader";
@@ -61,6 +60,10 @@ import SupplierRedirects from "./pages/SupplierRedirects/SupplierRedirects";
 import SurveyGroupContextProvider from "./pages/survey-groups/SurveyGroupContext";
 import LoginContextProvider from "./pages/login/LoginContext";
 import Financial from "./pages/financial/Financial";
+import Clients from "./pages/clients/Clients";
+import Supplier from "./pages/supplier/Supplier";
+import Contacts from "./pages/contacts-new/Contacts";
+
 function App() {
   return (
     <>
@@ -80,9 +83,6 @@ function App() {
 
           <Route path="/aaa/accounts" exact>
             <Accounts />
-          </Route>
-          <Route path="/contacts" exact>
-            <Contacts />
           </Route>
           <Route path="/leads" exact>
             <Leads />
@@ -185,6 +185,17 @@ function App() {
             <AddQualificationContextProvider>
               <NewManagerEnd />
             </AddQualificationContextProvider>
+          </Route>
+
+          <Route path="/clients">
+            <Clients />
+          </Route>
+          <Route path="/supplier">
+            <Supplier />
+          </Route>
+
+          <Route path="/contacts" exact>
+            <Contacts />
           </Route>
 
           {/* blaze  */}

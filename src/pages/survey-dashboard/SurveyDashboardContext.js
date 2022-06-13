@@ -42,6 +42,9 @@ const SurveyDashboardContextProvider = ({ children }) => {
 
         let tmp_external_supp = [];
         getAllSessions(surveyID).then((res) => {
+          let internalSupp = data?.internal_suppliers[0];
+
+          // --->> for external suppliers
           data?.external_suppliers?.forEach((supp) => {
             let all_sessions_for_vendor = [];
             let completed = 0;
@@ -60,10 +63,29 @@ const SurveyDashboardContextProvider = ({ children }) => {
               completed,
             });
           });
+
+          // ---->>> for internal suppliers
+          let all_sessions_for_vendor = [];
+          let completed = 0;
+          res.forEach((session) => {
+            if (
+              session.data()?.supplier_account_id ===
+              internalSupp?.supplier_account_id
+            ) {
+              if (session.data()?.client_status === 10) completed += 1;
+              all_sessions_for_vendor.push(session.data());
+            }
+          });
+          tmp_external_supp.push({
+            supplier: internalSupp,
+            sessions: all_sessions_for_vendor,
+            completed,
+          });
+
           setSurveyData({
             ...data,
             quotas: sum,
-            external_suppliers: tmp_external_supp.sort((a, b) =>
+            suppliers: tmp_external_supp.sort((a, b) =>
               a?.completed > b?.completed ? -1 : 1
             ),
           });

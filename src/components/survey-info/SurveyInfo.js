@@ -58,10 +58,6 @@ function SurveyInfo() {
   const [internalStatusChangeModal, setInternalStatusChangeModal] =
     useState(false);
 
-  const handleSnackbar = () => {
-    setOpenSnackbar(!openSnackbar);
-  };
-
   const { surveyID } = useParams();
   const [survey, setSurvey] = useState({});
   const [batti, setBatti] = useState();

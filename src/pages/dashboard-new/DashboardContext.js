@@ -79,11 +79,11 @@ function DashboardContextProvider({ children }) {
         new Date().setDate(new Date().getDate() - 1)
       ).toDateString();
       if (
-        survey?.creation_date.toDate()?.toDateString() ===
+        survey?.creation_date?.toDate()?.toDateString() ===
         new Date().toDateString()
       )
         surveyCreatedTodayCnt++;
-      if (survey?.creation_date.toDate()?.toDateString() === yesterday)
+      if (survey?.creation_date?.toDate()?.toDateString() === yesterday)
         surveyCreatedYesterDayCnt++;
       const allSessions = await getAllSessions(survey?.survey_id);
       hitsSessionsCnt = allSessions.docs.length;
@@ -133,10 +133,7 @@ function DashboardContextProvider({ children }) {
       let supplyCost = parseFloat(
         getSupplAvgCPI(completedSessions, completedSessionCnt)
       );
-
-      console.log(avgCpi);
       setFinancialOverview((prevData) => {
-        console.log(prevData?.avg_client_cpi);
         return {
           total_rev: prevData?.total_rev + completedSessionCnt * avgCpi,
           supply_cost: prevData?.supply_cost + completedSessionCnt * supplyCost,

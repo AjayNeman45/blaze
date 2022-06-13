@@ -89,9 +89,10 @@
 }
 
 .qualification_table tbody > tr > td {
-  padding: 10px 20px;
+  padding: 10px 30px;
   text-align: start;
   font-size: 13px;
+  /* border: 1px solid red; */
 }
 
 .qualification_table tbody > tr:nth-child(odd) {
@@ -115,7 +116,11 @@
   text-decoration: underline;
 }
 .conditions_col {
-  width: 45%;
+  /* width: 60%; */
+  /* border: 1px solid red; */
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
 }
 .conditions_col span,
 .any_condition_pass {

@@ -24,7 +24,6 @@ const Qualifications = () => {
   }, [qualifications]);
 
   const [openEditModal, setOpenEditModal] = useState(false);
-  const [qualificationStatus, setQualificationsStatus] = useState(true);
   const { surveyID } = useParams();
   const handleEditQuestion = (question_id) => {
     setOpenEditModal(true);

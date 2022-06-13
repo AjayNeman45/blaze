@@ -84,7 +84,7 @@ const Allocations = () => {
         }
       }
     });
-    return (CalculateCompletes(supplier_account_id) / count).toFixed(2);
+    return ((CalculateCompletes(supplier_account_id) / count) * 100).toFixed(0);
   }
   function CountTotalConversion() {
     let count = 0;
@@ -264,7 +264,9 @@ const Allocations = () => {
                         {survey?.no_of_completes -
                           CalculateCompletes(supplier?.supplier_account_id)}
                       </td>
-                      <td>{CountConversion(supplier?.supplier_account_id)}</td>
+                      <td>
+                        {CountConversion(supplier?.supplier_account_id)} %
+                      </td>
                       <td>0</td>
                       <td>
                         {!CalculateCompletes(supplier?.supplier_account_id) ? (
@@ -363,12 +365,51 @@ const Allocations = () => {
                         {getLastCompleteDate(supplier?.supplier_account_id)}
                       </td>
                       <td>{supplier?.allocation?.number}</td>
-                      <td>0</td>
-                      <td>0</td>
-                      <td>0</td>
-                      <td>0</td>
-                      <td>0</td>
+                      <td>
+                        {CalculatePreScreener(supplier?.supplier_account_id)}
+                      </td>
+                      <td>
+                        {CalculateCompletes(supplier?.supplier_account_id)}
+                      </td>
+                      <td>
+                        {" "}
+                        {survey?.no_of_completes -
+                          CalculateCompletes(supplier?.supplier_account_id)}
+                      </td>
+                      <td>
+                        {" "}
+                        {supplier?.allocation?.number -
+                          CalculateCompletes(supplier?.supplier_account_id)}
+                      </td>
+                      <td>
+                        {CountConversion(supplier?.supplier_account_id)} %
+                      </td>
                       <td>0%</td>
+                      <td>
+                        {!CalculateCompletes(supplier?.supplier_account_id) ? (
+                          <a>
+                            <RiDeleteBin5Line
+                              className={styles.delete_icon}
+                              onClick={() => {
+                                setDeleteSupplierModal(true);
+                                setSupplierIDToDelete(
+                                  supplier?.supplier_account_id
+                                );
+                              }}
+                            />
+                          </a>
+                        ) : null}
+                        &nbsp;
+                        <a>
+                          <BiEdit
+                            className={styles.edit_icon}
+                            onClick={() => {
+                              setSupplierEditModal(true);
+                              setSuppplierToEdit(supplier);
+                            }}
+                          />{" "}
+                        </a>
+                      </td>
                     </tr>
                   );
                 })}

@@ -3,6 +3,7 @@ import styles from "./viewRedirects.module.css";
 import Header from "../../components/header/Header";
 import Subheader from "../../components/subheader/Subheader";
 import SurveyInfo from "../../components/survey-info/SurveyInfo";
+import { projectBaseURL } from "../../utils/commonData";
 function ViewRedirectsEndpoints() {
   return (
     <>
@@ -24,7 +25,8 @@ function ViewRedirectsEndpoints() {
               <td>Complete</td>
               <td>
                 <a>
-                  https://miratsblaze.netlify.app/7e08091a73b14e034889265e41ba796f91c766ad/I%RID%]/10{" "}
+                  {projectBaseURL}
+                  /7e08091a73b14e034889265e41ba796f91c766ad/I%RID%]/10{" "}
                 </a>{" "}
               </td>
             </tr>
@@ -32,7 +34,8 @@ function ViewRedirectsEndpoints() {
               <td>Terminate</td>
               <td>
                 <a>
-                  https://miratsblaze.netlify.app/7e08091a73b14e034889265e41ba796f91c766ad/I%RID%]/20{" "}
+                  {projectBaseURL}
+                  /7e08091a73b14e034889265e41ba796f91c766ad/I%RID%]/20{" "}
                 </a>{" "}
               </td>
             </tr>
@@ -40,7 +43,8 @@ function ViewRedirectsEndpoints() {
               <td>Over-Quota</td>
               <td>
                 <a>
-                  https://miratsblaze.netlify.app/7e08091a73b14e034889265e41ba796f91c766ad/I%RID%]/30{" "}
+                  {projectBaseURL}
+                  /7e08091a73b14e034889265e41ba796f91c766ad/I%RID%]/30{" "}
                 </a>{" "}
               </td>
             </tr>
@@ -48,7 +52,8 @@ function ViewRedirectsEndpoints() {
               <td>Security Terminate / Sniff-outs</td>
               <td>
                 <a>
-                  https://miratsblaze.netlify.app/7e08091a73b14e034889265e41ba796f91c766ad/I%RID%]/40{" "}
+                  {projectBaseURL}
+                  /7e08091a73b14e034889265e41ba796f91c766ad/I%RID%]/40{" "}
                 </a>{" "}
               </td>
             </tr>
@@ -60,7 +65,8 @@ function ViewRedirectsEndpoints() {
               need to enter the redirects like this for complete
               <span className={styles.yellow_highlighter}>
                 {" "}
-                https://miratsblaze.netlify.app/7e0809la73b14e034889265e4lba796f91c766ad/SPID$/10
+                {projectBaseURL}
+                /7e0809la73b14e034889265e4lba796f91c766ad/SPID$/10
               </span>
             </p>
             <p>

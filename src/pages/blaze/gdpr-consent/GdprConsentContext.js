@@ -1,14 +1,12 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import {
   useHistory,
-  useLocation,
   useParams,
 } from "react-router-dom/cjs/react-router-dom.min";
 import { decryptText } from "../../../utils/enc-dec.utils";
 import {
   getQuestions,
   getSessionBasedOnType,
-  getSessionID,
   getSurvey,
   updateSession,
 } from "../../../utils/firebaseQueries";
@@ -20,7 +18,7 @@ export const useGdprContext = () => {
 };
 
 const GdprCotextProvider = ({ children }) => {
-  const [gdprConsent, setGdprConsent] = useState(null);
+  const [gdprConsent, setGdprConsent] = useState();
   const [errCode, setErrCode] = useState(null);
   const [errMsg, setErrMsg] = useState(null);
   const [survey, setSurvey] = useState(null);
@@ -32,8 +30,6 @@ const GdprCotextProvider = ({ children }) => {
     encryptedID?.split("-")[0] ? encryptedID?.split("-")[0] : ""
   );
   const history = useHistory();
-  const srcID = localStorage.getItem("srcID");
-  const rID = localStorage.getItem("rID");
   const gamma = localStorage.getItem("gamma");
   const setErrCodeAndMsg = (code, msg) => {
     setErrCode(code);
@@ -87,7 +83,7 @@ const GdprCotextProvider = ({ children }) => {
           }
         }
       } catch (err) {
-        console.log(err);
+        console.log(err.message);
       }
     };
 

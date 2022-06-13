@@ -21,9 +21,9 @@ const LoginContextProvider = ({ children }) => {
       .then((userCredential) => {
         const user = userCredential.user;
         getUserData(user?.uid).then(async (res) => {
-          if (!res.data()?.portal_access?.blaze_portal) {
+          if (!res.data()?.Portal_Access?.blaze_portal) {
             await signOut(auth);
-            console.log("nikal... tereko permission nahi hai portal ka");
+            console.log("you don't have permission to access the portal");
           } else {
             console.log(
               "hurr re.. you have the permission to access the portal"

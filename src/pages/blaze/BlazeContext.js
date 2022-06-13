@@ -91,7 +91,6 @@ const BlazeContextProvider = ({ children }) => {
   function check_cookie_name(name) {
     var match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
     if (match) {
-      console.log(match[2]);
       return match[2];
     }
     return false;
@@ -197,7 +196,6 @@ const BlazeContextProvider = ({ children }) => {
 
     FetchIP()
       .then((data) => {
-        console.log(data);
         setIp(data.ip);
         GEO(data["ip"]).then((data) => {
           setGeoData(data);
@@ -313,7 +311,6 @@ const BlazeContextProvider = ({ children }) => {
     console.log("verifying techincal details ");
     let techincalDetailsVerification = true;
     const securityChecks = survey?.security_checks;
-    console.log(ip);
 
     // directly move on to the blocked data verification when there in no session
     if (allSessions.length === 0) techincalDetailsVerification = true;
@@ -389,7 +386,6 @@ const BlazeContextProvider = ({ children }) => {
   const otherVerification = async () => {
     console.log("verifying other information");
     const device_type = sessionTechnicalDetails?.deviceType.toLowerCase();
-    console.log(device_type);
     if (
       survey?.device_suitability?.[device_type] === undefined ||
       !survey?.device_suitability?.[device_type]
@@ -418,6 +414,7 @@ const BlazeContextProvider = ({ children }) => {
     let flag = false;
 
     let supplier;
+    //----> check whether source is exist AND active or not in external supppliers
     survey?.external_suppliers?.forEach((d) => {
       if (
         d?.vendor_status?.toLowerCase() === "active" &&
@@ -428,13 +425,10 @@ const BlazeContextProvider = ({ children }) => {
         setErrCodeAndMsg();
       }
     });
+
+    //--->> if supplier not found in external suppliers means (flag = false) then check its status and existability in internal suppliers
     if (!flag) {
       survey?.internal_suppliers?.forEach((d) => {
-        console.log(
-          d?.vendor_status,
-          d.supplier_account_id,
-          supplier_account_id
-        );
         if (
           d?.vendor_status?.toLowerCase() === "active" &&
           d.supplier_account_id === supplier_account_id
@@ -458,24 +452,28 @@ const BlazeContextProvider = ({ children }) => {
         }
       });
 
-      if (completedSessionsCnt > survey?.no_of_completes) {
+      if (completedSessionsCnt >= survey?.no_of_completes) {
         console.log(
           "survey has completed the no of completes hence terminated"
         );
       } else {
-        if (srcSpecificCompletedSessionsCnt > supplier?.allocation?.number) {
+        if (srcSpecificCompletedSessionsCnt >= supplier?.allocation?.number) {
           console.log(
             "allocation for the supplier has completed hence terminated"
           );
+          setErrCode(41);
+          setErrMsg(
+            "Respondent went over their supplier’s allocation in Marketplace survey"
+          );
         } else {
           console.log("src id verification done..");
+          verifySurveyGroupData();
         }
       }
-
-      verifySurveyGroupData();
     } else {
-      console.log(
-        "srcid is not matched or the src is not active... hence terminated"
+      setErrCode(127);
+      setErrMsg(
+        "Respondent enter from the particular supplier that is not live or the supplier not found"
       );
     }
   };
@@ -524,7 +522,7 @@ const BlazeContextProvider = ({ children }) => {
   useEffect(() => {
     if (!errCode && !errMsg && finalVerification) {
       let tid = 2000001,
-        flag = false; // flag to indicade wheather atleast one tid is present or not.
+        flag = false; // flag to indicade whether atleast one tid is present or not.
       allSurveys?.map((survey) => {
         if (survey?.tid >= tid) {
           tid = parseInt(survey?.tid);
@@ -545,7 +543,7 @@ const BlazeContextProvider = ({ children }) => {
       const nextURL = `/blaze/${encryptedID}/gdpr-consent`;
 
       const body = {
-        session_techincal_details: sessionTechnicalDetails,
+        session_technical_details: sessionTechnicalDetails,
         geo_data: geoData,
         srcid: srcID,
         rid: rID,
@@ -588,12 +586,21 @@ const BlazeContextProvider = ({ children }) => {
   }, [finalVerification]);
 
   const getVendorCpi = (srcID) => {
-    let cpi = 0;
+    let cpi = 0,
+      flag = false;
     survey?.external_suppliers?.map((supp) => {
-      if (supp?.supplier_account_id === srcID) {
+      if (supp?.supplier_account_id === parseInt(srcID)) {
         cpi = supp?.tcpi;
+        flag = true;
       }
     });
+    if (!flag) {
+      survey?.internal_suppliers?.map((supp) => {
+        if (supp?.supplier_account_id === parseInt(srcID)) {
+          cpi = supp?.tcpi;
+        }
+      });
+    }
     return cpi;
   };
 

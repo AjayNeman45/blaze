@@ -400,7 +400,7 @@ function SurveyDashboard() {
               </button>
             </div>
             <div className={styles.big_card_container}>
-              {survey?.external_suppliers?.slice(0, 3).map((supp) => (
+              {survey?.suppliers?.slice(0, 3).map((supp) => (
                 <div key={uuid()}>
                   <SupplyOverViewBigCard supp={supp} />
                 </div>

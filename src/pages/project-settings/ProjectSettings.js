@@ -383,14 +383,14 @@ const NewProjectSettings = () => {
                 inputType="select"
               />
               <InputFieldCard
-                title="live url"
+                title="Live URL"
                 value="live_url"
                 inputType="input"
                 handleInputChange={handleInputChange}
                 defaultVal={sData?.live_url}
               />
               <InputFieldCard
-                title="text url"
+                title="Test URL"
                 value="test_url"
                 handleInputChange={handleInputChange}
                 inputType="input"

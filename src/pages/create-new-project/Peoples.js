@@ -43,10 +43,6 @@ const Peoples = () => {
         sms = [],
         ams = [];
       clients.forEach((client) => {
-        console.log(
-          client.data()?.company_name,
-          surveyData?.client_info?.client_name
-        );
         if (
           client.data()?.company_name === surveyData?.client_info?.client_name
         ) {
@@ -160,7 +156,7 @@ const Peoples = () => {
             />
           </div>
           <div className="column">
-            <label>Client's PO Number</label>
+            <label>Client's PO Number (optional)</label>
             <input
               type="text"
               placeholder="XXXXXXXXXX"
@@ -233,7 +229,7 @@ const Peoples = () => {
           </div>
 
           {/****** clients team info  */}
-          <h2>{surveyData?.client_info?.client_name} Team</h2>
+          {/* <h2>{surveyData?.client_info?.client_name} Team</h2>
           <div className="column">
             <label>Lead Project Manager</label> <br />
             <Select
@@ -266,7 +262,7 @@ const Peoples = () => {
                 handleInputChange(e, "clients_team", "account_managers")
               }
             />
-          </div>
+          </div> */}
         </div>
       </div>
 
