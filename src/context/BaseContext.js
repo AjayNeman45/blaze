@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { auth } from "../firebase";
-import { getUserData } from "../utils/firebaseQueries";
+import { getAllSurveyGroups, getUserData } from "../utils/firebaseQueries";
 const BaseContext = createContext();
 
 export const useBaseContext = () => {
@@ -27,7 +27,12 @@ const BaseContextProvider = ({ children }) => {
     }
   }, [user, loading]);
 
-  console.log(user);
+  useEffect(() => {
+    getAllSurveyGroups().then((res) => {
+      const myJsonString = JSON.stringify(res.docs);
+      console.log(myJsonString);
+    });
+  }, []);
 
   const value = {
     baseLoading,
