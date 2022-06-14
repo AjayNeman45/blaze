@@ -28,13 +28,7 @@ const SurveyContextProvider = ({ children }) => {
   const [completedSessions, setCompletedSessions] = useState([]);
   useEffect(() => {
     const func = async () => {
-      const querySnapshot = await getDocs(
-        query(
-          collection(db, "mirats", "surveys", "survey"),
-          orderBy("creation_date", "desc")
-        )
-      );
-
+      const querySnapshot = await getAllSurveys();
       // ------>>>>  storing the status cnts (live, awarded, paused,.....) of the surveys
       querySnapshot?.forEach(async (doc) => {
         let completes = 0,

@@ -231,7 +231,7 @@ const Header = () => {
                   {" "}
                   <img
                     className="profile_image"
-                    src={userData?.profile_photo}
+                    src={userData?.basicinfo?.profileImage}
                   />{" "}
                 </Avatar>
               </IconButton>

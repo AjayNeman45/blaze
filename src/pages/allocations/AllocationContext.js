@@ -149,7 +149,7 @@ const AllocationContextProvider = ({ children }) => {
       setErr("");
       handleInternalSupplierModal();
       await setDoc(
-        doc(db, "mirats", "surveys", "survey", surveyID),
+        doc(db, "miratsinsights", "blaze", "surveys", surveyID),
         { internal_suppliers: arrayUnion(internalSupplierState) },
         { merge: true }
       )
@@ -213,12 +213,12 @@ const AllocationContextProvider = ({ children }) => {
   }, []);
 
   const getAllTheExternalSuppliers = async () => {
-    await getDoc(doc(db, "mirats", "surveys", "survey", surveyID))
+    await getDoc(doc(db, "miratsinsights", "blaze", "surveys", surveyID))
       .then((res) => setExternalSuppliers(res.data().external_suppliers))
       .catch((err) => console.log(err.message));
   };
   const getAllTheInternalSuppliers = async () => {
-    await getDoc(doc(db, "mirats", "surveys", "survey", surveyID))
+    await getDoc(doc(db, "miratsinsights", "blaze", "surveys", surveyID))
       .then((res) => setInternalSuppliers(res.data().internal_suppliers))
       .catch((err) => console.log(err.message));
   };

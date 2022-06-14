@@ -1,8 +1,9 @@
 import React from "react";
 import styles from "./login.module.css";
 import { useLoginContext } from "./LoginContext";
+import { Loading } from "@nextui-org/react";
 const Login = () => {
-  const { handleLogin, setLoginCred } = useLoginContext();
+  const { handleLogin, setLoginCred, errMsg, loading } = useLoginContext();
 
   const handleInputChange = (e) => {
     setLoginCred((prevData) => {
@@ -18,6 +19,17 @@ const Login = () => {
         <div className={styles.login}>
           <form onSubmit={handleLogin}>
             <div className={styles.formInputes}>
+              {errMsg?.msg ? (
+                <large
+                  className={
+                    errMsg?.type === "error"
+                      ? styles.error_msg
+                      : styles.warning_msg
+                  }
+                >
+                  {errMsg.msg}
+                </large>
+              ) : null}
               <h2>Log in to Mirats Insights</h2>
               <label htmlFor="email">Mirats Insights Email ID</label>
               <input
@@ -35,9 +47,16 @@ const Login = () => {
                 name="password"
                 onChange={handleInputChange}
               />
-              <button type="submit" className={styles.loginBtn}>
-                Log in
-              </button>
+
+              {loading ? (
+                <div className={styles.spinner}>
+                  <Loading type="spinner" size="lg" />
+                </div>
+              ) : (
+                <button type="submit" className={styles.loginBtn}>
+                  Log in
+                </button>
+              )}
             </div>
           </form>
         </div>

@@ -250,7 +250,6 @@ const Surveys = () => {
       return newData;
     });
   };
-
   return (
     <>
       <Header />

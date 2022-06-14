@@ -1,7 +1,9 @@
+import { addDoc, collection, doc, getDocs, setDoc } from "firebase/firestore";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
-import { auth } from "../firebase";
+import { auth, db, miratsFulDb } from "../firebase";
+import { data } from "../tmp";
 import { getAllSurveyGroups, getUserData } from "../utils/firebaseQueries";
 const BaseContext = createContext();
 
@@ -26,13 +28,6 @@ const BaseContextProvider = ({ children }) => {
       }
     }
   }, [user, loading]);
-
-  useEffect(() => {
-    getAllSurveyGroups().then((res) => {
-      const myJsonString = JSON.stringify(res.docs);
-      console.log(myJsonString);
-    });
-  }, []);
 
   const value = {
     baseLoading,

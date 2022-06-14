@@ -55,8 +55,14 @@ const projectCoordinatorsData = [
 const NewProjectSettings = () => {
   const history = useHistory();
   const { surveyID } = useParams();
-  const { surveyData, changes, setChanges, clients, completedSessions } =
-    useProjectSettingsContext();
+  const {
+    surveyData,
+    changes,
+    setChanges,
+    clients,
+    completedSessions,
+    createdByData,
+  } = useProjectSettingsContext();
   const [sData, setSData] = useState();
   const [country, setCountry] = useState("");
   const countries = useMemo(() => countryList().getData(), []);
@@ -65,6 +71,10 @@ const NewProjectSettings = () => {
   const [snackbarData, setSnackbarData] = useState("");
   const [snackbar, setSnackbar] = useState(false);
   const [buildUrlModal, setBuildUrlModal] = useState(false);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   useEffect(() => {
     setCollectUserData(surveyData?.collect_user_data);
@@ -593,10 +603,15 @@ const NewProjectSettings = () => {
           {/* ******* createdBy_container */}
           <div className={styles.createdBy_container}>
             <h2>Created By</h2>
-            <p>Ayaan Ali</p>
-            <p>Head of Global Sales</p>
-            <a href="http://"> ayaan.ali@miratsinsights.com</a>
-            <span>Created on 12/03/2022 2:00 AM</span>
+            <p>
+              {createdByData?.basicinfo?.firstname}{" "}
+              {createdByData?.basicinfo?.lastname}
+            </p>
+            <p>{createdByData?.WorkDetails?.position}</p>
+            <a href="#">{createdByData?.basicinfo?.email}</a>
+            <span>
+              Created on {surveyData?.creation_date?.toDate().toLocaleString()}
+            </span>
           </div>
         </div>
       </div>

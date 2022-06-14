@@ -17,13 +17,13 @@ function SourcesContextProvider({ children }) {
   }, []);
 
   const ChangeVendorStatus = async (index, status, survey_id) => {
-    setSurveydata(preob=>{
-      let suppliers=preob?.external_suppliers
-      suppliers[index].vendor_status=status
-      return preob
-    })
+    setSurveydata((preob) => {
+      let suppliers = preob?.external_suppliers;
+      suppliers[index].vendor_status = status;
+      return preob;
+    });
     await setDoc(
-      doc(db, "mirats", "surveys", "survey", String(survey_id)),
+      doc(db, "miratsinsights", "blaze", "surveys", String(survey_id)),
       {
         external_suppliers: surveydata?.external_suppliers,
       },

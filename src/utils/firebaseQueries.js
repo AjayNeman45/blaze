@@ -28,7 +28,7 @@ export const getSessionID = async (surveyID, setSessionID, gamma) => {
   let sessionType = "Sessions";
   if (gamma === "alpha") sessionType = "TestSessions";
   const sessions = await getDocs(
-    collection(db, "mirats", "surveys", "survey", surveyID, sessionType)
+    collection(db, "miratsinsights", "blaze", "surveys", surveyID, sessionType)
   );
   sessions.forEach((session) => {
     fetchIP().then((data) => {
@@ -46,9 +46,9 @@ export const updateSession = async (surveyID, sessionID, gamma, body) => {
   return await updateDoc(
     doc(
       db,
-      "mirats",
+      "miratsinsights",
+      "blaze",
       "surveys",
-      "survey",
       String(surveyID),
       sessionType,
       sessionID
@@ -64,7 +64,7 @@ export const updateSession = async (surveyID, sessionID, gamma, body) => {
 
 export const addSession = async (body, surveyID) => {
   return await addDoc(
-    collection(db, "mirats", "surveys", "survey", surveyID, "Sessions"),
+    collection(db, "miratsinsights", "blaze", "surveys", surveyID, "Sessions"),
     {
       ...body,
     }
@@ -73,13 +73,16 @@ export const addSession = async (body, surveyID) => {
 
 export const getSurvey = async (surveyID) => {
   const survey = await getDoc(
-    doc(db, "mirats", "surveys", "survey", String(surveyID))
+    doc(db, "miratsinsights", "blaze", "surveys", String(surveyID))
   );
   return survey.data();
 };
 
 export const getAllSurveys = async () => {
-  return await getDocs(collection(db, "mirats", "surveys", "survey"));
+  return await getDocs(
+    collection(db, "miratsinsights", "blaze", "surveys"),
+    orderBy("creation_date", "desc")
+  );
 };
 
 export const getAllSessions = async (surveyID, gamma) => {
@@ -88,9 +91,9 @@ export const getAllSessions = async (surveyID, gamma) => {
   const q = query(
     collection(
       db,
-      "mirats",
+      "miratsinsights",
+      "blaze",
       "surveys",
-      "survey",
       String(surveyID),
       sessionType
     ),
@@ -103,9 +106,9 @@ export const getAllTestSessions = async (surveyID) => {
   return await getDocs(
     collection(
       db,
-      "mirats",
+      "miratsinsights",
+      "blaze",
       "surveys",
-      "survey",
       String(surveyID),
       "TestSessions"
     )
@@ -125,9 +128,9 @@ export const addQualificationResponse = async (
   return await setDoc(
     doc(
       db,
-      "mirats",
+      "miratsinsights",
+      "blaze",
       "surveys",
-      "survey",
       String(sid),
       sessionType,
       String(sessionID)
@@ -147,9 +150,9 @@ export const getQuestion = async (questionNumber) => {
   return await getDoc(
     doc(
       db,
-      "mirats",
-      "Qualifications",
-      "QuestionLibrary",
+      "miratsinsights",
+      "blaze",
+      "question_library",
       String(questionNumber)
     )
   );
@@ -157,7 +160,7 @@ export const getQuestion = async (questionNumber) => {
 
 export const addDocumentToSurvey = async (surveyID, body) => {
   return await setDoc(
-    doc(db, "mirats", "surveys", "survey", String(surveyID)),
+    doc(db, "miratsinsights", "blaze", "surveys", String(surveyID)),
     {
       documents: arrayUnion(body),
     },
@@ -167,7 +170,7 @@ export const addDocumentToSurvey = async (surveyID, body) => {
 
 export const addSecurityChecks = async (surveyID, body) => {
   return await setDoc(
-    doc(db, "mirats", "surveys", "survey", String(surveyID)),
+    doc(db, "miratsinsights", "blaze", "surveys", String(surveyID)),
     {
       security_checks: body,
     },
@@ -177,14 +180,16 @@ export const addSecurityChecks = async (surveyID, body) => {
 
 export const addBlockedData = async (surveyID, body) => {
   return await setDoc(
-    doc(db, "mirats", "surveys", "survey", String(surveyID)),
+    doc(db, "miratsinsights", "blaze", "surveys", String(surveyID)),
     body,
     { merge: true }
   );
 };
 
 export const updateQualificationStatus = async (surveyID, question_id) => {
-  const survey = await getDoc(doc(db, "mirats", "surveys", "survey", surveyID));
+  const survey = await getDoc(
+    doc(db, "miratsinsights", "blaze", "surveys", surveyID)
+  );
   const questions = survey.data()?.qualifications?.questions;
   questions?.map(async (que) => {
     if (que?.question_id === question_id) {
@@ -192,7 +197,7 @@ export const updateQualificationStatus = async (surveyID, question_id) => {
     }
   });
   const res = await updateDoc(
-    doc(db, "mirats", "surveys", "survey", surveyID),
+    doc(db, "miratsinsights", "blaze", "surveys", surveyID),
     {
       "qualifications.questions": questions,
     },
@@ -205,7 +210,7 @@ export const getQuestions = async (question_type, survey) => {
   try {
     if (question_type === "All") {
       const q = query(
-        collection(db, "mirats", "Qualifications", "QuestionLibrary")
+        collection(db, "miratsinsights", "blaze", "question_library")
       );
       const querySnapshot = await getDocs(q);
       querySnapshot.forEach((doc) => {
@@ -217,7 +222,7 @@ export const getQuestions = async (question_type, survey) => {
       });
     } else {
       const q = query(
-        collection(db, "mirats", "Qualifications", "QuestionLibrary"),
+        collection(db, "miratsinsights", "blaze", "question_library"),
         where("question_type", "==", question_type)
       );
       const querySnapshot = await getDocs(q);
@@ -237,7 +242,7 @@ export const getQuestions = async (question_type, survey) => {
 
 export const getAllQuestionLibraryQuestions = async () => {
   const q = query(
-    collection(db, "mirats", "Qualifications", "QuestionLibrary"),
+    collection(db, "miratsinsights", "blaze", "question_library"),
     orderBy("question_id", "desc")
   );
   return await getDocs(q);
@@ -264,9 +269,9 @@ export const updateReconciliationStatus = async (
     query(
       collection(
         db,
-        "mirats",
+        "miratsinsights",
+        "blaze",
         "surveys",
-        "survey",
         String(surveyID),
         "Sessions"
       ),
@@ -277,7 +282,15 @@ export const updateReconciliationStatus = async (
       res.forEach((d) => {
         if (ids.includes(d.data()?.rid)) {
           updateDoc(
-            doc(db, "mirats", "surveys", "survey", surveyID, "Sessions", d.id),
+            doc(
+              db,
+              "miratsinsights",
+              "blaze",
+              "surveys",
+              surveyID,
+              "Sessions",
+              d.id
+            ),
             {
               reconciliation: data,
             },
@@ -298,9 +311,9 @@ export const addTestSession = async (body, surveyID) => {
   return await addDoc(
     collection(
       db,
-      "mirats",
+      "miratsinsights",
+      "blaze",
       "surveys",
-      "survey",
       String(surveyID),
       "TestSessions"
     ),
@@ -318,9 +331,9 @@ export const getSessionBasedOnType = async (
   return await getDoc(
     doc(
       db,
-      "mirats",
+      "miratsinsights",
+      "blaze",
       "surveys",
-      "survey",
       String(surveyID),
       sessionType,
       String(sessionID)
@@ -331,7 +344,7 @@ export const getSessionBasedOnType = async (
 export const addQualificationQuestion = async (body, surveyID) => {
   console.log("Question added for survey id ", surveyID, body);
   await updateDoc(
-    doc(db, "mirats", "surveys", "survey", surveyID),
+    doc(db, "miratsinsights", "blaze", "surveys", surveyID),
     {
       "qualifications.questions": arrayUnion(body),
     },
@@ -343,7 +356,9 @@ export const addQualificationQuestion = async (body, surveyID) => {
 
 export const updateQualificationQuestion = async (body, surveyID) => {
   console.log(body);
-  const survey = await getDoc(doc(db, "mirats", "surveys", "survey", surveyID));
+  const survey = await getDoc(
+    doc(db, "miratsinsights", "surveys", "survey", surveyID)
+  );
   let questions = survey.data()?.qualifications?.questions;
   questions?.map(async (que, index) => {
     if (que?.question_id === body?.question_id) {
@@ -352,7 +367,7 @@ export const updateQualificationQuestion = async (body, surveyID) => {
   });
   console.log(questions);
   return await updateDoc(
-    doc(db, "mirats", "surveys", "survey", surveyID),
+    doc(db, "miratsinsights", "surveys", "survey", surveyID),
     {
       "qualifications.questions": questions,
     },
@@ -362,14 +377,14 @@ export const updateQualificationQuestion = async (body, surveyID) => {
 
 export const getSuppier = async (srcID) => {
   const staticRedirects = await getDoc(
-    doc(db, "mirats", "supplier", "supplier", String(srcID))
+    doc(db, "miratsinsights", "supplier", "supplier", String(srcID))
   );
   return staticRedirects.data();
 };
 
 export const updateSurvey = async (surveyID, body) => {
   return await updateDoc(
-    doc(db, "mirats", "surveys", "survey", String(surveyID)),
+    doc(db, "miratsinsights", "blaze", "surveys", String(surveyID)),
     {
       ...body,
     },
@@ -379,7 +394,7 @@ export const updateSurvey = async (surveyID, body) => {
 
 export const addSurvey = async (surveyID, body) => {
   return await setDoc(
-    doc(db, "mirats", "surveys", "survey", String(surveyID)),
+    doc(db, "miratsinsights", "blaze", "surveys", String(surveyID)),
     { ...body },
     { merge: true }
   );
@@ -387,15 +402,14 @@ export const addSurvey = async (surveyID, body) => {
 
 export const getStatusDesc = async (statusType, code) => {
   const result = await getDoc(
-    doc(db, "mirats", "error_codes", statusType, String(code))
+    doc(db, "miratsinsights", "error_codes", statusType, String(code))
   );
   return result.data();
 };
 
 export const addQuota = async (surveyID, questionID, body) => {
-  console.log(surveyID, questionID, body);
   let result = await getDoc(
-    doc(db, "mirats", "surveys", "survey", String(surveyID))
+    doc(db, "miratsinsights", "blaze", "surveys", String(surveyID))
   );
   let questions = result.data().qualifications?.questions?.map((question) => {
     if (question?.question_id === questionID) {
@@ -409,9 +423,8 @@ export const addQuota = async (surveyID, questionID, body) => {
     } else return question;
   });
 
-  console.log(questions);
   return await updateDoc(
-    doc(db, "mirats", "surveys", "survey", String(surveyID)),
+    doc(db, "miratsinsights", "blaze", "surveys", String(surveyID)),
     {
       "qualifications.questions": questions,
     },
@@ -420,13 +433,15 @@ export const addQuota = async (surveyID, questionID, body) => {
 };
 
 export const getAllSuppliers = async () => {
-  return await getDocs(collection(db, "mirats", "supplier", "supplier"));
+  return await getDocs(
+    collection(db, "miratsinsights", "supplier", "supplier")
+  );
 };
 
 export const addStaticRedirects = async (supplier_id, body) => {
   console.log(supplier_id, body);
   return await updateDoc(
-    doc(db, "mirats", "supplier", "supplier", String(supplier_id)),
+    doc(db, "miratsinsights", "supplier", "supplier", String(supplier_id)),
     {
       global_redirects: body,
     },
@@ -436,11 +451,9 @@ export const addStaticRedirects = async (supplier_id, body) => {
   );
 };
 export const updateSurveyData = async (surveyID, sData, changes) => {
-  console.log(changes);
   const newEncryptedCid = encryptText(sData?.country?.country);
-  console.log(sData?.encrypt?.cid, newEncryptedCid);
   return await updateDoc(
-    doc(db, "mirats", "surveys", "survey", String(surveyID)),
+    doc(db, "miratsinsights", "blaze", "surveys", String(surveyID)),
     {
       ...sData,
       changes: arrayUnion(changes),
@@ -454,25 +467,25 @@ export const updateSurveyData = async (surveyID, sData, changes) => {
 
 export const getErrorCodesForClientStatus = async () => {
   return await getDocs(
-    query(collection(db, "mirats", "error_codes", "client_codes"))
+    query(collection(db, "miratsinsights", "error_codes", "client_codes"))
   );
 };
 
 export const getErrorCodesForMiratsStatus = async () => {
   return await getDocs(
-    query(collection(db, "mirats", "error_codes", "mirats_codes"))
+    query(collection(db, "miratsinsights", "error_codes", "mirats_codes"))
   );
 };
 
 export const getClients = async () => {
   return await getDocs(
-    query(collection(db, "mirats", "Organisations", "clients"))
+    query(collection(db, "miratsinsights", "Organisations", "clients"))
   );
 };
 
 export const addSurveyGroup = async (data, surveyGrpID) => {
   return await setDoc(
-    doc(db, "mirats", "survey_groups", "SurveyGroups", String(surveyGrpID)),
+    doc(db, "miratsinsights", "blaze", "survey_groups", String(surveyGrpID)),
     { ...data },
     { merge: true }
   );
@@ -480,13 +493,13 @@ export const addSurveyGroup = async (data, surveyGrpID) => {
 
 export const getAllSurveyGroups = async () => {
   return await getDocs(
-    collection(db, "mirats", "survey_groups", "SurveyGroups")
+    collection(db, "miratsinsights", "blaze", "survey_groups")
   );
 };
 
 export const addQuestion = async (body, id) => {
   return await setDoc(
-    doc(db, "mirats", "Qualifications", "QuestionLibrary", String(id)),
+    doc(db, "miratsinsights", "blaze", "question_library", String(id)),
     { ...body },
     {
       merge: true,
@@ -497,7 +510,7 @@ export const addQuestion = async (body, id) => {
 export const getSurveyGrpData = async (surveyGrpNumber) => {
   return await getDocs(
     query(
-      collection(db, "mirats", "survey_groups", "SurveyGroups"),
+      collection(db, "miratsinsights", "blaze", "survey_groups"),
       where("survey_group_number", "==", surveyGrpNumber)
     )
   );
@@ -507,7 +520,7 @@ export const deleteSurveyGroup = async (surveyGrpNum) => {
   console.log(surveyGrpNum);
   return getDocs(
     query(
-      collection(db, "mirats", "survey_groups", "SurveyGroups"),
+      collection(db, "miratsinsights", "blaze", "survey_groups"),
       where("survey_group_number", "==", surveyGrpNum)
     )
   ).then(async (surveyGrpDoc) => {
@@ -515,9 +528,9 @@ export const deleteSurveyGroup = async (surveyGrpNum) => {
     return await deleteDoc(
       doc(
         db,
-        "mirats",
+        "miratsinsights",
+        "blaze",
         "survey_groups",
-        "SurveyGroups",
         surveyGrpDoc.docs[0].id
       )
     );
@@ -538,16 +551,18 @@ export const updateSupplier = async (survey, supplier) => {
 };
 
 export const deleteSurveys = async (elem) => {
-  return await deleteDoc(doc(db, "mirats", "surveys", "survey", String(elem)));
+  return await deleteDoc(
+    doc(db, "miratsinsights", "blaze", "surveys", String(elem))
+  );
 };
 
 export const getUserData = async (id) => {
-  return await getDoc(doc(db, "miratsinsights", "employees", "employee", id));
+  return await getDoc(doc(db, "miratsinsights", "peoples", "employee", id));
 };
 
 export const updateQuestion = async (questionID, body) => {
   return await updateDoc(
-    doc(db, "mirats", "Qualifications", "QuestionLibrary", String(questionID)),
+    doc(db, "miratsinsights", "blaze", "question_library", String(questionID)),
     { ...body }
   );
 };
@@ -558,7 +573,7 @@ export const deleteLangFromQualification = async (
 ) => {
   console.log(questionID, deletedLangQue);
   return await updateDoc(
-    doc(db, "mirats", "Qualifications", "QuestionLibrary", questionID),
+    doc(db, "miratsinsights", "blaze", "question_library", questionID),
     { ...deletedLangQue },
     { merge: true }
   );
@@ -567,7 +582,7 @@ export const deleteLangFromQualification = async (
 // export const deletSupplier = async (supplier) => {
 //   return getDocs(
 //     query(
-//       collection(db, "mirats", "surveys", "survey"),
+//       collection(db, "miratsinsights", "surveys", "survey"),
 //       where("survey_group_number", "==", surveyGrpNum)
 //     )
 //   ).then(async (surveyDoc) => {

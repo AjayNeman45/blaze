@@ -5,7 +5,12 @@ import { useParams } from "react-router-dom";
 import { db } from "../../firebase";
 import { decryptText, encryptText } from "../../utils/enc-dec.utils";
 import { hashids } from "../../index";
-import { getAllSessions, getClients } from "../../utils/firebaseQueries";
+import {
+  getAllSessions,
+  getClients,
+  getUserData,
+} from "../../utils/firebaseQueries";
+import { useBaseContext } from "../../context/BaseContext";
 
 const ProjectSettingContext = createContext();
 
@@ -14,18 +19,30 @@ export const useProjectSettingsContext = () => {
 };
 
 const ProejctSettingProvider = ({ children }) => {
+  const { userData } = useBaseContext();
   const { surveyID } = useParams();
 
   let [surveyData, setSurveyData] = useState({});
   const [changes, setChanges] = useState({ updated_date: new Date() });
   const [clients, setClients] = useState([]);
   const [completedSessions, setCompletedSessions] = useState([]);
+  const [createdByData, setCreatedByData] = useState({});
+
   useEffect(() => {
-    const DB = db.collection("mirats").doc("surveys").collection("survey");
+    let name = userData?.basicinfo?.firstname + userData?.basicinfo?.lastname;
+    setChanges({
+      updated_date: new Date(),
+      changed_by: { name, email: userData?.basicinfo?.email },
+    });
+  }, [userData]);
+  useEffect(() => {
     const unsub = onSnapshot(
-      doc(db, "mirats", "surveys", "survey", String(surveyID)),
+      doc(db, "miratsinsights", "blaze", "surveys", String(surveyID)),
       (doc) => {
         setSurveyData(doc.data());
+        getUserData(doc.data()?.created_by).then((res) => {
+          setCreatedByData(res.data());
+        });
       }
     );
     getAllSessions(surveyID).then((sessions) => {
@@ -71,6 +88,7 @@ const ProejctSettingProvider = ({ children }) => {
     );
   }, [surveyData]);
 
+  console.log(changes);
   return (
     <ProjectSettingContext.Provider
       value={{
@@ -81,6 +99,7 @@ const ProejctSettingProvider = ({ children }) => {
         setChanges,
         clients,
         completedSessions,
+        createdByData,
       }}
     >
       {children}

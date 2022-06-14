@@ -47,8 +47,8 @@ const ChangeLogComponent = () => {
                     <td>
                       <div>
                         {" "}
-                        <p>Profile Name</p>
-                        <small>profile@gmail.com</small>{" "}
+                        <p>{change?.changed_by?.name}</p>
+                        <small>{change?.changed_by?.email}</small>{" "}
                       </div>
                     </td>
                     <td>

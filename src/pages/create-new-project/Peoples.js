@@ -132,6 +132,9 @@ const Peoples = () => {
                 }}
                 value={surveyData?.client_info?.client_cost_currency}
               >
+                <option value="" hidden disabled selected>
+                  select currency
+                </option>
                 <option value="USD">USD</option>
                 <option value="INR">INR</option>
                 <option value="EURO">EURO</option>

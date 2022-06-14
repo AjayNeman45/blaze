@@ -11,6 +11,7 @@ import {
   getAllSurveys,
   getClients,
 } from "../../utils/firebaseQueries";
+import { useBaseContext } from "../../context/BaseContext";
 
 const CreateNewProjectContext = createContext();
 export const useCreateNewProject = () => {
@@ -18,6 +19,7 @@ export const useCreateNewProject = () => {
 };
 
 const CreateNewProjectProvider = ({ children }) => {
+  const { userData } = useBaseContext();
   const [surveyData, setSurveyData] = useState({ internal_status: "ongoing" });
   const [insertLoading, setInsertLoading] = useState(false);
   const [snackbar, setSnackbar] = useState(false);
@@ -29,7 +31,7 @@ const CreateNewProjectProvider = ({ children }) => {
   const location = useLocation();
   const encryptedID = new URLSearchParams(location.search).get("id");
 
-  var DOC = db.collection("mirats").doc("surveys").collection("survey");
+  var DOC = db.collection("miratsinsights").doc("blaze").collection("surveys");
 
   useEffect(() => {
     const func = async () => {
@@ -80,8 +82,6 @@ const CreateNewProjectProvider = ({ children }) => {
     });
     const newSurveyId = maxSurveyId ? maxSurveyId + 1 : 10000001;
     const newProjectId = maxProjectId ? maxProjectId + 1 : 10000001;
-
-    console.log(newSurveyId, newProjectId);
 
     // check the existance of the project
     const checkProjectExistance = (checkingFor) => {
@@ -219,8 +219,6 @@ const CreateNewProjectProvider = ({ children }) => {
       });
   };
 
-  console.log(surveyData);
-
   const insertPeoplesData = () => {
     setInsertLoading(true);
     const survey_id = decryptText(encryptedID.split("-")[0]);
@@ -250,6 +248,7 @@ const CreateNewProjectProvider = ({ children }) => {
                 test_url: "",
                 client_info: surveyData?.client_info,
                 creation_date: new Date(),
+                created_by: userData?.UserID,
               },
               { merge: true }
             )
