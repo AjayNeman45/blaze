@@ -1,6 +1,7 @@
 import React, { createContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
+  getAllQuestionLibraryQuestions,
   getErrorCodesForClientStatus,
   getErrorCodesForMiratsStatus,
   getSurvey,
@@ -21,6 +22,7 @@ function LiveSurveyLogsContextProvider({ children }) {
   let [clientCodes, setClientCodes] = useState([]);
   let [miratsCodes, setMiratsCodes] = useState([]);
   let [surveydata, setSurveyData] = useState({});
+  let [questionLibrary, setQuestionLibrary] = useState([]);
   const HandleArrayFilters_LiveSurveyLog = (key, val, addOrRemove) => {
     if (addOrRemove) {
       setLiveSurveyLogsFilter({
@@ -39,10 +41,6 @@ function LiveSurveyLogsContextProvider({ children }) {
   useEffect(() => {
     getErrorCodesForClientStatus().then((querysnapshot) => {
       querysnapshot.forEach((doc) => {
-        // setErrorCodes({
-        //   ...errorCodes,
-        //   client_codes: [...errorCodes?.client_codes, doc.data()?.code],
-        // });
         setClientCodes((prear) => [...prear, doc.data()]);
       });
     });
@@ -54,6 +52,13 @@ function LiveSurveyLogsContextProvider({ children }) {
     getSurvey(surveyID).then((data) => {
       setSurveyData(data);
     });
+    getAllQuestionLibraryQuestions().then((querysnapshot) => {
+      let questionLibraryTmp = [];
+      querysnapshot.forEach((doc) => {
+        questionLibraryTmp.push(doc.data());
+      });
+      setQuestionLibrary(questionLibraryTmp);
+    });
   }, []);
   return (
     <LiveSurveyLogsContext.Provider
@@ -64,6 +69,7 @@ function LiveSurveyLogsContextProvider({ children }) {
         miratsCodes,
         clientCodes,
         surveydata,
+        questionLibrary,
       }}
     >
       {children}

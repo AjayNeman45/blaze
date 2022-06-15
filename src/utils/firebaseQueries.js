@@ -467,13 +467,13 @@ export const updateSurveyData = async (surveyID, sData, changes) => {
 
 export const getErrorCodesForClientStatus = async () => {
   return await getDocs(
-    query(collection(db, "miratsinsights", "error_codes", "client_codes"))
+    query(collection(db, "miratsinsights", "blaze", "client_codes"))
   );
 };
 
 export const getErrorCodesForMiratsStatus = async () => {
   return await getDocs(
-    query(collection(db, "miratsinsights", "error_codes", "mirats_codes"))
+    query(collection(db, "miratsinsights", "blaze", "mirats_codes"))
   );
 };
 

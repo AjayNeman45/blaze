@@ -22,8 +22,6 @@ function Sources() {
 
     setOpenSnackbar({});
   };
-
-  console.log(surveydata);
   return (
     <>
       {opensnackbar?.show && (

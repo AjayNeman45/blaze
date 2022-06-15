@@ -27,6 +27,7 @@ function LiveSurveyLogs() {
     miratsCodes,
     clientCodes,
     surveydata,
+    questionLibrary,
   } = useContext(LiveSurveyLogsContext);
   // Snackbar
   const [opensnackbar, setOpenSnackbar] = useState({}); //{show:false,severity:'success',msg:"Modify redirects saved successfully"}
@@ -51,6 +52,7 @@ function LiveSurveyLogs() {
   let [browsers, setBrowsers] = useState([]);
   let [OS, setOS] = useState([]);
   const [showPdfFormatModal, setShowPdfFormatModal] = useState(false);
+  const supplierID = new URLSearchParams(location.search).get("supplier_id");
 
   // Set All the filters after useeffect and set all the sessions
   useEffect(() => {
@@ -231,9 +233,14 @@ function LiveSurveyLogs() {
     setAllSuppliers([]);
     // Links
     if (supplier_id) {
+      let tmpSuppliers = [];
       surveydata?.external_suppliers?.map((supplier) => {
-        setAllSuppliers((prear) => [...prear, supplier]);
+        tmpSuppliers.push(supplier);
       });
+      surveydata?.internal_suppliers?.map((supplier) => {
+        tmpSuppliers.push(supplier);
+      });
+      setAllSuppliers(tmpSuppliers);
       let encryptedSrcID = hashids.encode([parseInt(supplier_id)]);
       setLinks({
         live_link: `${projectBaseURL}/blaze/${surveydata?.encrypt?.sid}-${surveydata?.encrypt?.pid}-${surveydata?.encrypt?.cid}/lightningStart?SRCID=${encryptedSrcID}&RID=[%rid%]`,
@@ -258,18 +265,17 @@ function LiveSurveyLogs() {
   }, [allSuppliers]);
 
   const DownloadAsExcel = () => {
-    var elt = document.getElementById("survey-log-table");
-    var wb = utils.table_to_book(elt, { sheet: "Sheet JS" });
-    return writeFile(
-      wb,
-      `survey-logs-${particularSupplierData?.supplier_account}-${surveyID}.xlsx`
-    );
+    let logsData = getAllLogsData(allSessions);
+    var wb = utils.book_new(),
+      ws = utils.json_to_sheet(logsData);
+
+    utils.book_append_sheet(wb, ws, "Sheet1");
+    writeFile(wb, `survey-logs-${surveyID}-${supplierID}.xlsx`);
   };
   const surveyLogTable = useRef();
 
   const DownloadToPDF = () => {
     let input = document.getElementById("survey-log-pdf-template");
-    const supplierID = new URLSearchParams(location.search).get("supplier_id");
     const pdf = new jsPDF("p", "pt", [1200, 1400]);
     pdf.html(input, {
       margin: [0, 0, 0, 0],
@@ -730,5 +736,46 @@ function LiveSurveyLogs() {
     </>
   );
 }
+
+const getAllLogsData = (allSessions) => {
+  const logsData = [];
+  allSessions?.map((session) => {
+    let responses = [];
+    session?.responses?.map((resp) => {
+      let questionCode = `qid_${resp?.question_id}`;
+      responses.push({ [questionCode]: resp?.user_response });
+    });
+    logsData.push({
+      date: session?.date?.toDate(),
+      surveyStartTime: session?.survey_start_time.toDate().toLocaleString(),
+      surveyEndTime: session?.survey_end_time.toDate().toLocaleString(),
+      totalSurveyTime: session?.total_survey_time,
+      clientCpi: session?.client_cpi,
+      browserName: session?.session_technical_details?.browser_name,
+      cookieEnabled: session?.session_technical_details?.cookie_enabled,
+      deviceType: session?.session_technical_details?.deviceType,
+      language: session?.session_technical_details?.language,
+      os: session?.session_technical_details?.os,
+      platform: session?.session_technical_details?.platform,
+      userAgent: session?.session_technical_details?.user_agent,
+      version: session?.session_technical_details?.version,
+      rid: session?.rid,
+      tid: session?.tid,
+      clientStatus: session?.client_status,
+      miratsStatus: session?.mirats_status,
+      ip: session?.geo_data?.ip,
+      city: session?.geo_data?.city,
+      region: session?.geo_data?.region,
+      country: session?.geo_data?.country,
+      ...responses[0],
+    });
+    responses.map((res) => {
+      let key = Object.keys(res)[0];
+      logsData[logsData.length - 1][key] = res[key];
+    });
+    console.log(responses);
+  });
+  return logsData;
+};
 
 export default LiveSurveyLogs;

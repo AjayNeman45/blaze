@@ -42,8 +42,8 @@ const SurveyLogsPdfFormat = ({
         </div>
 
         <h4 className={styles.Address}>
-          Mirats Insights, LLC 1309 COFFEEN AVENUE STE 1200, SHERIDAN, WYOMING,
-          USA - 82801
+          Mirats Insights ​Private Limited, 7022 1Aerocity,​ NIBR Corporate Park
+          Nr, Safed Pul, Mumbai, Maharashtra 400072
         </h4>
         <div className={styles.survey_logs_basic_details}>
           <div className={styles.details}>
@@ -101,15 +101,14 @@ const SurveyLogsPdfFormat = ({
                     <td>{session?.client_cpi}</td>
                     {/* <td>{session?.ref_id}</td> */}
                     <td>
-                      {session?.session_techincal_details?.browser_name},
-                      {session?.session_techincal_details?.cookie_enabled},
-                      {session?.session_techincal_details?.deviceType},
-                      {session?.session_techincal_details?.language},
-                      {session?.session_techincal_details?.os},
-                      {session?.session_techincal_details?.platform},
-                      {session?.session_techincal_details?.user_agent},
-                      {session?.session_techincal_details?.vendor},
-                      {session?.session_techincal_details?.version},
+                      {session?.session_technical_details?.browser_name},
+                      {session?.session_technical_details?.cookie_enabled},
+                      {session?.session_technical_details?.deviceType},
+                      {session?.session_technical_details?.language},
+                      {session?.session_technical_details?.os},
+                      {session?.session_technical_details?.platform},
+                      {session?.session_technical_details?.user_agent},
+                      {session?.session_technical_details?.version},
                     </td>
                     <td>{session?.rid}</td>
                     <td>{session?.tid}</td>
