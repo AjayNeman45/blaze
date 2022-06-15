@@ -43,7 +43,11 @@ const ChangeLogComponent = () => {
                 return (
                   <tr key={uuid()}>
                     {/* {/ <td>{change?.updated_date.toDate()}</td> /} */}
-                    <td>{change?.updated_date.toDate().toLocaleString()}</td>
+                    <td>
+                      {change?.changed_by?.updated_at
+                        ?.toDate()
+                        .toLocaleString()}
+                    </td>
                     <td>
                       <div>
                         {" "}
@@ -58,7 +62,7 @@ const ChangeLogComponent = () => {
                         <th>Changed to</th>
                         <tbody>
                           {Object.keys(change).map((oneKey, i) => {
-                            if (oneKey != "updated_date") {
+                            if (oneKey !== "changed_by") {
                               return (
                                 <>
                                   {/* {/ <table> /} */}

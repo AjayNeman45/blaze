@@ -12,7 +12,7 @@ import countryList from "react-select-country-list";
 import { useParams } from "react-router-dom/cjs/react-router-dom.min";
 import { updateSurveyData } from "../../utils/firebaseQueries";
 import SnackbarMsg from "../../components/Snackbar";
-import { statusOptions } from "../../utils/commonData";
+import { statusOptions, surveyTypesData } from "../../utils/commonData";
 import BuildUrlModal from "./build-url-modal/BuildUrlModal";
 import {
   mainStatusWithInternalStatuses,
@@ -192,6 +192,14 @@ const NewProjectSettings = () => {
                 inputType="select"
                 dropDownData={studyTypesData}
                 selectedData={sData?.study_type}
+                handleInputChange={handleInputChange}
+              />
+              <InputFieldCard
+                title="survey type"
+                value="survey_type"
+                inputType="select"
+                dropDownData={surveyTypesData}
+                selectedData={sData?.survey_type}
                 handleInputChange={handleInputChange}
               />
 

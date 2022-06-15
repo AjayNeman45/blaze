@@ -1,26 +1,14 @@
-import {
-  addDoc,
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  setDoc,
-  where,
-} from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import { createContext, useContext, useState, useEffect } from "react";
 import { useLocation, useHistory, useParams } from "react-router-dom";
 import { decryptText, encryptText } from "../../utils/enc-dec.utils";
 import { ClientJS } from "clientjs";
-import SurveyQuestion from "../../components/SurveyQuestion";
 import {
   addSession,
   addTestSession,
   getAllSurveys,
-  getSession,
   getSurvey,
-  updateSession,
   getAllSessions,
 } from "../../utils/firebaseQueries";
 import Hashids from "hashids";

@@ -1,13 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./SurveyInfo.module.css";
 import { GoPrimitiveDot } from "react-icons/go";
-import {
-  FormControl,
-  MenuItem,
-  Modal,
-  Select,
-  Typography,
-} from "@mui/material";
+import { FormControl, MenuItem, Modal, Select } from "@mui/material";
 import { Box } from "@mui/system";
 import { useParams } from "react-router-dom";
 import {
@@ -126,7 +120,7 @@ function SurveyInfo() {
           msg: "External Name for the survey is updated",
           severity: "success",
         });
-        console.log("external project name updated");
+        setExternalSurveyName("");
       })
       .catch((err) => console.log(err.message));
   };
@@ -231,7 +225,7 @@ function SurveyInfo() {
         msg={snackbarData?.msg}
         open={snackbar}
         severity={snackbarData?.severity}
-        setSnackbar={setSnackbar}
+        handleClose={() => setSnackbar(false)}
       />
       <div className={styles.survey_info_container}>
         <div className={styles.survey_name_and_btns}>

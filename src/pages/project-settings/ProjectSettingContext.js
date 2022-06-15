@@ -31,8 +31,11 @@ const ProejctSettingProvider = ({ children }) => {
   useEffect(() => {
     let name = userData?.basicinfo?.firstname + userData?.basicinfo?.lastname;
     setChanges({
-      updated_date: new Date(),
-      changed_by: { name, email: userData?.basicinfo?.email },
+      changed_by: {
+        updated_at: new Date(),
+        name,
+        email: userData?.basicinfo?.email,
+      },
     });
   }, [userData]);
   useEffect(() => {
@@ -88,7 +91,6 @@ const ProejctSettingProvider = ({ children }) => {
     );
   }, [surveyData]);
 
-  console.log(changes);
   return (
     <ProjectSettingContext.Provider
       value={{
