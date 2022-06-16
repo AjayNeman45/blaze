@@ -67,10 +67,10 @@ const AnalyticsContextProvider = ({ children }) => {
     let deviceBrand = new Set();
     let dates = new Set();
     allSessions?.forEach((session) => {
-      os.add(session.data()?.session_techincal_details?.os);
-      deviceTypes.add(session.data()?.session_techincal_details?.deviceType);
-      browsers.add(session.data()?.session_techincal_details?.browser_name);
-      deviceBrand.add(session.data()?.session_techincal_details?.vendor);
+      os.add(session.data()?.session_technical_details?.os);
+      deviceTypes.add(session.data()?.session_technical_details?.deviceType);
+      browsers.add(session.data()?.session_technical_details?.browser_name);
+      deviceBrand.add(session.data()?.session_technical_details?.vendor);
 
       const options = {
         year: "numeric",
@@ -128,7 +128,7 @@ const AnalyticsContextProvider = ({ children }) => {
     os.forEach((os) => {
       let cnt = 0;
       allSessions?.forEach((session) => {
-        let technicalDetails = session.data()?.session_techincal_details;
+        let technicalDetails = session.data()?.session_technical_details;
         if (technicalDetails?.os === os) {
           cnt++;
         }
@@ -145,7 +145,7 @@ const AnalyticsContextProvider = ({ children }) => {
     browsers.forEach((browser) => {
       let cnt = 0;
       allSessions?.forEach((session) => {
-        let technicalDetails = session.data()?.session_techincal_details;
+        let technicalDetails = session.data()?.session_technical_details;
         if (technicalDetails?.browser_name === browser) {
           cnt++;
         }
@@ -162,7 +162,7 @@ const AnalyticsContextProvider = ({ children }) => {
     deviceTypes?.forEach((deviceType) => {
       let cnt = 0;
       allSessions?.forEach((session) => {
-        let technicalDetails = session.data()?.session_techincal_details;
+        let technicalDetails = session.data()?.session_technical_details;
         if (technicalDetails?.deviceType === deviceType) {
           cnt++;
         }
@@ -179,7 +179,7 @@ const AnalyticsContextProvider = ({ children }) => {
     deviceBrand?.forEach((deviceBrand) => {
       let cnt = 0;
       allSessions?.forEach((session) => {
-        let technicalDetails = session.data()?.session_techincal_details;
+        let technicalDetails = session.data()?.session_technical_details;
         if (technicalDetails?.vendor === deviceBrand) {
           cnt++;
         }

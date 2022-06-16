@@ -13,6 +13,7 @@ body {
   background-color: red;
   color: white;
   padding: 0 7px;
+  width: fit-content;
   font-size: 14px;
   text-transform: uppercase;
 }

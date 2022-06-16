@@ -65,7 +65,7 @@ const MetricsAndData = () => {
               <span className="required_tag">required</span>
             </label>
             <input
-              placeholder="32%"
+              placeholder="Please enter expected IR"
               type="number"
               className="text_input"
               value={surveyData?.expected_incidence_rate}
@@ -83,8 +83,8 @@ const MetricsAndData = () => {
               <span className="required_tag">required</span>
             </label>
             <input
-              placeholder="12m"
-              type="text"
+              placeholder="Please enter expected LOI in minutes"
+              type="number"
               className="text_input"
               value={surveyData?.exected_completion_loi}
               onChange={(e) =>

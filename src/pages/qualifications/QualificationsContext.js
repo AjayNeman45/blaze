@@ -1,6 +1,7 @@
 import { doc, getDoc, getDocs } from "firebase/firestore";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom/cjs/react-router-dom.min";
+import { useBaseContext } from "../../context/BaseContext";
 import { db } from "../../firebase";
 import {
   getQuestion,
@@ -41,12 +42,13 @@ const QualificationContextProvider = ({ children }) => {
   useEffect(() => {
     const func = async () => {
       setFetchingQualifications(true);
-      getDoc(doc(db, "mirats", "surveys", "survey", surveyID))
+      getDoc(doc(db, "miratsinsights", "blaze", "surveys", surveyID))
         .then((res) => {
           res.data()?.qualifications?.questions?.map(async (question) => {
             const qid = question?.question_id;
             if (!question?.status) return;
             const questionData = await getQuestion(qid);
+
             setQualifications((prevData) => [
               ...prevData,
               {
@@ -117,6 +119,8 @@ const QualificationContextProvider = ({ children }) => {
       .then(() => console.log("Question edited..."))
       .catch((err) => console.log(err.message));
   };
+
+  console.log(qualifications);
 
   const value = {
     qualifications,

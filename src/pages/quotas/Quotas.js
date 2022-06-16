@@ -55,6 +55,8 @@ const Quotas = () => {
     });
   };
 
+  console.log(qualifications);
+
   return (
     <>
       <Header />
@@ -116,7 +118,7 @@ const Quotas = () => {
                 <label>total entrants</label>&nbsp;
                 <FaInfoCircle color="gray" />
               </div>
-              <span>469</span>
+              <span>-</span>
             </div>
           </div>
           <div className={styles.quota_info_right}>
@@ -197,7 +199,13 @@ const Quotas = () => {
                                 />
                               </td>
 
-                              <td>{data?.prescreens}</td>
+                              <td>
+                                {
+                                  data.prescreens[
+                                    `${data?.conditions?.valid_responses?.[indx]?.from}-${data?.conditions?.valid_responses?.[indx]?.to}`
+                                  ]
+                                }
+                              </td>
                               <td>
                                 {
                                   data.completes[
@@ -243,7 +251,15 @@ const Quotas = () => {
                                     value={data?.conditions?.quotas?.[indx]}
                                   />
                                 </td>
-                                <td>{data?.prescreens}</td>
+                                <td>
+                                  {
+                                    data?.prescreens?.[
+                                      data?.options?.[
+                                        data?.conditions?.valid_options?.[indx]
+                                      ]
+                                    ]
+                                  }
+                                </td>
                                 <td>
                                   {
                                     data?.completes?.[

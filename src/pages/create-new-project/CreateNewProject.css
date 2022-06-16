@@ -257,6 +257,10 @@
   color: red;
   margin-top: 10px;
 }
+.disabled_btn {
+  cursor: not-allowed;
+  background-color: #bed8fa;
+}
 
 @media (max-width: 990px) {
   /* .create_survey_page {

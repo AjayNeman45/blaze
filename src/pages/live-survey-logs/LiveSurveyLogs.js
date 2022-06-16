@@ -113,7 +113,7 @@ function LiveSurveyLogs() {
           return prear.filter((session) => {
             if (
               liveSurveyLogsFilter?.device_type.includes(
-                session?.session_techincal_details?.deviceType?.toLowerCase()
+                session?.session_technical_details?.deviceType?.toLowerCase()
               )
             ) {
               return session;
@@ -179,7 +179,7 @@ function LiveSurveyLogs() {
         setFilteredSessions((prear) => {
           return prear?.filter((session) => {
             return (
-              session?.session_techincal_details?.browser_name ===
+              session?.session_technical_details?.browser_name ===
               liveSurveyLogsFilter?.browser
             );
           });
@@ -191,7 +191,7 @@ function LiveSurveyLogs() {
         setFilteredSessions((prear) => {
           return prear?.filter((session) => {
             return (
-              session?.session_techincal_details?.os ===
+              session?.session_technical_details?.os ===
               liveSurveyLogsFilter?.os
             );
           });
@@ -205,24 +205,24 @@ function LiveSurveyLogs() {
     allSessions?.map((session) => {
       setBrowsers((prear) => {
         if (
-          session?.session_techincal_details?.browser_name !== "" ||
-          session?.session_techincal_details?.browser_name != undefined
+          session?.session_technical_details?.browser_name !== "" ||
+          session?.session_technical_details?.browser_name != undefined
         ) {
           if (
-            !prear?.includes(session?.session_techincal_details?.browser_name)
+            !prear?.includes(session?.session_technical_details?.browser_name)
           )
-            return [...prear, session?.session_techincal_details?.browser_name];
+            return [...prear, session?.session_technical_details?.browser_name];
         }
         return [...prear];
       });
 
       setOS((prear) => {
         if (
-          session?.session_techincal_details?.os !== "" ||
-          session?.session_techincal_details?.os != undefined
+          session?.session_technical_details?.os !== "" ||
+          session?.session_technical_details?.os != undefined
         ) {
-          if (!prear?.includes(session?.session_techincal_details?.os))
-            return [...prear, session?.session_techincal_details?.os];
+          if (!prear?.includes(session?.session_technical_details?.os))
+            return [...prear, session?.session_technical_details?.os];
         }
         return [...prear];
       });

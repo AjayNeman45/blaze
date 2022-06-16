@@ -204,7 +204,7 @@ const Table = ({
                       }
                     })}
                   </td>
-                  <td>{row?.session_techincal_details?.os}</td>
+                  <td>{row?.session_technical_details?.os}</td>
                 </tr>
                 {/* </div> */}
               </>

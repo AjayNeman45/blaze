@@ -36,7 +36,7 @@ const QuotasContextProvider = ({ children }) => {
       let completes = {},
         totalCompletes = 0,
         totalPrescreens = 0,
-        prescreens = 0;
+        prescreens = {};
 
       let quotasLen =
         question?.conditions?.quotas &&
@@ -46,13 +46,20 @@ const QuotasContextProvider = ({ children }) => {
       // --->>> fetch all the sessions and the find out complete and prescreens sessions
       const questionData = await getQuestion(qid);
 
+      // ---->>>>  initializing every options in completes and prescreens object as 0  (eg. {18-24: 0, 30-40:0})
       if (question?.conditions?.hasOwnProperty("valid_responses")) {
         question?.conditions?.valid_responses?.map((valid_res) => {
           completes[`${valid_res?.from}-${valid_res?.to}`] = 0;
+          prescreens[`${valid_res?.from}-${valid_res?.to}`] = 0;
         });
       } else {
         question?.conditions?.valid_options?.map((valid_opt) => {
           completes[
+            questionData.data()?.lang[surveyData?.country?.code]?.options?.[
+              valid_opt
+            ]
+          ] = 0;
+          prescreens[
             questionData.data()?.lang[surveyData?.country?.code]?.options?.[
               valid_opt
             ]
@@ -81,10 +88,10 @@ const QuotasContextProvider = ({ children }) => {
                     user_resp >= valid_resp?.from &&
                     user_resp <= valid_resp?.to
                   ) {
-                    prescreens++;
                     if (parseInt(sd?.client_status) === 10) {
                       completes[`${valid_resp?.from}-${valid_resp?.to}`]++;
                     }
+                    prescreens[`${valid_resp?.from}-${valid_resp?.to}`]++;
                   }
                 }
               );
@@ -97,7 +104,10 @@ const QuotasContextProvider = ({ children }) => {
               });
               question?.conditions?.valid_options?.map((valid_opt, index) => {
                 if (user_resp === parseInt(valid_opt)) {
-                  prescreens++;
+                  prescreens[
+                    questionData.data()?.lang[surveyData?.country?.code]
+                      ?.options?.[valid_opt]
+                  ]++;
                   if (
                     sd?.client_status === 10 &&
                     question?.conditions?.quotas?.hasOwnProperty(String(index))
@@ -118,11 +128,15 @@ const QuotasContextProvider = ({ children }) => {
               });
               user_resp?.length &&
                 user_resp?.map((ans) => {
-                  let flag = false;
+                  // let flag = false;
                   question?.conditions?.valid_options?.map(
                     (valid_opt, index) => {
                       if (ans === valid_opt) {
-                        flag = true;
+                        // flag = true;
+                        prescreens[
+                          questionData.data()?.lang[surveyData?.country?.code]
+                            ?.options?.[valid_opt]
+                        ]++;
                         if (
                           sd?.client_status === 10 &&
                           question?.conditions?.quotas?.hasOwnProperty(
@@ -137,7 +151,6 @@ const QuotasContextProvider = ({ children }) => {
                       }
                     }
                   );
-                  if (flag) prescreens++;
                 });
               break;
             default:

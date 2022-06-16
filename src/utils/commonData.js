@@ -8,8 +8,8 @@ export const studyTypesData = [
     value: "adhoc",
   },
   {
-    label: "community_build",
-    value: "Community Build",
+    label: "community-build",
+    value: "community_build",
   },
   {
     label: "Face to Face",

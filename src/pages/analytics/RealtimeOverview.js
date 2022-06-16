@@ -132,14 +132,14 @@ const RealtimeOverview = () => {
       }
 
       //condition for desktop and mobile session users in last 30 minutes
-      if (session?.session_techincal_details?.deviceType === "Desktop") {
+      if (session?.session_technical_details?.deviceType === "Desktop") {
         setUsersByDeviceTypes((prevData) => {
           return {
             ...prevData,
             desktop: prevData?.desktop + 1,
           };
         });
-      } else if (session?.session_techincal_details?.deviceType === "Mobile") {
+      } else if (session?.session_technical_details?.deviceType === "Mobile") {
         setUsersByDeviceTypes((prevData) => {
           return {
             ...prevData,

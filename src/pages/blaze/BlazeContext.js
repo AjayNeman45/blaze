@@ -138,7 +138,8 @@ const BlazeContextProvider = ({ children }) => {
       getSurvey(surveyID)
         .then((res) => {
           setSurvey(res);
-          fetchBackgroundDetails();
+          console.log("fetching background details", res);
+          if (res?.status === "live") fetchBackgroundDetails();
         })
         .catch((err) => console.log(err.message));
     }
@@ -280,8 +281,10 @@ const BlazeContextProvider = ({ children }) => {
           setErrMsg("Encryption Failure");
           setBaseLoading(false);
         }
-        const ref = doc(db, "mirats", "surveys", "survey", surveyID);
+        const ref = doc(db, "miratsinsights", "blaze", "surveys", surveyID);
         const docSnap = await getDoc(ref);
+
+        console.log(docSnap.exists());
 
         // survey exist
         if (docSnap.exists()) {

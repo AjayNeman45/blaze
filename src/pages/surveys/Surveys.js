@@ -170,7 +170,7 @@ const Surveys = () => {
         setCurrentSurveys((prevData) => {
           return prevData.filter((survey) => {
             if (
-              survey?.mirats_insights_team?.lead_project_managers.includes(
+              survey?.mirats_insights_team?.project_managers.includes(
                 filters[key]
               )
             )
@@ -1052,35 +1052,32 @@ const SurveyTable = ({
                     <td>
                       <span className="tableValue">
                         {/* showing only the first lead project manager  */}
-                        {project?.mirats_insights_team?.lead_project_managers
+                        {project?.mirats_insights_team?.project_managers
                           .length ? (
                           <span className="project_manager_name">
-                            {
-                              project?.mirats_insights_team
-                                ?.lead_project_managers[0]
-                            }
+                            {project?.mirats_insights_team?.project_managers[0]}
                           </span>
                         ) : (
                           "-"
                         )}
 
                         {/* showing the number of lead project managers  */}
-                        {project?.mirats_insights_team?.lead_project_managers
+                        {project?.mirats_insights_team?.project_managers
                           .length - 1 ? (
                           <Tooltip
                             content={
                               <OtherPMsTooltip
                                 pms={
                                   project?.mirats_insights_team
-                                    ?.lead_project_managers
+                                    ?.project_managers
                                 }
                               />
                             }
                             placement="bottom"
                           >
                             {` +${
-                              project?.mirats_insights_team
-                                ?.lead_project_managers.length - 1
+                              project?.mirats_insights_team?.project_managers
+                                .length - 1
                             }`}
                           </Tooltip>
                         ) : null}

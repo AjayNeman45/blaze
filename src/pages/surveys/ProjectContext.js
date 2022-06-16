@@ -71,7 +71,7 @@ const ProjectContextProvider = ({ children }) => {
               ).toFixed(2);
               projectData.study_type = sd?.study_type;
               projectData.survey_type = sd?.survey_type;
-              projectData.pm = sd?.mirats_insights_team?.lead_project_managers;
+              projectData.pm = sd?.mirats_insights_team?.project_managers;
               projectData.client = sd?.client_info;
               projectData.country = sd?.country?.country_full_name;
             });

@@ -288,13 +288,13 @@ const DataAnalysis = () => {
 
                           <td>
                             {
-                              session?.session_data?.session_techincal_details
+                              session?.session_data?.session_technical_details
                                 ?.browser_name
                             }
                           </td>
                           <td className={styles.table_tag}>
                             <span>
-                              {session?.session_data?.session_techincal_details
+                              {session?.session_data?.session_technical_details
                                 ?.cookie_enabled
                                 ? "enabled"
                                 : "disabled"}
@@ -302,19 +302,19 @@ const DataAnalysis = () => {
                           </td>
                           <td>
                             {
-                              session?.session_data?.session_techincal_details
+                              session?.session_data?.session_technical_details
                                 ?.deviceType
                             }
                           </td>
                           <td>
                             {
-                              session?.session_data?.session_techincal_details
+                              session?.session_data?.session_technical_details
                                 ?.os
                             }
                           </td>
                           <td>
                             {
-                              session?.session_data?.session_techincal_details
+                              session?.session_data?.session_technical_details
                                 ?.language
                             }
                           </td>

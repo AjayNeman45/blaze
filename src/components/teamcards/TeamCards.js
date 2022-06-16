@@ -7,12 +7,10 @@ const TeamCards = ({ title, co_ordinators }) => {
       <div className={styles.Teamcard}>
         <h1>{title}</h1>
         <div>
-          {co_ordinators?.lead_project_managers && (
-            <h2>Lead Project Managers</h2>
-          )}
+          {co_ordinators?.project_managers && <h2>Lead Project Managers</h2>}
           <div className={styles.names}>
-            {co_ordinators?.lead_project_managers &&
-              co_ordinators?.lead_project_managers?.map((pm, index) => (
+            {co_ordinators?.project_managers &&
+              co_ordinators?.project_managers?.map((pm, index) => (
                 <div className={styles.name} key={uuid()}>
                   <h3>{pm}</h3>
                 </div>

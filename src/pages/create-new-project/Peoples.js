@@ -6,7 +6,11 @@ import { encryptText, decryptText } from "../../utils/enc-dec.utils";
 import { useEffect, useState } from "react";
 import { db } from "../../firebase";
 import { doc, getDoc } from "firebase/firestore";
-import { getClients, getSurvey } from "../../utils/firebaseQueries";
+import {
+  getClients,
+  getMiratsInsightsTeam,
+  getSurvey,
+} from "../../utils/firebaseQueries";
 import { selectStyle } from "./BasicSurveyInfo";
 import { positions } from "@mui/system";
 const miratsoptions = [
@@ -22,47 +26,28 @@ const Peoples = () => {
   const { surveyData, setSurveyData, insertPeoplesData, insertLoading } =
     useCreateNewProject();
   const location = useLocation();
+  const [peoples, setPeoples] = useState({});
+  const [disabledBtn, setDisabledBtn] = useState(true);
   const encryptedID = new URLSearchParams(location.search).get("id");
-  const [clientInfo, setClientInfo] = useState({});
-  let [peoplesResearchTeam, setPeoplesResearchTeam] = useState("");
-  useEffect(() => {
-    const survey_id = decryptText(encryptedID.split("-")[0]);
-    getSurvey(survey_id).then((data) => {
-      setPeoplesResearchTeam(data?.client_info?.client_name);
-    });
-  }, [encryptedID]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
+
+    getMiratsInsightsTeam().then((data) => {
+      setPeoples(data);
+    });
   }, []);
 
-  // ---->>>> useEffect for getting the clients info and storing there information to used in dropdown
   useEffect(() => {
-    getClients().then((clients) => {
-      let pms = [],
-        sms = [],
-        ams = [];
-      clients.forEach((client) => {
-        if (
-          client.data()?.company_name === surveyData?.client_info?.client_name
-        ) {
-          client.data()?.project_managers?.map((pm) => {
-            pms.push({ label: pm?.name, value: pm?.name });
-          });
-          client.data()?.supply_managers?.map((sm) => {
-            sms.push({ label: sm?.name, value: sm?.name });
-          });
-          client.data()?.account_managers?.map((am) => {
-            ams.push({ label: am?.name, value: am?.name });
-          });
-        }
-      });
-      setClientInfo({
-        leadProjectManagers: pms,
-        salesManagers: sms,
-        accountManagers: ams,
-      });
-    });
+    if (
+      surveyData?.client_info?.client_cpi &&
+      surveyData?.client_info?.client_cost_currency &&
+      surveyData?.mirats_insights_team?.project_managers?.length &&
+      surveyData?.mirats_insights_team?.sales_managers?.length &&
+      surveyData?.mirats_insights_team?.account_managers?.length
+    )
+      setDisabledBtn(false);
+    else setDisabledBtn(true);
   }, [surveyData]);
 
   const handleInputChange = (e, teamName, positionInTeam) => {
@@ -81,6 +66,7 @@ const Peoples = () => {
       };
     });
   };
+  console.log(surveyData, disabledBtn);
 
   return (
     <>
@@ -94,10 +80,11 @@ const Peoples = () => {
         <div className="create_survey_right">
           <div className="two-column">
             <div className="client_cpi">
-              <label>Client CPI</label>
+              <label>Client CPI</label> &nbsp;
+              <span className="required_tag">requierd</span>
               <input
                 type="number"
-                placeholder="32%"
+                placeholder="Please enter client CPI"
                 onChange={(e) => {
                   setSurveyData({
                     ...surveyData,
@@ -111,7 +98,8 @@ const Peoples = () => {
               />
             </div>
             <div className="cost_curr">
-              <label>Client Cost Currency</label>
+              <label>Client Cost Currency</label> &nbsp;
+              <span className="required_tag">required</span>
               <select
                 onChange={(e) => {
                   let client_cost_currency_symbol;
@@ -143,20 +131,7 @@ const Peoples = () => {
           </div>
           <div className="column">
             <label>PO Number</label>
-            <input
-              type="text"
-              placeholder="XXXXXXXXXX"
-              onChange={(e) => {
-                setSurveyData({
-                  ...surveyData,
-                  client_info: {
-                    ...surveyData?.client_info,
-                    po_number: e.target.value,
-                  },
-                });
-              }}
-              value={surveyData?.client_info?.po_number}
-            />
+            <input type="text" value={surveyData?.survey_id} disabled />
           </div>
           <div className="column">
             <label>Client's PO Number (optional)</label>
@@ -190,33 +165,46 @@ const Peoples = () => {
         <div className="create_survey_right">
           <h2>Mirats Insights Team</h2>
           <div className="column">
-            <label>Lead Project Manager</label> <br />
+            <div>
+              <label>Lead Project Manager</label> &nbsp;
+              <span className="required_tag">required</span>
+            </div>
+
+            <br />
             <Select
               onChange={(e) => {
                 handleInputChange(
                   e,
                   "mirats_insights_team",
-                  "lead_project_managers"
+                  "project_managers"
                 );
               }}
               styles={selectStyle}
               isMulti
-              options={miratsoptions}
+              options={peoples?.project_managers}
             />
           </div>
           <div className="column">
-            <label>Sales Manager</label> <br />
+            <div>
+              <label>Sales Manager</label> &nbsp;
+              <span className="required_tag">required</span>
+            </div>
+            <br />
             <Select
               onChange={(e) => {
                 handleInputChange(e, "mirats_insights_team", "sales_managers");
               }}
               styles={selectStyle}
               isMulti
-              options={miratsoptions}
+              options={peoples?.sales_managers}
             />
           </div>
           <div className="column">
-            <label>Account Manager</label> <br />
+            <div>
+              <label>Account Manager</label> &nbsp;
+              <span className="required_tag">required</span>
+            </div>
+            <br />
             <Select
               onChange={(e) => {
                 handleInputChange(
@@ -227,7 +215,7 @@ const Peoples = () => {
               }}
               styles={selectStyle}
               isMulti
-              options={miratsoptions}
+              options={peoples?.account_managers}
             />
           </div>
 
@@ -240,7 +228,7 @@ const Peoples = () => {
               isMulti
               options={clientInfo?.leadProjectManagers}
               onChange={(e) =>
-                handleInputChange(e, "clients_team", "lead_project_managers")
+                handleInputChange(e, "clients_team", "project_managers")
               }
             />
           </div>
@@ -271,7 +259,7 @@ const Peoples = () => {
 
       <div className="next_btn_container">
         {!insertLoading ? (
-          <button onClick={insertPeoplesData} className="next_btn">
+          <button onClick={insertPeoplesData} disabled={disabledBtn}>
             Finish
           </button>
         ) : (

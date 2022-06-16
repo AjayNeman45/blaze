@@ -10,7 +10,10 @@ import ChangeLogComponent from "./ChangeLog";
 import Select from "react-select";
 import countryList from "react-select-country-list";
 import { useParams } from "react-router-dom/cjs/react-router-dom.min";
-import { updateSurveyData } from "../../utils/firebaseQueries";
+import {
+  getMiratsInsightsTeam,
+  updateSurveyData,
+} from "../../utils/firebaseQueries";
 import SnackbarMsg from "../../components/Snackbar";
 import { statusOptions, surveyTypesData } from "../../utils/commonData";
 import BuildUrlModal from "./build-url-modal/BuildUrlModal";
@@ -71,9 +74,13 @@ const NewProjectSettings = () => {
   const [snackbarData, setSnackbarData] = useState("");
   const [snackbar, setSnackbar] = useState(false);
   const [buildUrlModal, setBuildUrlModal] = useState(false);
+  const [peoples, setPeoples] = useState({});
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    getMiratsInsightsTeam().then((data) => {
+      setPeoples(data);
+    });
   }, []);
 
   useEffect(() => {
@@ -86,7 +93,6 @@ const NewProjectSettings = () => {
   }, [surveyData]);
 
   const handleInputChange = (e, changingEle, prevVal) => {
-    console.log(changingEle, prevVal);
     let resp = e.target.value;
     if (resp === "true") resp = true;
     else if (resp === "false") resp = false; // ---->>> this is just becoz input type radio giving value in string format
@@ -170,6 +176,7 @@ const NewProjectSettings = () => {
     }),
   };
 
+  console.log(sData, changes);
   return (
     <>
       <BuildUrlModal
@@ -500,13 +507,15 @@ const NewProjectSettings = () => {
         <div className={styles.right}>
           <TeamCard
             title="mirats team"
-            projectCoo={projectCoordinatorsData}
-            salesCoo={["Juhi Saini"]}
-            accountManager={["Janhavi R"]}
+            peoples={peoples}
+            sData={sData}
+            setSData={setSData}
+            setChanges={setChanges}
+            setShowChangesBtn={setShowChangesBtn}
           />
           <TeamCard
             title="clients team"
-            projectCoo={surveyData?.clients_team?.lead_project_managers}
+            projectCoo={surveyData?.clients_team?.project_managers}
             salesCoo={surveyData?.clients_team?.sales_managers}
             accountManager={surveyData?.clients_team?.account_managers}
           />
@@ -720,40 +729,180 @@ const InputFieldCard = ({
   );
 };
 
-const TeamCard = ({ title, projectCoo, salesCoo, accountManager }) => {
+const TeamCard = ({
+  title,
+  peoples,
+  setSData,
+  setChanges,
+  setShowChangesBtn,
+}) => {
+  const { surveyData } = useProjectSettingsContext();
+  const [pms, setPms] = useState([]);
+  const [teams, setTeams] = useState({});
+  const [openAddMiratsTeamModal, setOpenMiratsTeamModal] = useState(false);
+  useEffect(() => {
+    surveyData && setPms(surveyData?.mirats_insights_team?.project_managers);
+    setTeams(surveyData?.mirats_insights_team);
+  }, [surveyData]);
+
+  const handleSdata = () => {
+    setSData((prevData) => {
+      return {
+        ...prevData,
+        mirats_insights_team: teams,
+      };
+    });
+  };
+
+  const handleChange = (changingEle, prevVal, newVal) => {
+    setChanges((prevData) => {
+      return {
+        ...prevData,
+        [changingEle]: { changed_to: newVal, previous_change: prevVal },
+      };
+    });
+    setShowChangesBtn(true);
+  };
+
+  const handleTeamChange = (teamName, index, val) => {
+    setTeams((prevData) => {
+      let newData = prevData[teamName];
+      newData[index] = val;
+      return {
+        ...prevData,
+        [teamName]: newData,
+      };
+    });
+  };
+
+  const getPrevNewVal = (teamName, val, index) => {
+    let newVal, prevVal;
+    peoples?.[teamName]?.map((pm) => {
+      if (pm?.value === val) {
+        newVal = pm?.label;
+      }
+      if (pm?.value === teams[teamName][index]) {
+        prevVal = pm?.label;
+      }
+    });
+    return { newVal, prevVal };
+  };
+
   return (
-    <div className={styles.Teamcard}>
-      <h1>{title}</h1>
-      <div className={styles.sub_container}>
-        <h2>Project Coordinators</h2>
-        <select>
-          {projectCoo?.map((coordinator) => (
-            <option key={uuid()}>{coordinator}</option>
-          ))}
-        </select>
-        <select>
-          {projectCoo?.map((coordinator) => (
-            <option key={uuid()}>{coordinator}</option>
-          ))}
-        </select>
+    <>
+      <div className={styles.Teamcard}>
+        <h1>{title}</h1>
+        <div className={styles.sub_container}>
+          <h2>Project Coordinators</h2>
+
+          {teams?.project_managers?.map((pm, index) => {
+            return (
+              <select
+                key={uuid()}
+                value={pm}
+                onChange={(e) => {
+                  handleTeamChange("project_managers", index, e.target.value);
+                  handleSdata(index, "project_managers", e.target.value);
+                  const { newVal, prevVal } = getPrevNewVal(
+                    "project_managers",
+                    e.target.value,
+                    index
+                  );
+                  handleChange("lead project managers", prevVal, newVal);
+                  setShowChangesBtn(true);
+                }}
+              >
+                {peoples?.project_managers?.map((anotherPM) => (
+                  <option key={uuid()} value={anotherPM?.value}>
+                    {anotherPM.label}
+                  </option>
+                ))}
+              </select>
+            );
+          })}
+          <div className={styles.sub_container}>
+            <h2>Sales Coordinator</h2>
+            {surveyData?.mirats_insights_team?.sales_managers?.map(
+              (sm, index) => {
+                return (
+                  <select
+                    key={uuid()}
+                    value={sm}
+                    onChange={(e) => {
+                      handleTeamChange("sales_managers", index, e.target.value);
+                      handleSdata(index, "sales_managers", e.target.value);
+                      const { newVal, prevVal } = getPrevNewVal(
+                        "sales_managers",
+                        e.target.value,
+                        index
+                      );
+                      handleChange("sales managers", prevVal, newVal);
+                      setShowChangesBtn(true);
+                    }}
+                  >
+                    {peoples?.sales_managers?.map((anotherSM) => (
+                      <option key={uuid()} value={anotherSM?.value}>
+                        {anotherSM.label}
+                      </option>
+                    ))}
+                  </select>
+                );
+              }
+            )}
+          </div>
+          <div className={styles.sub_container}>
+            <h2>Account Manager</h2>
+            {surveyData?.mirats_insights_team?.account_managers?.map(
+              (am, index) => {
+                return (
+                  <select
+                    value={am}
+                    key={uuid()}
+                    onChange={(e) => {
+                      handleTeamChange(
+                        "account_managers",
+                        index,
+                        e.target.value
+                      );
+                      handleSdata(index, "account_managers", e.target.value);
+                      const { newVal, prevVal } = getPrevNewVal(
+                        "account_managers",
+                        e.target.value,
+                        index
+                      );
+                      handleChange("account managers", prevVal, newVal);
+                      setShowChangesBtn(true);
+                    }}
+                  >
+                    {peoples?.account_managers?.map((anotherAM) => (
+                      <option key={uuid()} value={anotherAM?.value}>
+                        {anotherAM.label}
+                      </option>
+                    ))}
+                  </select>
+                );
+              }
+            )}
+          </div>
+        </div>
       </div>
-      <div className={styles.sub_container}>
-        <h2>Sales Coordinator</h2>
-        <select>
-          {salesCoo?.map((coordinator) => (
-            <option key={uuid()}>{coordinator}</option>
-          ))}
-        </select>
-      </div>
-      <div className={styles.sub_container}>
-        <h2>Account Manager</h2>
-        <select>
-          {accountManager?.map((accManager) => (
-            <option key={uuid()}>{accManager}</option>
-          ))}
-        </select>
-      </div>
-    </div>
+    </>
+
+    //   <div className={styles.sub_container}>
+    //     <h2>Account Manager</h2>
+    //     {survey?.mirats_insights_team?.account_managers?.map((am) => {
+    //       return (
+    //         <select value={am}>
+    //           {peoples?.account_managers?.map((anotherAM) => (
+    //             <option key={uuid()} value={anotherAM?.value}>
+    //               {anotherAM.label}
+    //             </option>
+    //           ))}
+    //         </select>
+    //       );
+    //     })}
+    //   </div>
+    // </div>
     // <div className={styles.Teamcard}>
     // 	<h1>{title}</h1>
     // 	<div>
