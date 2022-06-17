@@ -81,7 +81,7 @@ export const getSurvey = async (surveyID) => {
 export const getAllSurveys = async () => {
   return await getDocs(
     collection(db, "miratsinsights", "blaze", "surveys"),
-    orderBy("creation_date", "desc")
+    orderBy("creation_date", "asc")
   );
 };
 
@@ -433,9 +433,7 @@ export const addQuota = async (surveyID, questionID, body) => {
 };
 
 export const getAllSuppliers = async () => {
-  return await getDocs(
-    collection(db, "miratsinsights", "supplier", "supplier")
-  );
+  return await getDocs(collection(db, "miratsinsights", "spark", "supplier"));
 };
 
 export const addStaticRedirects = async (supplier_id, body) => {
@@ -598,22 +596,40 @@ export const getMiratsInsightsTeam = async () => {
       let teamName = emp?.WorkDetails?.teamname;
       // --->> if its ayan ali then store in sales team and accounts team
       if (emp?.WorkDetails?.employeeID === "160620-1A") {
-        peoples["sales_managers"].push({ label: fullName, value: userID });
-        peoples["account_managers"].push({ label: fullName, value: userID });
+        peoples["sales_managers"].push({
+          label: fullName,
+          value: userID,
+        });
+        peoples["account_managers"].push({
+          label: fullName,
+          value: userID,
+        });
         return;
       }
       // --->> if its janhavi ali then store in project managers team and accounts team
       if (emp?.WorkDetails?.employeeID === "250820-1A") {
-        peoples["project_managers"].push({ label: fullName, value: userID });
-        peoples["account_managers"].push({ label: fullName, value: userID });
+        peoples["project_managers"].push({
+          label: fullName,
+          value: userID,
+        });
+        peoples["account_managers"].push({
+          label: fullName,
+          value: userID,
+        });
         return;
       }
       switch (teamName) {
         case "Mirats OTC / illustrate Projects Support":
-          peoples["project_managers"].push({ label: fullName, value: userID });
+          peoples["project_managers"].push({
+            label: fullName,
+            value: userID,
+          });
           break;
         case "Sales":
-          peoples["sales_managers"].push({ label: fullName, value: userID });
+          peoples["sales_managers"].push({
+            label: fullName,
+            value: userID,
+          });
       }
     });
     return peoples;

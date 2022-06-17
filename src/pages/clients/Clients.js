@@ -73,7 +73,9 @@ const Clients = () => {
   const [filterAndSorts, setFilterAndSorts] = useState({});
 
   const getClients = async () => {
-    const q = query(collection(db, "mirats", "Organisations", "clients"));
+    const q = query(
+      collection(db, "miratsinsights", "blaze", "spark", "customer")
+    );
 
     const clientSnapshot = onSnapshot(q, (querySnapshot) => {
       setClients([]);
@@ -90,20 +92,24 @@ const Clients = () => {
 
   useEffect(() => {
     setFilteredClients(clients);
-    // For Sorting 
+    // For Sorting
     if (filterAndSorts?.sort) {
       if (filterAndSorts?.sort[1] === "asc") {
-        setFilteredClients([...filteredClients]?.sort((a, b) =>
-          a?.[filterAndSorts?.sort?.[0]] > b?.[filterAndSorts?.sort?.[0]]
-            ? 1
-            : -1
-        ));
+        setFilteredClients(
+          [...filteredClients]?.sort((a, b) =>
+            a?.[filterAndSorts?.sort?.[0]] > b?.[filterAndSorts?.sort?.[0]]
+              ? 1
+              : -1
+          )
+        );
       } else {
-        setFilteredClients([...filteredClients]?.sort((a, b) =>
-          a?.[filterAndSorts?.sort?.[0]] > b?.[filterAndSorts?.sort?.[0]]
-            ? -1
-            : 1
-        ));
+        setFilteredClients(
+          [...filteredClients]?.sort((a, b) =>
+            a?.[filterAndSorts?.sort?.[0]] > b?.[filterAndSorts?.sort?.[0]]
+              ? -1
+              : 1
+          )
+        );
       }
     }
   }, [clients, filterAndSorts]);

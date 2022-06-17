@@ -80,7 +80,6 @@ function AddSupplierModal() {
       }
 
       if (supp?.company_name === supplierData?.supplier_account) {
-        console.log("condition matched");
         supp?.supply_manager?.map((smanager) => {
           setSupplyManager((prevArr) => [
             ...prevArr,
@@ -117,8 +116,6 @@ function AddSupplierModal() {
       },
     });
   };
-
-  console.log(supplierData);
 
   return (
     <>

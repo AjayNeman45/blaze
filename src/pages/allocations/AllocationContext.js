@@ -1,4 +1,10 @@
-import { arrayUnion, doc, getDoc, setDoc } from "firebase/firestore";
+import {
+  arrayUnion,
+  doc,
+  getDoc,
+  onSnapshot,
+  setDoc,
+} from "firebase/firestore";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { db } from "../../firebase";
@@ -89,14 +95,12 @@ const AllocationContextProvider = ({ children }) => {
 
   // insert external supplier in the database
   const insertExternalSupplier = async (staticRedirects) => {
-    console.log(supplierData);
     await setDoc(
-      doc(db, "mirats", "surveys", "survey", surveyID),
+      doc(db, "miratsinsights", "blaze", "surveys", surveyID),
       { external_suppliers: arrayUnion(supplierData) },
       { merge: true }
     )
       .then(() => {
-        getAllTheExternalSuppliers();
         setSnackbarData({
           msg: "Supplier added successfully...",
           severity: "success",
@@ -154,7 +158,6 @@ const AllocationContextProvider = ({ children }) => {
         { merge: true }
       )
         .then((res) => {
-          getAllTheInternalSuppliers();
           setOpenSnackbar(true);
           setSnackbarData({
             msg: "Internal supplier added successfully...",
@@ -198,11 +201,14 @@ const AllocationContextProvider = ({ children }) => {
   }
 
   useEffect(() => {
-    getAllTheExternalSuppliers();
-    getAllTheInternalSuppliers();
-    getSurvey(surveyID)
-      .then((data) => setSurvey(data))
-      .catch((err) => console.log(err.message));
+    onSnapshot(
+      doc(db, "miratsinsights", "blaze", "surveys", surveyID),
+      (res) => {
+        setSurvey(res.data());
+        setExternalSuppliers(res.data()?.external_suppliers);
+        setInternalSuppliers(res.data()?.internal_suppliers);
+      }
+    );
 
     getAllSuppliers().then((res) => {
       res.forEach((result) => {
@@ -211,17 +217,6 @@ const AllocationContextProvider = ({ children }) => {
       });
     });
   }, []);
-
-  const getAllTheExternalSuppliers = async () => {
-    await getDoc(doc(db, "miratsinsights", "blaze", "surveys", surveyID))
-      .then((res) => setExternalSuppliers(res.data().external_suppliers))
-      .catch((err) => console.log(err.message));
-  };
-  const getAllTheInternalSuppliers = async () => {
-    await getDoc(doc(db, "miratsinsights", "blaze", "surveys", surveyID))
-      .then((res) => setInternalSuppliers(res.data().internal_suppliers))
-      .catch((err) => console.log(err.message));
-  };
 
   const value = {
     externalSuppliers,

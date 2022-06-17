@@ -29,10 +29,14 @@ import { useProjectContext } from "./ProjectContext";
 import { CSVLink } from "react-csv";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { Box } from "@mui/system";
-import { deleteSurveys } from "../../utils/firebaseQueries";
+import {
+  deleteSurveys,
+  getMiratsInsightsTeam,
+} from "../../utils/firebaseQueries";
 import { v4 as uuid } from "uuid";
 import { RiCloseCircleFill } from "react-icons/ri";
 import { subDays } from "rsuite/esm/utils/dateUtils";
+import { useBaseContext } from "../../context/BaseContext";
 
 const selectCountryStyle = {
   menu: (provided, state) => ({
@@ -57,6 +61,7 @@ const selectCountryStyle = {
 };
 
 const Surveys = () => {
+  const { userData } = useBaseContext();
   const [countCheckedProjects, setCountCheckProjects] = useState(0);
   const [checkRows, setCheckRows] = useState([]);
 
@@ -250,6 +255,7 @@ const Surveys = () => {
       return newData;
     });
   };
+
   return (
     <>
       <Header />
@@ -482,8 +488,8 @@ const Surveys = () => {
           <div className={styles.right}>
             <div className={styles.id_card}>
               <div>
-                <h2>Mirats Insights ID</h2>
-                <p className={styles.email}>rohan.gupta@gmail.com</p>
+                <h3>Mirats Insights ID</h3>
+                <p className={styles.email}>{userData?.email}</p>
               </div>
               <div className={styles.id_card_description}>
                 <p>
@@ -857,6 +863,13 @@ const SurveyTable = ({
     boxShadow: 24,
     p: 4,
   };
+  const [teams, setTeams] = useState({});
+
+  useEffect(() => {
+    getMiratsInsightsTeam().then((data) => {
+      setTeams(data);
+    });
+  }, []);
 
   return (
     <>
@@ -1007,8 +1020,6 @@ const SurveyTable = ({
                           <span>
                             #{project?.project_id} / {project.survey_id}
                           </span>
-
-                          <span className="client">Luc.id</span>
                         </div>
                       </div>
                     </td>
@@ -1050,19 +1061,27 @@ const SurveyTable = ({
                       <span>mins</span>
                     </td>
                     <td>
-                      <span className="tableValue">
+                      <span className="tableValue project_manager_container">
                         {/* showing only the first lead project manager  */}
                         {project?.mirats_insights_team?.project_managers
                           .length ? (
-                          <span className="project_manager_name">
-                            {project?.mirats_insights_team?.project_managers[0]}
-                          </span>
+                          <p className="project_manager_name">
+                            {teams?.project_managers?.map((pm) => {
+                              if (
+                                pm?.value ===
+                                project?.mirats_insights_team
+                                  ?.project_managers[0]
+                              )
+                                return pm?.label;
+                            })}
+                            {/* {project?.mirats_insights_team?.project_managers[0]} */}
+                          </p>
                         ) : (
                           "-"
                         )}
 
                         {/* showing the number of lead project managers  */}
-                        {project?.mirats_insights_team?.project_managers
+                        {/* {project?.mirats_insights_team?.project_managers
                           .length - 1 ? (
                           <Tooltip
                             content={
@@ -1080,7 +1099,7 @@ const SurveyTable = ({
                                 .length - 1
                             }`}
                           </Tooltip>
-                        ) : null}
+                        ) : null} */}
                       </span>
                     </td>
                     <td>
@@ -1090,9 +1109,11 @@ const SurveyTable = ({
                       <span>{project?.client_info?.client_cost_currency} </span>
                     </td>
                     <td>
-                      <span className="tableValue">{project?.study_type}</span>
+                      <p className="tableValue study_type">
+                        {project?.study_type}
+                      </p>
                       <br />
-                      <span>{project?.survey_type}</span>
+                      <p className="survey_type">{project?.survey_type}</p>
                     </td>
                     <td>
                       <span className="tableValue">

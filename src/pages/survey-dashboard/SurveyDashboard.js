@@ -25,7 +25,10 @@ import {
 } from "../../utils/commonData";
 import { useParams } from "react-router-dom";
 import { useHistory } from "react-router-dom";
-import { updateSurvey } from "../../utils/firebaseQueries";
+import {
+  getMiratsInsightsTeam,
+  updateSurvey,
+} from "../../utils/firebaseQueries";
 import ChangeInternalStatusModal from "../../components/survey-info/ChangeInternalStatusModal";
 import { v4 as uuid } from "uuid";
 
@@ -76,6 +79,7 @@ function SurveyDashboard() {
   const [surveyStatus, setSurveyStatus] = useState();
   const [internalStatusChangeModal, setInternalStatusChangeModal] =
     useState(false);
+  const [peoples, setPeoples] = useState({});
 
   useEffect(() => {
     getFinancialOverview(
@@ -88,7 +92,6 @@ function SurveyDashboard() {
 
   useEffect(() => {
     setSurveyStatus(survey?.status);
-
     handleActiveLight(survey?.status, survey?.internal_status);
   }, [survey]);
 
@@ -157,6 +160,11 @@ function SurveyDashboard() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    getMiratsInsightsTeam()
+      .then((data) => {
+        setPeoples(data);
+      })
+      .catch((err) => console.log(err.message));
   }, []);
 
   return (
@@ -533,7 +541,8 @@ function SurveyDashboard() {
         <div className={styles.right_container}>
           <TeamCards
             title="Mirats Insights team"
-            co_ordinators={survey?.mirats_insights_team}
+            teams={survey?.mirats_insights_team}
+            allPeoples={peoples}
           />
           <TeamCards
             title="Clients Team"

@@ -30,6 +30,7 @@ const SurveyDashboardContextProvider = ({ children }) => {
   useEffect(() => {
     getSurvey(surveyID)
       .then((data) => {
+        console.log(data);
         let copyData = data;
         setChangeSurveyName(data?.survey_name);
         setNewSurveyName(data?.survey_name);
@@ -42,7 +43,7 @@ const SurveyDashboardContextProvider = ({ children }) => {
 
         let tmp_external_supp = [];
         getAllSessions(surveyID).then((res) => {
-          let internalSupp = data?.internal_suppliers[0];
+          let internalSupp = data?.internal_suppliers?.[0];
 
           // --->> for external suppliers
           data?.external_suppliers?.forEach((supp) => {
@@ -65,29 +66,33 @@ const SurveyDashboardContextProvider = ({ children }) => {
           });
 
           // ---->>> for internal suppliers
-          let all_sessions_for_vendor = [];
-          let completed = 0;
-          res.forEach((session) => {
-            if (
-              session.data()?.supplier_account_id ===
-              internalSupp?.supplier_account_id
-            ) {
-              if (session.data()?.client_status === 10) completed += 1;
-              all_sessions_for_vendor.push(session.data());
-            }
-          });
-          tmp_external_supp.push({
-            supplier: internalSupp,
-            sessions: all_sessions_for_vendor,
-            completed,
-          });
+          if (internalSupp !== undefined) {
+            let all_sessions_for_vendor = [];
+            let completed = 0;
+            res.forEach((session) => {
+              if (
+                session.data()?.supplier_account_id ===
+                internalSupp?.supplier_account_id
+              ) {
+                if (session.data()?.client_status === 10) completed += 1;
+                all_sessions_for_vendor.push(session.data());
+              }
+            });
+            tmp_external_supp.push({
+              supplier: internalSupp,
+              sessions: all_sessions_for_vendor,
+              completed,
+            });
+          }
 
-          setSurveyData({
-            ...data,
-            quotas: sum,
-            suppliers: tmp_external_supp.sort((a, b) =>
-              a?.completed > b?.completed ? -1 : 1
-            ),
+          setSurveyData(() => {
+            return {
+              ...data,
+              quotas: sum,
+              suppliers: tmp_external_supp.sort((a, b) =>
+                a?.completed > b?.completed ? -1 : 1
+              ),
+            };
           });
         });
       })
@@ -164,6 +169,8 @@ const SurveyDashboardContextProvider = ({ children }) => {
         })
       );
   };
+
+  console.log(surveyData);
 
   const value = {
     survey: surveyData,

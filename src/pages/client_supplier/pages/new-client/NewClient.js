@@ -18,7 +18,7 @@ const NewClient = () => {
   const [managerfields, setManagerFields] = useState([{}]);
   const [supplyfields, setSupplyFields] = useState([{}]);
   const [accountfields, setAccountFields] = useState([{}]);
-  const dataRef = collection(db, "mirats", "Organisations", "clients");
+  const dataRef = collection(db, "miratsinsights", "spark", "customer");
   // ----------to Get Last DataBase ID-------
   const GetLastClientID = async () => {
     const q = query(dataRef, orderBy("id", "desc"), limit(1));
@@ -33,11 +33,8 @@ const NewClient = () => {
   // ----------to Set new Data in firebasease with ID increament-------
   const storeClientData = async () => {
     GetLastClientID().then(async (lastid) => {
-      console.log("The last id is", lastid);
-      console.log("NEw id is", lastid + 1);
-
       await setDoc(
-        doc(db, "mirats", "Organisations", "clients", String(lastid + 1)),
+        doc(db, "miratsinsights", "spark", "customer", String(lastid + 1)),
         { ...formData, id: lastid + 1 }
       ).then(() => {
         console.log("data saved successfully");
