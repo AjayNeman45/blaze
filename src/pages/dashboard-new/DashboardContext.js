@@ -167,8 +167,6 @@ function DashboardContextProvider({ children }) {
     });
   }, [allSurveys]);
 
-  //   console.log(graphData);
-
   const value = {
     allSurveys,
     basicStats,

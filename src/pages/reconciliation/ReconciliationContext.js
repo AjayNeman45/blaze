@@ -24,7 +24,6 @@ const ReconciliationContextProvider = ({ children }) => {
   useEffect(() => {
     getSurvey(surveyID).then((data) => {
       setSurvey(data);
-      console.log(data);
       setAllSuppliers(() => {
         let external_supp = data?.external_suppliers
           ? data?.external_suppliers
@@ -54,7 +53,6 @@ const ReconciliationContextProvider = ({ children }) => {
               session.data()?.client_status
             ),
           };
-          console.log(statuses_desc);
           if (termType === "all") {
             setTermDetailsSessions((prevData) => [
               ...prevData,

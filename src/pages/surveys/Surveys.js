@@ -256,6 +256,14 @@ const Surveys = () => {
     });
   };
 
+  const [teams, setTeams] = useState({});
+
+  useEffect(() => {
+    getMiratsInsightsTeam().then((data) => {
+      setTeams(data);
+    });
+  }, []);
+
   return (
     <>
       <Header />
@@ -571,6 +579,7 @@ const Surveys = () => {
             handleSelect={handleSelect}
             history={history}
             checkRows={checkRows}
+            teams={teams}
           />
         ) : (
           <SurveyTable
@@ -584,6 +593,7 @@ const Surveys = () => {
             setCountCheckProjects={setCountCheckProjects}
             checkRows={checkRows}
             surveyLoading={surveyLoading}
+            teams={teams}
           />
         )}
 
@@ -646,6 +656,7 @@ const ProjectTable = ({
   handleSelect,
   history,
   checkRows,
+  teams,
 }) => {
   return (
     <>
@@ -780,28 +791,38 @@ const ProjectTable = ({
                     </td>
                     <td>
                       <span className="tableValue">
-                        {/* {project?.pm?.map(pm => (
-											<>
-												{pm} <br />
-											</>
-										))} */}
                         {/* showing only the first lead project manager  */}
                         {project?.pm?.length ? (
-                          <span className="project_manager_name">
-                            {project?.pm[0]}
-                          </span>
+                          <p className="project_manager_name">
+                            {teams?.project_managers?.map((pm) => {
+                              if (pm?.value === project?.pm[0])
+                                return pm?.label;
+                            })}
+                            {/* {project?.mirats_insights_team?.project_managers[0]} */}
+                          </p>
                         ) : (
                           "-"
                         )}
+
                         {/* showing the number of lead project managers  */}
-                        {project?.pm?.length - 1 ? (
+                        {/* {project?.pm?.length - 1 ? (
                           <Tooltip
-                            content={<OtherPMsTooltip pms={project?.pm} />}
+                            content={
+                              <OtherPMsTooltip
+                                pms={
+                                  project?.mirats_insights_team
+                                    ?.project_managers
+                                }
+                              />
+                            }
                             placement="bottom"
                           >
-                            {` +${project?.pm?.length - 1}`}
+                            {` +${
+                              project?.mirats_insights_team?.project_managers
+                                .length - 1
+                            }`}
                           </Tooltip>
-                        ) : null}
+                        ) : null} */}
                       </span>
                     </td>
                     <td>
@@ -813,7 +834,7 @@ const ProjectTable = ({
                     <td>
                       <span className="tableValue">{project?.study_type}</span>
                       <br />
-                      <span>{project?.survey_type}</span>
+                      <p className="survey_type">{project?.survey_type}</p>
                     </td>
                     <td>
                       <span className="tableValue">
@@ -851,6 +872,7 @@ const SurveyTable = ({
   setCountCheckProjects,
   checkRows,
   surveyLoading,
+  teams,
 }) => {
   const style = {
     position: "absolute",
@@ -863,13 +885,6 @@ const SurveyTable = ({
     boxShadow: 24,
     p: 4,
   };
-  const [teams, setTeams] = useState({});
-
-  useEffect(() => {
-    getMiratsInsightsTeam().then((data) => {
-      setTeams(data);
-    });
-  }, []);
 
   return (
     <>

@@ -75,9 +75,7 @@ function Recontact() {
     if (documents) {
       loadFile(documents).then((text) => {
         let split_text_recontacts = text.split("\n");
-        StoreRecontacts(split_text_recontacts).then((data) => {
-          console.log(data);
-        });
+        StoreRecontacts(split_text_recontacts).then((data) => {});
       });
     } else {
       setOpenSnackbar(true);

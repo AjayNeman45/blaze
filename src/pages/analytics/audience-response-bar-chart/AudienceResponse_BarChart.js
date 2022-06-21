@@ -17,13 +17,22 @@ function AudienceResponse_BarChart() {
   const [graphStatus, setGraphStatus] = useState("10");
   const xAxisAgeRange = ["18-24", "25-34", "35-44", "44-54"];
   useEffect(() => {
-    setSuppliers(
-      survey?.external_suppliers?.map((supp) => ({
+    let suppliersTmp = [];
+    survey?.external_suppliers?.map((supp) => {
+      suppliersTmp.push({
         name: supp?.supplier_account,
         id: supp?.supplier_account_id,
-      }))
-    );
+      });
+    });
+    survey?.internal_suppliers?.map((supp) => {
+      suppliersTmp.push({
+        name: supp?.supplier_account,
+        id: supp?.supplier_account_id,
+      });
+    });
+    setSuppliers(suppliersTmp);
   }, [survey]);
+  // console.log(suppliers);
 
   useEffect(() => {
     setYaxisData([]);
@@ -36,7 +45,12 @@ function AudienceResponse_BarChart() {
           sd?.supplier_account_id === supp?.id &&
           sd?.responses
         ) {
-          let userResponse = parseInt(sd?.responses[0]?.user_response);
+          let userResponse;
+          sd?.responses?.forEach((resp) => {
+            if (resp?.question_id === "42") {
+              userResponse = parseInt(resp?.user_response);
+            }
+          });
           xAxisAgeRange?.forEach((range, index) => {
             if (
               parseInt(range.split("-")[0]) <= userResponse &&

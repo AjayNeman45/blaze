@@ -93,7 +93,6 @@ const Reconciliations = () => {
 };
 
 export const ReconciliationTable = ({ sessionsCopy, showTable }) => {
-  console.log(sessionsCopy);
   return (
     <>
       {!sessionsCopy.length ? (

@@ -30,7 +30,6 @@ const SurveyDashboardContextProvider = ({ children }) => {
   useEffect(() => {
     getSurvey(surveyID)
       .then((data) => {
-        console.log(data);
         let copyData = data;
         setChangeSurveyName(data?.survey_name);
         setNewSurveyName(data?.survey_name);
@@ -169,8 +168,6 @@ const SurveyDashboardContextProvider = ({ children }) => {
         })
       );
   };
-
-  console.log(surveyData);
 
   const value = {
     survey: surveyData,

@@ -45,7 +45,6 @@ const AllocationContextProvider = ({ children }) => {
   const handleInternalSupplierModal = () => {
     setinternalSupplierModal(!internalsupplierModal);
   };
-  // console.log(internalsupplierModal);
 
   const [internalSupplierState, setInternalSupplierState] = useState({
     vendor_status: "active",

@@ -48,7 +48,6 @@ const AddQualificationContextProvider = ({ children }) => {
 
   // fetch the question according the question type change
   const handleQuestionTypeSelect = (e) => {
-    console.log(e.target.innerHTML);
     setQuestionType(e.target.innerHTML);
     getQuestions(e.target.innerHTML, survey)
       .then((res) => {
@@ -105,7 +104,6 @@ const AddQualificationContextProvider = ({ children }) => {
   };
 
   const insertQualificationQuestion = (body) => {
-    console.log(body);
     addQualificationQuestion(body, surveyID)
       .then(() => {
         setInsertLoading(false);

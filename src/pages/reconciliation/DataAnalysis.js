@@ -100,7 +100,6 @@ const DataAnalysis = () => {
 
   // handles status change function
   const handleStatusClick = (e, code) => {
-    console.log(code);
     if (checkedStatus.includes(code)) {
       setCheckedStatus(() => checkedStatus.filter((c) => c !== code));
     } else {
@@ -114,7 +113,6 @@ const DataAnalysis = () => {
     setShowTable(true);
     let from_d = new Date(fromDate);
     let end_d = new Date(endDate);
-    // console.log(from_d, end_d)
     if (from_d != "Invalid Date" && end_d != "Invalid Date") setMsg("");
     else {
       setMsg("Select field date to filter");
@@ -137,7 +135,6 @@ const DataAnalysis = () => {
           } else if (
             checkedStatus.includes(session?.session_data?.client_status)
           ) {
-            console.log("for other status");
             temp.push(session);
           }
         }

@@ -189,8 +189,6 @@ function CreateSurveyGroupModal({
     }
   }, [surveyGrpData]);
 
-  console.log(surveyGrpData);
-
   return (
     <div>
       <Modal

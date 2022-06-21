@@ -81,7 +81,7 @@ export const getSurvey = async (surveyID) => {
 export const getAllSurveys = async () => {
   return await getDocs(
     collection(db, "miratsinsights", "blaze", "surveys"),
-    orderBy("creation_date", "asc")
+    orderBy("creation_date", "desc")
   );
 };
 
@@ -342,7 +342,6 @@ export const getSessionBasedOnType = async (
 };
 
 export const addQualificationQuestion = async (body, surveyID) => {
-  console.log("Question added for survey id ", surveyID, body);
   await updateDoc(
     doc(db, "miratsinsights", "blaze", "surveys", surveyID),
     {
@@ -355,7 +354,6 @@ export const addQualificationQuestion = async (body, surveyID) => {
 };
 
 export const updateQualificationQuestion = async (body, surveyID) => {
-  console.log(body);
   const survey = await getDoc(
     doc(db, "miratsinsights", "surveys", "survey", surveyID)
   );
@@ -365,7 +363,6 @@ export const updateQualificationQuestion = async (body, surveyID) => {
       questions[index] = body;
     }
   });
-  console.log(questions);
   return await updateDoc(
     doc(db, "miratsinsights", "surveys", "survey", surveyID),
     {
@@ -437,7 +434,6 @@ export const getAllSuppliers = async () => {
 };
 
 export const addStaticRedirects = async (supplier_id, body) => {
-  console.log(supplier_id, body);
   return await updateDoc(
     doc(db, "miratsinsights", "supplier", "supplier", String(supplier_id)),
     {
@@ -515,14 +511,12 @@ export const getSurveyGrpData = async (surveyGrpNumber) => {
 };
 
 export const deleteSurveyGroup = async (surveyGrpNum) => {
-  console.log(surveyGrpNum);
   return getDocs(
     query(
       collection(db, "miratsinsights", "blaze", "survey_groups"),
       where("survey_group_number", "==", surveyGrpNum)
     )
   ).then(async (surveyGrpDoc) => {
-    console.log(surveyGrpDoc.docs[0].id);
     return await deleteDoc(
       doc(
         db,
@@ -544,7 +538,6 @@ export const updateSupplier = async (survey, supplier) => {
   });
 
   survey.external_suppliers = updatedExternalSupplier;
-  console.log(survey?.survey_id);
   return await updateSurvey(survey?.survey_id, survey);
 };
 
@@ -569,7 +562,6 @@ export const deleteLangFromQualification = async (
   questionID,
   deletedLangQue
 ) => {
-  console.log(questionID, deletedLangQue);
   return await updateDoc(
     doc(db, "miratsinsights", "blaze", "question_library", questionID),
     { ...deletedLangQue },

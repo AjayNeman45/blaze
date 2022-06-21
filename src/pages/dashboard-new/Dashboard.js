@@ -83,14 +83,6 @@ const Dashboard = () => {
     },
   ];
 
-  // useEffect(() => {
-  //   console.log("running");
-  //   Object.keys(graphData)?.map((key) => {
-  //     setYaxisData((prevData) => [...prevData, key]);
-  //     // setXaxisData((prevData) => [...prevData, graphData[key]?.completes]);
-  //   });
-  // }, []);
-
   return (
     <>
       <Header />

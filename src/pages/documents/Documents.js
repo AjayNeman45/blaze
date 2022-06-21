@@ -77,7 +77,6 @@ const Documents = () => {
           severity: "success",
         });
         handleSnackbar();
-        console.log("file deleted successfully");
       })
       .catch((err) => {
         setSnackbarData({
@@ -118,8 +117,6 @@ const Documents = () => {
   useEffect(() => {
     fetchSurveyDocuments();
   }, []);
-
-  console.log(value);
 
   return (
     <>

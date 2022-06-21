@@ -28,7 +28,6 @@ const RespondantAnswer = () => {
   const gamma = localStorage.getItem("gamma");
 
   const handleStatusClick = (e, code) => {
-    console.log(code);
     if (checkedStatus.includes(code)) {
       setCheckedStatus(() => checkedStatus.filter((c) => c !== code));
     } else {
@@ -75,7 +74,6 @@ const RespondantAnswer = () => {
 
     let from_d = new Date(fromDate);
     let end_d = new Date(endDate);
-    // console.log(from_d, end_d)
     if (from_d != "Invalid Date" && end_d != "Invalid Date") setMsg("");
     else {
       setMsg("Select field date to filter");
@@ -84,15 +82,7 @@ const RespondantAnswer = () => {
     }
     setSessionsCopy(() => {
       let temp = [];
-      console.log("here in sessions copy");
-      console.log(sessions);
       sessions.map((session) => {
-        console.log(
-          new Date(session?.session_data?.date?.toDate()).valueOf() >=
-            from_d.valueOf() &&
-            new Date(session?.session_data?.date?.toDate()).valueOf() <=
-              end_d.valueOf()
-        );
         if (
           new Date(session?.session_data?.date?.toDate()).valueOf() >=
             from_d.valueOf() &&
@@ -100,7 +90,6 @@ const RespondantAnswer = () => {
             end_d.valueOf()
         ) {
           setShowTable(true);
-          console.log("here...");
           if (checkedStatus.includes(0)) temp.push(session);
           else if (!checkedStatus.length) {
             setCheckedStatus([0]);
@@ -108,7 +97,6 @@ const RespondantAnswer = () => {
           } else if (
             checkedStatus.includes(session?.session_data?.client_status)
           ) {
-            console.log("for other status");
             temp.push(session);
           }
         }
@@ -117,10 +105,8 @@ const RespondantAnswer = () => {
     });
   };
 
-  console.log(sessionsCopy, surveyQualifications);
   // handles Download To Excel btn
   const DownloadToExcel = () => {
-    console.log("download excel function called");
     var elt = document.getElementById("table-to-xls");
     var wb = utils.table_to_book(elt, { sheet: "Sheet JS" });
     return writeFile(wb, `RespondantsAnswer${surveyID}_${surveyName}.xlsx`);
@@ -218,7 +204,6 @@ const RespondantAnswer = () => {
                       <td>{survey?.survey_id}</td>
                       <td>{survey?.project_id}</td>
                       {session?.session_data?.responses?.map((res) => {
-                        console.log(res);
                         return <td>{res.user_response}</td>;
                       })}
                     </tr>

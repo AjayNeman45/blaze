@@ -67,17 +67,14 @@ const NewClient = () => {
   }
 
   const handleProjectRemove = (idx) => {
-    console.log(idx);
     setFormData((preobj) => {
       let project_manager = preobj?.project_manager?.filter((e, i) => {
         return i != idx;
       });
-      console.log(project_manager);
       return { ...preobj, project_manager: project_manager };
     });
   };
   const handleSupplyRemove = (idx) => {
-    console.log(idx);
     setFormData((preobj) => {
       let supply_manager = preobj?.supply_manager?.filter((e, i) => {
         return i != idx;
@@ -94,8 +91,6 @@ const NewClient = () => {
     });
   };
 
-  // console.log(managerfields);
-  console.log(formData);
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>create new client</h1>

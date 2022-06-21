@@ -23,13 +23,14 @@ const ProejctSettingProvider = ({ children }) => {
   const { surveyID } = useParams();
 
   let [surveyData, setSurveyData] = useState({});
-  const [changes, setChanges] = useState({ updated_date: new Date() });
+  const [changes, setChanges] = useState({});
   const [clients, setClients] = useState([]);
   const [completedSessions, setCompletedSessions] = useState([]);
   const [createdByData, setCreatedByData] = useState({});
 
   useEffect(() => {
-    let name = userData?.basicinfo?.firstname + userData?.basicinfo?.lastname;
+    let name =
+      userData?.basicinfo?.firstname + " " + userData?.basicinfo?.lastname;
     setChanges({
       changed_by: {
         updated_at: new Date(),
@@ -76,21 +77,20 @@ const ProejctSettingProvider = ({ children }) => {
     //-------- MPL  --->>>  1234567901
     //-------- Mirats  --->>>  1234567907
 
-    console.log(hashids.encode([1234567899]));
+    // console.log(hashids.encode([1234567899]));
   }, [surveyID]);
 
-  useEffect(() => {
-    console.log(
-      "https://gifted-visvesvaraya-89e692.netlify.app/blaze/" +
-        surveyData?.encrypt?.sid +
-        "-" +
-        surveyData?.encrypt?.pid +
-        "-" +
-        surveyData?.encrypt?.cid +
-        `/lightningStart?SRCID=NGA2xo2&RID=vdfvfsd`
-    );
-  }, [surveyData]);
-
+  // useEffect(() => {
+  //   console.log(
+  //     "https://gifted-visvesvaraya-89e692.netlify.app/blaze/" +
+  //       surveyData?.encrypt?.sid +
+  //       "-" +
+  //       surveyData?.encrypt?.pid +
+  //       "-" +
+  //       surveyData?.encrypt?.cid +
+  //       `/lightningStart?SRCID=NGA2xo2&RID=vdfvfsd`
+  //   );
+  // }, [surveyData]);
   return (
     <ProjectSettingContext.Provider
       value={{

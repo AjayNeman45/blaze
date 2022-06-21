@@ -64,8 +64,6 @@ function CreateQualifications({ openModal, setOpenModal }) {
     });
   };
 
-  console.log(qualificationData);
-
   return (
     <div>
       <QestionNameTypeModal

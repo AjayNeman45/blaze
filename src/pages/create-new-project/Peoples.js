@@ -66,7 +66,6 @@ const Peoples = () => {
       };
     });
   };
-  console.log(surveyData, disabledBtn);
 
   return (
     <>
@@ -84,13 +83,14 @@ const Peoples = () => {
               <span className="required_tag">requierd</span>
               <input
                 type="number"
+                step="any"
                 placeholder="Please enter client CPI"
                 onChange={(e) => {
                   setSurveyData({
                     ...surveyData,
                     client_info: {
                       ...surveyData?.client_info,
-                      client_cpi: parseInt(e.target.value),
+                      client_cpi: parseFloat(e.target.value),
                     },
                   });
                 }}

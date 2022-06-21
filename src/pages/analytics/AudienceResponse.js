@@ -72,16 +72,20 @@ const AudienceResponse = () => {
     });
     allSessions?.forEach((session) => {
       const sd = session.data();
+      let userResp;
+      sd?.responses?.map((resp) => {
+        if (resp?.question_id === "43") userResp = resp?.user_response;
+      });
 
       //conditions for user by gender card
-      if (sd?.responses?.[1]?.user_response === 0) {
+      if (userResp === 0) {
         if (sd?.mirats_status === 3) {
           handleUsersByGenderCard("Male", "denominator");
         }
         if (sd?.client_status === 10) {
           handleUsersByGenderCard("Male", "numerator");
         }
-      } else if (sd?.responses?.[1]?.user_response === 1) {
+      } else if (userResp === 1) {
         if (sd?.mirats_status === 3) {
           handleUsersByGenderCard("Female", "denominator");
         }
@@ -102,7 +106,7 @@ const AudienceResponse = () => {
       }
 
       //******** for completes by employees card
-      let userResp = null;
+      userResp = undefined;
 
       sd?.responses?.map((resp) => {
         if (resp?.question_id === "22467") {
@@ -112,7 +116,8 @@ const AudienceResponse = () => {
 
       userResp &&
         getQuestion("22467").then((res) => {
-          const employeeRange = res.data()?.lang?.["ENG-IN"]?.options[userResp];
+          const employeeRange =
+            res.data()?.lang?.[survey?.country?.code]?.options[userResp];
           setCompletesByEmployees((prevData) => {
             return {
               ...prevData,

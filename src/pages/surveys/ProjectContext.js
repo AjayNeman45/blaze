@@ -29,7 +29,6 @@ const ProjectContextProvider = ({ children }) => {
         let projectData = {};
         querySnapshot?.forEach((survey) => {
           const sd = survey.data();
-          console.log(sd);
 
           if (sd?.project_id === id) {
             let expected_completion_loi = 0,
@@ -41,7 +40,6 @@ const ProjectContextProvider = ({ children }) => {
             projectData.project_id = sd?.project_id;
             projectData.survey_id = sd?.survey_id;
             projectData.launchDate = sd?.creation_date?.toDate();
-            // console.log(projectData.launchDate, sd?.creation_date?.toDate());
             if (sd?.creation_date?.toDate() < projectData.launchDate) {
               projectData.launchDate = sd?.creation_date?.toDate();
             }

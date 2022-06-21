@@ -51,14 +51,8 @@ const RealtimeOverview = () => {
     });
   }, [allSessions, lastPresentTime]);
 
-  useEffect(() => {
-    setUsersBySuppliersData({});
-    setUsersByCompletesSuppliersData({});
-    setInClientAcSupplier({});
-    setUsersByClientStatusData({});
-    setUsersByDeviceTypes({ desktop: 0, mobile: 0 });
-    // for users by supliers card
-    survey?.external_suppliers?.map((supp) => {
+  const getUsersAndCompletesBySuppliers = (suppliers) => {
+    suppliers?.map((supp) => {
       lastTimeSessions?.map((session) => {
         setUsersBySuppliersData((prevData) => {
           if (supp?.supplier_account_id === session?.supplier_account_id) {
@@ -109,7 +103,17 @@ const RealtimeOverview = () => {
         }
       });
     });
+  };
 
+  useEffect(() => {
+    setUsersBySuppliersData({});
+    setUsersByCompletesSuppliersData({});
+    setInClientAcSupplier({});
+    setUsersByClientStatusData({});
+    setUsersByDeviceTypes({ desktop: 0, mobile: 0 });
+    // for users by supliers card
+    getUsersAndCompletesBySuppliers(survey?.external_suppliers); //for external suppliers
+    getUsersAndCompletesBySuppliers(survey?.internal_suppliers); //for internal suppliers
     lastTimeSessions?.map((session) => {
       // for users by client status card
       const handleUsersByClientStatus = (status) => {
@@ -163,9 +167,9 @@ const RealtimeOverview = () => {
           parseInt(resp?.question_id) === 43 &&
           session?.client_status === 10
         ) {
-          if (session?.responses[1]?.user_response === 0) {
+          if (resp.user_response === 0) {
             handleUsersByGender("Male");
-          } else if (session?.responses[1]?.user_response === 1) {
+          } else if (resp?.user_response === 1) {
             handleUsersByGender("Female");
           }
         }

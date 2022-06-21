@@ -19,7 +19,6 @@ const SecuritySettings = ({ setOpenSnackbar }) => {
       Object.keys(securityChecks).length !== 0 &&
       securityChecks.constructor === Object
     ) {
-      console.log(securityChecks);
       addSecurityChecks(surveyID, securityChecks)
         .then((res) => {
           setOpenSnackbar(true);

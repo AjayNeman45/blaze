@@ -17,7 +17,6 @@ const QuestionPreview = () => {
     setLoading(true);
     qualifications?.map((qualification) => {
       if (qualification.question_id == String(questionNumber)) {
-        console.log(qualification);
         setQuestion(qualification);
         setLoading(false);
         return;

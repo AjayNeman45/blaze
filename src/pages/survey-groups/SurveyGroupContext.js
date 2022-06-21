@@ -69,7 +69,6 @@ const SurveyGroupContextProvider = ({ children }) => {
     let maxSurveyGrpID = 20000001,
       flag = false;
     surveyGrps?.map((grp) => {
-      console.log(grp?.survey_grp_id, maxSurveyGrpID);
       if (grp?.survey_grp_id >= maxSurveyGrpID) {
         maxSurveyGrpID = grp?.survey_grp_id;
         flag = true;
@@ -77,7 +76,6 @@ const SurveyGroupContextProvider = ({ children }) => {
     });
     if (flag) maxSurveyGrpID += 1;
     try {
-      console.log(maxSurveyGrpID);
       surveyGrpData["survey_grp_id"] = maxSurveyGrpID;
       const q = await addSurveyGroup(surveyGrpData, maxSurveyGrpID);
       setSnackbarData({
@@ -169,8 +167,6 @@ const SurveyGroupContextProvider = ({ children }) => {
         });
     });
   };
-
-  console.log(surveyGrps);
 
   useEffect(() => {
     if (!addSurveyGrpModal) setSurveyGrpData({});

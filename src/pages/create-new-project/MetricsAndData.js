@@ -7,8 +7,6 @@ const MetricsAndData = () => {
     useCreateNewProject();
   const [enableNextBtn, setEnableNextBtn] = useState(false);
 
-  console.log(surveyData);
-
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);

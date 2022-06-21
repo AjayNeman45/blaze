@@ -124,7 +124,6 @@ const Clients = () => {
       sort: [type, preob?.sort && preob?.sort[1] === "asc" ? "desc" : "asc"],
     }));
   }
-  console.log(filterAndSorts);
   return (
     <>
       <Header />

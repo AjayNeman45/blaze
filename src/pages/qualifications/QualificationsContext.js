@@ -53,7 +53,7 @@ const QualificationContextProvider = ({ children }) => {
               ...prevData,
               {
                 ...question,
-                ...questionData.data()?.lang["ENG-IN"],
+                ...questionData.data()?.lang[res.data()?.country?.code],
                 question_type: questionData.data()?.question_type,
                 question_name: questionData.data()?.name,
                 conditions: question?.conditions ? question?.conditions : null,
@@ -119,8 +119,6 @@ const QualificationContextProvider = ({ children }) => {
       .then(() => console.log("Question edited..."))
       .catch((err) => console.log(err.message));
   };
-
-  console.log(qualifications);
 
   const value = {
     qualifications,

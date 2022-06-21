@@ -374,7 +374,7 @@ const SurveyQuestions = () => {
                 return {
                   ...oldData,
                   ...questions[i],
-                  ...ql_question.data()?.lang["ENG-IN"],
+                  ...ql_question.data()?.lang[data?.country?.code],
                   question_type: ql_question.data()?.question_type,
                   is_core_demographic: ql_question.data()?.is_core_demographic,
                   question_name: ql_question.data()?.name,

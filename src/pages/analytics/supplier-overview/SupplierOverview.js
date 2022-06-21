@@ -5,12 +5,7 @@ import Subheader from "../../../components/subheader/Subheader";
 import SurveyInfo from "../../../components/survey-info/SurveyInfo";
 import TeamCards from "../../../components/teamcards/TeamCards";
 import { Progress } from "@nextui-org/react";
-import Badge from "@mui/material/Badge";
-import { IoAdd } from "react-icons/io5";
-import classnames from "classnames";
-import SupplyOverViewBigCard from "./components/supply-overview-bigcard/SupplyOverViewBigCard";
 import SessionSchedule from "./components/session/SessionsSchedule";
-import AnalyticsUserCountCard from "../../../components/analyticsUserCountCard/AnalyticsUserCountCard";
 import { useSupplierOverviewContext } from "./SupplierOverviewContext";
 import { useAanalyticsContext } from "../AnalyticsContext";
 import {
@@ -18,7 +13,7 @@ import {
   getAvgLOI,
   getFinancialOverview,
 } from "../../survey-dashboard/SurveyDashboardContext";
-import { NavLink, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { v4 as uuid } from "uuid";
 import { getQuestion } from "../../../utils/firebaseQueries";
@@ -88,6 +83,8 @@ function SupplierOverview() {
   const [completsByQuestionResponses, setCompletesByQuestionResponses] =
     useState({});
 
+  const ageRange = ["18-24", "25-34", "35-44", "44-54"];
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -122,13 +119,42 @@ function SupplierOverview() {
       }
 
       session?.responses?.map((res, index) => {
-        index &&
-          getQuestion(res?.question_id)
-            .then((libraryQue) => {
-              let key =
-                libraryQue.data().lang["ENG-IN"].options[res?.user_response];
+        getQuestion(res?.question_id)
+          .then((libraryQue) => {
+            let key;
+            if (libraryQue.data()?.question_type === "Numeric - Open-end") {
+              let userResp = parseInt(res?.user_response);
+              ageRange?.forEach((range) => {
+                if (
+                  parseInt(range.split("-")[0]) <= userResp &&
+                  parseInt(range.split("-")[1]) >= userResp
+                ) {
+                  key = range;
+                }
+              });
+            } else
+              key =
+                libraryQue.data().lang[survey?.country?.code].options[
+                  res?.user_response
+                ];
+            if (libraryQue.data()?.question_type !== "Multi Punch") {
+              setCompletesByQuestionResponses((prevData) => {
+                return {
+                  ...prevData,
+                  [res?.question_name]: {
+                    ...prevData?.[res?.question_name],
+                    [key]: {
+                      ...prevData?.[res?.question_name]?.[key],
+                      denominator:
+                        (prevData?.[res?.question_name]?.[key]?.denominator
+                          ? prevData?.[res?.question_name]?.[key]?.denominator
+                          : 0) + 1,
+                    },
+                  },
+                };
+              });
 
-              if (libraryQue.data()?.question_type !== "Multi Punch") {
+              if (session?.client_status === 10) {
                 setCompletesByQuestionResponses((prevData) => {
                   return {
                     ...prevData,
@@ -136,37 +162,20 @@ function SupplierOverview() {
                       ...prevData?.[res?.question_name],
                       [key]: {
                         ...prevData?.[res?.question_name]?.[key],
-                        denominator:
-                          (prevData?.[res?.question_name]?.[key]?.denominator
-                            ? prevData?.[res?.question_name]?.[key]?.denominator
+                        numerator:
+                          (prevData?.[res?.question_name]?.[key]?.numerator
+                            ? prevData?.[res?.question_name]?.[key]?.numerator
                             : 0) + 1,
                       },
                     },
                   };
                 });
-
-                if (session?.client_status === 10) {
-                  setCompletesByQuestionResponses((prevData) => {
-                    return {
-                      ...prevData,
-                      [res?.question_name]: {
-                        ...prevData?.[res?.question_name],
-                        [key]: {
-                          ...prevData?.[res?.question_name]?.[key],
-                          numerator:
-                            (prevData?.[res?.question_name]?.[key]?.numerator
-                              ? prevData?.[res?.question_name]?.[key]?.numerator
-                              : 0) + 1,
-                        },
-                      },
-                    };
-                  });
-                }
               }
-            })
-            .catch((err) => {
-              console.log(err.message);
-            });
+            }
+          })
+          .catch((err) => {
+            console.log(err.message);
+          });
       });
     });
   }, [supplierID, allSessions, survey]);
@@ -244,9 +253,10 @@ function SupplierOverview() {
                     <p>
                       {" "}
                       <span style={{ fontWeight: 600 }}>
-                        {(statusesCnt?.completed / statusesCnt?.hits).toFixed(
-                          0
-                        ) * 100}{" "}
+                        {(
+                          (statusesCnt?.completed / statusesCnt?.hits) *
+                          100
+                        ).toFixed(0)}{" "}
                         %
                       </span>{" "}
                       <span>conversion</span>{" "}
@@ -311,7 +321,7 @@ function SupplierOverview() {
                 </div>
                 <div className={styles.count}>
                   <p>
-                    {statusesCnt?.completed}/ {inClientSurveySessions}
+                    {statusesCnt?.completed}/{inClientSurveySessions}
                   </p>
                 </div>
               </div>
@@ -411,7 +421,10 @@ function SupplierOverview() {
           </div>
 
           <div className={styles.right_container}>
-            <TeamCards title="Client AB Team" co_ordinators={co_ordinators} />
+            <TeamCards
+              title={survey?.client_info?.client_name}
+              co_ordinators={co_ordinators}
+            />
             <div className={styles.small_cards}>
               <div className={styles.cpi_and_required}>
                 <div className={styles.right_small_cards}>

@@ -77,8 +77,6 @@ const SupplierEditModal = ({ open, handleClose, defaultData }) => {
     });
   };
 
-  console.log(supplierData);
-
   return (
     <>
       <Modal

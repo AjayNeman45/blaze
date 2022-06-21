@@ -13,7 +13,6 @@ const SurveyLogsPdfFormat = ({
   setShowPdfFormatModal,
 }) => {
   const ref = React.createRef();
-  console.log(survey);
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);

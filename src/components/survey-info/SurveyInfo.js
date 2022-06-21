@@ -66,6 +66,7 @@ function SurveyInfo() {
         setSurvey(data);
         setSurveyStatus(data?.status);
         setChangeSurveyName(data?.survey_name);
+        setExternalSurveyName(data?.external_survey_name);
         setNewSurveyName(data?.survey_name);
 
         if (data?.status?.toLowerCase() === "bidding") {
@@ -81,6 +82,8 @@ function SurveyInfo() {
           setBatti(5);
         } else if (data?.status?.toLowerCase() === "billed") {
           setBatti(6);
+        } else {
+          setBatti(0);
         }
       })
       .catch((err) => console.log(err.message));
@@ -140,10 +143,9 @@ function SurveyInfo() {
       setNewSurveyID(lastSurveyID + 1);
       delete body?.external_suppliers;
       delete body?.changes;
+      delete body?.internal_suppliers;
       body.survey_id = lastSurveyID + 1;
-      if (body?.encrypt?.sid !== encryptText(String(lastSurveyID + 1))) {
-        console.log("different ids....");
-      }
+      body.creation_date = new Date();
       body.encrypt.sid = encryptText(String(lastSurveyID + 1));
       setSurveyCloneModal(true);
       addSurvey(lastSurveyID + 1, body)
@@ -268,6 +270,23 @@ function SurveyInfo() {
                 ))}
               </Select>
             </FormControl>
+
+            {/* <select
+              onChange={(e) => {
+                setSurveyStatus(e.target.value);
+                if (
+                  !mainStatusWithInternalStatuses.hasOwnProperty(e.target.value)
+                )
+                  handleStatusChange(e.target.value);
+                else setInternalStatusChangeModal(true);
+              }}
+              value={surveyStatus}
+              className={styles.status_select_field}
+            >
+              {statusOptions?.map((option) => (
+                <option value={option.value}>{option.label}</option>
+              ))}
+            </select> */}
 
             <button
               className={styles.get_resports_btn}

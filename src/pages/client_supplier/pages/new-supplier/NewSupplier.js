@@ -29,19 +29,13 @@ const NewSupplier = () => {
       id = elem.data()?.id;
     });
     return id;
-    // console.log(newdata[newdata.length - 1].id);
   };
   const storeSupplierData = async () => {
     GetLastSupplierID().then(async (lastid) => {
-      console.log("The last id is", lastid);
-      console.log("NEw id is", lastid + 1);
-
       await setDoc(
         doc(db, "mirats", "supplier", "supplier", String(lastid + 1)),
         { ...formData, id: lastid + 1 }
-      ).then(() => {
-        console.log("data saved successfully");
-      });
+      ).then(() => {});
     });
     // await setDoc(dataRef,id,formData)
   };
@@ -71,17 +65,14 @@ const NewSupplier = () => {
   // ----------------- Add Supply manager----------------------
 
   const handleProjectRemove = (idx) => {
-    console.log(idx);
     setFormData((preobj) => {
       let project_manager = preobj?.project_manager?.filter((e, i) => {
         return i != idx;
       });
-      console.log(project_manager);
       return { ...preobj, project_manager: project_manager };
     });
   };
   const handleSupplyRemove = (idx) => {
-    console.log(idx);
     setFormData((preobj) => {
       let supply_manager = preobj?.supply_manager?.filter((e, i) => {
         return i != idx;
@@ -99,8 +90,6 @@ const NewSupplier = () => {
   };
   // ----------------- Add account manager----------------------
 
-  // console.log(managerfields);
-  console.log(formData);
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>create new Supplier</h1>

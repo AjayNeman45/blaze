@@ -12,6 +12,7 @@ import { v4 as uuid } from "uuid";
 import SnackbarMsg from "../../components/Snackbar";
 import { set, toNumber } from "lodash";
 import { Radio } from "@nextui-org/react";
+import { data } from "../../tmp";
 
 const Quotas = () => {
   const [showQuotaModal, setShowQuotaModal] = useState(false);
@@ -27,7 +28,6 @@ const Quotas = () => {
 
   useEffect(() => {
     if (quotasChange) {
-      console.log("fetching qualifications");
       getQualificationsForQuotas(survey);
     }
   }, [quotasChange]);
@@ -54,8 +54,6 @@ const Quotas = () => {
       });
     });
   };
-
-  console.log(qualifications);
 
   return (
     <>
@@ -175,7 +173,6 @@ const Quotas = () => {
               </tr>
               {qualifications.map((data, index) => {
                 if (data?.conditions.hasOwnProperty("quotas")) {
-                  // console.log("yes", data);
                   switch (data?.question_type) {
                     case "Numeric - Open-end":
                       return data?.conditions?.valid_responses?.map(
@@ -224,7 +221,14 @@ const Quotas = () => {
                                   (data.completes[
                                     `${data?.conditions?.valid_responses?.[indx]?.from}-${data?.conditions?.valid_responses?.[indx]?.to}`
                                   ] /
-                                    data?.prescreens) *
+                                    data?.prescreens[
+                                      data?.conditions?.valid_responses?.[indx]
+                                        ?.from +
+                                        "-" +
+                                        data?.conditions?.valid_responses?.[
+                                          indx
+                                        ]?.to
+                                    ]) *
                                     100
                                 )}{" "}
                                 %
@@ -284,7 +288,13 @@ const Quotas = () => {
                                         data?.conditions?.valid_options?.[indx]
                                       ]
                                     ] /
-                                      data?.prescreens) *
+                                      data?.prescreens[
+                                        data?.options?.[
+                                          data?.conditions?.valid_options?.[
+                                            indx
+                                          ]
+                                        ]
+                                      ]) *
                                       100
                                   )}{" "}
                                   %
@@ -337,7 +347,13 @@ const Quotas = () => {
                                         data?.conditions?.valid_options?.[indx]
                                       ]
                                     ] /
-                                      data?.prescreens) *
+                                      data?.prescreens[
+                                        data?.options?.[
+                                          data?.conditions?.valid_options?.[
+                                            indx
+                                          ]
+                                        ]
+                                      ]) *
                                       100
                                   )}{" "}
                                   %

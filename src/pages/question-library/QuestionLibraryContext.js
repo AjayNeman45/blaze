@@ -56,7 +56,7 @@ const QualificationLibraryContextProvider = ({ children }) => {
           msg: "Question Added successfully...",
           severity: "success",
         });
-        console.log(maxQuestionID, "question added successfully");
+        console.log("question added successfully");
       })
       .catch((err) => {
         console.log(err.message);

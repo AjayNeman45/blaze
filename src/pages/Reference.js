@@ -46,7 +46,6 @@ const Reference = () => {
               ? data?.live_url?.split("[%rid%]")?.[1]
               : "";
             let url = x + sessionData.data()?.ref_id + y;
-            console.log("client url with ref id is", url);
             window.location.href = url;
             // window.open(url, "_blank");
             // console.log(

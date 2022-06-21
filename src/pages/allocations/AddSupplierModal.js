@@ -190,7 +190,7 @@ function AddSupplierModal() {
                     tcpi: parseInt(e.target.value),
                   })
                 }
-                type="text"
+                type="number"
                 className={styles.cpi_field}
               />
             </div>

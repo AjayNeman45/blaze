@@ -39,13 +39,12 @@ const SupplierOverviewContextProvider = ({ children }) => {
       const status = session.data().client_status;
       const miratsStatus = session.data()?.mirats_status;
 
+      if (session.data()?.supplier_account_id === supplierID) hits++;
       if (
         session.data()?.supplier_account_id === supplierID &&
         miratsStatus === 3
-      ) {
-        hits++;
+      )
         inClientSessionsCnt++;
-      }
 
       setInClientSurveySessions(inClientSessionsCnt);
       if (session.data()?.supplier_account_id === supplierID && status === 40) {

@@ -544,10 +544,7 @@ function SurveyDashboard() {
             teams={survey?.mirats_insights_team}
             allPeoples={peoples}
           />
-          <TeamCards
-            title="Clients Team"
-            co_ordinators={survey?.clients_team}
-          />
+          <TeamCards title="Clients Team" teams={survey?.clients_team} />
           <NerdySpecs />
           <div className={styles.small_cards}>
             <div className={styles.cpi_and_required}>

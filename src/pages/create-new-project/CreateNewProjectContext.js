@@ -66,7 +66,7 @@ const CreateNewProjectProvider = ({ children }) => {
   };
 
   const insertBasicData = async () => {
-    console.log("inerting basic data ", surveys);
+    console.log("inerting basic data ");
     setInsertLoading(true);
 
     let maxSurveyId = 0;
@@ -173,8 +173,7 @@ const CreateNewProjectProvider = ({ children }) => {
               setInsertLoading(false);
             })
             .catch((er) => {
-              console.log("Error in saving Setup Requirements", er);
-              console.log("here..........");
+              console.log(er.message);
               setInsertLoading(false);
             });
         });

@@ -3,9 +3,6 @@ import React, { useState } from "react";
 const Age = () => {
   const [response, setResponse] = useState();
 
-  const handleNextBtn = () => {
-    console.log("dgfsdg");
-  };
   return (
     <div className="survey_page">
       <div className="line_design"></div>

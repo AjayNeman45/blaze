@@ -162,7 +162,6 @@ function LiveSurveyLogs() {
           setFilteredSessions((prear) => {
             return prear?.filter((session) => sess[session?.fingerprint] > 0);
           });
-          console.log("Lookup is", sess);
         } else {
           const sess = filteredSessions.reduce((a, e) => {
             a[e.fingerprint] = ++a[e.fingerprint] || 0;
@@ -348,7 +347,6 @@ function LiveSurveyLogs() {
                     <select
                       className={styles.card_select}
                       onChange={(e) => {
-                        console.log(e.target.value);
                         setLiveSurveyLogsFilter({
                           ...liveSurveyLogsFilter,
                           mirats_status: e.target.value,
@@ -370,7 +368,6 @@ function LiveSurveyLogs() {
                     <select
                       className={styles.card_select}
                       onChange={(e) => {
-                        console.log(e.target.value);
                         setLiveSurveyLogsFilter({
                           ...liveSurveyLogsFilter,
                           client_status: e.target.value,
@@ -569,7 +566,6 @@ function LiveSurveyLogs() {
                   <select
                     className={styles.card_select}
                     onChange={(e) => {
-                      // console.log("Supplier is", e.target.value);
                       setLiveSurveyLogsFilter({
                         ...liveSurveyLogsFilter,
                         supplier_id: e.target.value,
@@ -773,7 +769,6 @@ const getAllLogsData = (allSessions) => {
       let key = Object.keys(res)[0];
       logsData[logsData.length - 1][key] = res[key];
     });
-    console.log(responses);
   });
   return logsData;
 };

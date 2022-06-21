@@ -34,7 +34,6 @@ const PreRedirectPage = () => {
       history.go(1);
     });
     if (testSession?.mirats_status === 0) {
-      console.log("mirats status ", testSession?.mirats_status);
       history.push(
         `/blaze/${encryptedID}/questions/42?SRCID=${srcID}&RID=${rID}$gamma=alpha`
       );

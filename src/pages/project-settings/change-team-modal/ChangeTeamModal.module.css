@@ -1,0 +1,47 @@
+.tabs {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 1rem 0;
+}
+.tabs .tab_title {
+  font-size: 17px;
+  cursor: pointer;
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+    "Lucida Sans", Arial, sans-serif;
+  padding: 2px 7px;
+}
+.tabs .active_tab {
+  border-bottom: 2px solid black;
+  transition: 0.2s linear;
+  background-color: rgb(235, 235, 235);
+  border-radius: 5px;
+}
+.select_input {
+  margin: 2rem 0;
+}
+.btns {
+  text-align: end;
+}
+.btns button {
+  padding: 10px 30px;
+  border-radius: 5px;
+}
+.btns .save_btn {
+  background-color: black;
+  color: white;
+  margin-right: 20px;
+}
+.save_btn:hover {
+  background-color: rgb(84, 84, 84);
+  color: rgb(238, 238, 238);
+  transition: 0.2s all linear;
+}
+.btns .cancle_btn {
+  background-color: rgb(238, 238, 238);
+  color: black;
+}
+.cancle_btn:hover {
+  background-color: rgb(179, 179, 179);
+  transition: 0.2s all linear;
+}
