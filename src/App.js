@@ -1,11 +1,10 @@
-import { Route, Switch } from "react-router-dom";
+import { Redirect, Route, Switch } from "react-router-dom";
 import Surveys from "./pages/surveys/Surveys";
 // import Dashboard from "./pages/dashboard/Dashboard";
 import Dashboard from "./pages/dashboard-new/Dashboard";
 import Accounts from "./pages/accounts-new/Accounts";
 import Leads from "./pages/leads/Leads";
 import CreateNewProject from "./pages/create-new-project/CreateNewProject";
-import Loader from "./components/loader/Loader";
 import Qualifications from "./pages/qualifications/Qualifications";
 import Quotas from "./pages/quotas/Quotas";
 import Allocations from "./pages/allocations/Allocations";
@@ -62,32 +61,103 @@ import Financial from "./pages/financial/Financial";
 import Clients from "./pages/clients/Clients";
 import Supplier from "./pages/supplier/Supplier";
 import Contacts from "./pages/contacts-new/Contacts";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "./firebase";
+import { useLocation } from "react-router-dom";
+import { useState } from "react";
+import { useEffect } from "react";
+
+function ProtectedRoute({ children }) {
+  const [user, loading] = useAuthState(auth);
+  if (!loading && !user) {
+    return <Redirect to="/login" />;
+  }
+  return children;
+}
 
 function App() {
+  const [user, loading] = useAuthState(auth);
+
   return (
     <>
       <Switch>
+        {/* blaze  */}
+
+        <Route path="/error" exact>
+          <Blaze />
+        </Route>
+        <Route
+          path={[
+            "/blaze/:encryptedID/lightningStart",
+            "/blaze/lightningStart",
+            "/blaze/:encryptedID",
+            "/blaze",
+          ]}
+          exact
+        >
+          <BlazeContextProvider>
+            <Blaze />
+          </BlazeContextProvider>
+        </Route>
+
+        <Route path="/blaze/:encryptedID/reference" exact>
+          <Reference />
+        </Route>
+
+        <Route path="/blaze/:encryptedID/questions/:questionNumber" exact>
+          <SurveyQuestions />
+        </Route>
+        <Route path="/blaze/:encryptedID/gdpr-consent" exact>
+          <GdprCotextProvider>
+            <GdprConsent />
+          </GdprCotextProvider>
+        </Route>
+
+        <Route
+          path="/7e08091a73b14e034889265e41ba796f91c766ad/:id/:status"
+          exact
+        >
+          <EndPoint />
+        </Route>
+        <Route path="/blaze/:encryptedID/preRedirectUrl/:questionNumber" exact>
+          <PreRedirectPage />
+        </Route>
+
+        <Route path="/er" exact>
+          <ErrorPage />
+        </Route>
+        {/* blaze end */}
+
         <BaseContextProvider>
           <Route path="/" exact>
-            <DashboardContextProvider>
-              <Dashboard />
-            </DashboardContextProvider>
+            <ProtectedRoute>
+              <DashboardContextProvider>
+                <Dashboard />
+              </DashboardContextProvider>
+            </ProtectedRoute>
           </Route>
 
           <Route path="/survey-groups" exact>
-            <SurveyGroupContextProvider>
-              <SurveyGroups />
-            </SurveyGroupContextProvider>
+            <ProtectedRoute>
+              <SurveyGroupContextProvider>
+                <SurveyGroups />
+              </SurveyGroupContextProvider>
+            </ProtectedRoute>
           </Route>
 
           <Route path="/aaa/accounts" exact>
-            <Accounts />
+            <ProtectedRoute>
+              <Accounts />
+            </ProtectedRoute>
           </Route>
           <Route path="/leads" exact>
-            <Leads />
+            <ProtectedRoute>
+              <Leads />
+            </ProtectedRoute>
           </Route>
 
           {/* Login */}
+
           <Route path="/login" exact>
             <LoginContextProvider>
               <Login />
@@ -95,193 +165,206 @@ function App() {
           </Route>
 
           <Route path="/create-new-project/:edit_option" exact>
-            <CreateNewProjectProvider>
-              <CreateNewProject />
-            </CreateNewProjectProvider>
+            <ProtectedRoute>
+              <CreateNewProjectProvider>
+                <CreateNewProject />
+              </CreateNewProjectProvider>
+            </ProtectedRoute>
           </Route>
 
-          <Route path="/surveys/dashboard/:surveyID">
-            <SurveyDashboardContextProvider>
-              <SurveyDashboard />
-            </SurveyDashboardContextProvider>
-          </Route>
+          {/* put here one context that can fetch the survey once and send it below the component  */}
 
+          <Route path="/surveys/dashboard/:surveyID" exact>
+            <ProtectedRoute>
+              <SurveyDashboardContextProvider>
+                <SurveyDashboard />
+              </SurveyDashboardContextProvider>
+            </ProtectedRoute>
+          </Route>
           <Route path="/surveys/settings/:surveyID" exact>
-            <ProejctSettingProvider>
-              <NewProjectSettings />
-            </ProejctSettingProvider>
+            <ProtectedRoute>
+              <ProejctSettingProvider>
+                <NewProjectSettings />
+              </ProejctSettingProvider>
+            </ProtectedRoute>
           </Route>
-
           <Route path="/surveys/qualifications/:surveyID" exact>
-            <QualificationContextProvider>
-              <Qualifications />
-            </QualificationContextProvider>
+            <ProtectedRoute>
+              <QualificationContextProvider>
+                <Qualifications />
+              </QualificationContextProvider>
+            </ProtectedRoute>
           </Route>
           <Route path="/surveys/quotas/:surveyID" exact>
-            <QuotasContextProvider>
-              <Quotas />
-            </QuotasContextProvider>
+            <ProtectedRoute>
+              <QuotasContextProvider>
+                <Quotas />
+              </QuotasContextProvider>
+            </ProtectedRoute>
           </Route>
           <Route path="/surveys/allocations/:surveyID" exact>
-            <AllocationContextProvider>
-              <Allocations />
-            </AllocationContextProvider>
+            <ProtectedRoute>
+              <AllocationContextProvider>
+                <Allocations />
+              </AllocationContextProvider>
+            </ProtectedRoute>
           </Route>
           <Route path="/surveys/reports/:surveyID" exact>
-            <ReportsContextProvider>
-              <Reports />
-            </ReportsContextProvider>
+            <ProtectedRoute>
+              <ReportsContextProvider>
+                <Reports />
+              </ReportsContextProvider>
+            </ProtectedRoute>
           </Route>
           <Route path="/surveys/documents/:surveyID" exact>
-            <Documents />
+            <ProtectedRoute>
+              <Documents />
+            </ProtectedRoute>
           </Route>
-
-          <Route path="/question-library" exact>
-            <QualificationLibraryContextProvider>
-              <QuestionLibrary />
-            </QualificationLibraryContextProvider>
-          </Route>
-
           <Route path="/surveys/security/:surveyID" exact>
-            <Security />
-          </Route>
-          <Route path="/question-preview/:surveyID/:questionNumber" exact>
-            <QualificationContextProvider>
-              <QuestionPreview />
-            </QualificationContextProvider>
+            <ProtectedRoute>
+              <Security />
+            </ProtectedRoute>
           </Route>
           <Route path="/surveys/reconciliations/:surveyID" exact>
-            <ReconciliationContextProvider>
-              <Reconciliations />
-            </ReconciliationContextProvider>
+            <ProtectedRoute>
+              <ReconciliationContextProvider>
+                <Reconciliations />
+              </ReconciliationContextProvider>
+            </ProtectedRoute>
           </Route>
           <Route path="/surveys/analytics/:navigationTab/:surveyID" exact>
-            <AnalyticsContextProvider>
-              <Analytics />
-            </AnalyticsContextProvider>
+            <ProtectedRoute>
+              <AnalyticsContextProvider>
+                <Analytics />
+              </AnalyticsContextProvider>
+            </ProtectedRoute>
           </Route>
-
-          <Route path="/surveys/financials/:surveyID" exact>
-            <Financial />
-          </Route>
-
           <Route
             path="/surveys/analytics/supplier-overview/:surveyID/:supplierID"
             exact
           >
-            <AnalyticsContextProvider>
-              <SupplierOverviewContextProvider>
-                <SupplierOverview />
-              </SupplierOverviewContextProvider>
-            </AnalyticsContextProvider>
+            <ProtectedRoute>
+              <AnalyticsContextProvider>
+                <SupplierOverviewContextProvider>
+                  <SupplierOverview />
+                </SupplierOverviewContextProvider>
+              </AnalyticsContextProvider>
+            </ProtectedRoute>
+          </Route>
+          <Route path="/surveys/financials/:surveyID" exact>
+            <ProtectedRoute>
+              <Financial />
+            </ProtectedRoute>
+          </Route>
+          <Route path="/surveys/sources/:surveyID" exact>
+            <ProtectedRoute>
+              <SourcesContextProvider>
+                <Sources />{" "}
+              </SourcesContextProvider>
+            </ProtectedRoute>
           </Route>
 
-          <Route path="/error">
-            <Blaze />
+          {/* single survey fetch pages end  */}
+
+          {/* independent pages  */}
+          <Route path="/question-library" exact>
+            <ProtectedRoute>
+              <QualificationLibraryContextProvider>
+                <QuestionLibrary />
+              </QualificationLibraryContextProvider>
+            </ProtectedRoute>
           </Route>
 
-          <Route path="/add/qualifications/:surveyID">
-            <AddQualificationContextProvider>
-              <NewManagerEnd />
-            </AddQualificationContextProvider>
+          <Route path="/question-preview/:surveyID/:questionNumber" exact>
+            <ProtectedRoute>
+              <QualificationContextProvider>
+                <QuestionPreview />
+              </QualificationContextProvider>
+            </ProtectedRoute>
           </Route>
 
-          <Route path="/clients">
-            <Clients />
+          <Route path="/add/qualifications/:surveyID" exact>
+            <ProtectedRoute>
+              <AddQualificationContextProvider>
+                <NewManagerEnd />
+              </AddQualificationContextProvider>
+            </ProtectedRoute>
           </Route>
-          <Route path="/supplier">
-            <Supplier />
+
+          <Route path="/clients" exact>
+            <ProtectedRoute>
+              <Clients />
+            </ProtectedRoute>
+          </Route>
+          <Route path="/supplier" exact>
+            <ProtectedRoute>
+              <Supplier />
+            </ProtectedRoute>
           </Route>
 
           <Route path="/contacts" exact>
-            <Contacts />
+            <ProtectedRoute>
+              <Contacts />
+            </ProtectedRoute>
           </Route>
-
-          {/* blaze  */}
-          <Route
-            path={[
-              "/blaze/:encryptedID/lightningStart",
-              "/blaze/lightningStart",
-              "/blaze/:encryptedID",
-              "/blaze",
-            ]}
-            exact
-          >
-            <BlazeContextProvider>
-              <Blaze />
-            </BlazeContextProvider>
-          </Route>
-
-          <Route path="/blaze/:encryptedID/reference">
-            <Reference />
-          </Route>
-
-          <Route path="/blaze/:encryptedID/questions/:questionNumber" exact>
-            <SurveyQuestions />
-          </Route>
-          <Route path="/blaze/:encryptedID/gdpr-consent" exact>
-            <GdprCotextProvider>
-              <GdprConsent />
-            </GdprCotextProvider>
-          </Route>
-
-          <Route path="/blaze/:encryptedID/preRedirectUrl/:questionNumber">
-            <PreRedirectPage />
-          </Route>
-
-          <Route path="/7e08091a73b14e034889265e41ba796f91c766ad/:id/:status">
-            <EndPoint />
-          </Route>
-
-          <Route path="/er" exact>
-            <ErrorPage />
-          </Route>
-          {/* blaze end */}
+          {/* independent pages done  */}
 
           {/* source  pages  */}
 
           <Route path="/viewredirects/:surveyID" exact>
-            <ViewRedirectsEndpoints />
+            <ProtectedRoute>
+              <ViewRedirectsEndpoints />
+            </ProtectedRoute>
           </Route>
           <Route path="/biddingquota/:surveyID" exact>
-            <BiddingQuota />
+            <ProtectedRoute>
+              <BiddingQuota />
+            </ProtectedRoute>
           </Route>
 
           <Route path="/sources/:surveyID" exact>
-            <Sources />
+            <ProtectedRoute>
+              <Sources />
+            </ProtectedRoute>
           </Route>
 
           <Route path="/livesurveylogs/:surveyID" exact>
-            <LiveSurveyLogsContextProvider>
-              <LiveSurveyLogs />
-            </LiveSurveyLogsContextProvider>
+            <ProtectedRoute>
+              <LiveSurveyLogsContextProvider>
+                <LiveSurveyLogs />
+              </LiveSurveyLogsContextProvider>
+            </ProtectedRoute>
           </Route>
 
-          <Route path="/surveys/sources/:surveyID" exact>
-            <SourcesContextProvider>
-              <Sources />{" "}
-            </SourcesContextProvider>
-          </Route>
           {/* source pages end  */}
 
           {/* New Supplier and Client  */}
-          <Route path="/new-supplier">
-            <NewSupplier />
+          <Route path="/new-supplier" exact>
+            <ProtectedRoute>
+              <NewSupplier />
+            </ProtectedRoute>
           </Route>
           <Route path="/new-client">
-            <NewClient />
+            <ProtectedRoute>
+              <NewClient />
+            </ProtectedRoute>
           </Route>
 
           <Route path="/mi/:activity" exact>
-            <SurveyContextProvider>
-              <ProjectContextProvider>
-                <Surveys />
-              </ProjectContextProvider>
-            </SurveyContextProvider>
+            <ProtectedRoute>
+              <SurveyContextProvider>
+                <ProjectContextProvider>
+                  <Surveys />
+                </ProjectContextProvider>
+              </SurveyContextProvider>
+            </ProtectedRoute>
           </Route>
 
-          <Route path="/a/supplier_redirects">
-            <SupplierRedirects />
+          <Route path="/a/supplier_redirects" exact>
+            <ProtectedRoute>
+              <SupplierRedirects />
+            </ProtectedRoute>
           </Route>
         </BaseContextProvider>
       </Switch>

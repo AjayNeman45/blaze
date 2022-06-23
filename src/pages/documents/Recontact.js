@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import styles from "./Documents.module.css";
 import { storage } from "../../firebase";
 import { useParams } from "react-router-dom";
@@ -6,34 +6,14 @@ import { getSurvey } from "../../utils/firebaseQueries";
 import { setDoc, doc } from "firebase/firestore";
 import { db } from "../../firebase";
 import SnackbarMsg from "../../components/Snackbar";
-import {
-  listAll,
-  ref,
-  uploadBytes,
-  getDownloadURL,
-  deleteObject,
-} from "firebase/storage";
-import {
-  Button,
-  CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-} from "@mui/material";
+import { ref } from "firebase/storage";
 
 function Recontact() {
   const [documents, setDocuments] = useState();
-  const [uploadedDocuments, setUploadedDocuments] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [documentLoading, setDocumentLoading] = useState(true);
   const { surveyID } = useParams();
   const surveyInputFileRef = useRef();
   const [snackbarData, setSnackbarData] = useState("");
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  const folderRef = ref(storage, `Survey-attachement-documents/${surveyID}`);
-  let [openDialog, setOpenDialog] = useState(false);
   const handleFileChange = (e) => {
     setDocuments(e.target.files[0]);
   };
@@ -88,12 +68,15 @@ function Recontact() {
 
   return (
     <div className={styles.main_container}>
-      <SnackbarMsg
-        msg={snackbarData.msg}
-        severity={snackbarData.severity}
-        open={openSnackbar}
-        handleClose={handleSnackbar}
-      />
+      {openSnackbar ? (
+        <SnackbarMsg
+          msg={snackbarData.msg}
+          severity={snackbarData.severity}
+          open={openSnackbar}
+          handleClose={handleSnackbar}
+        />
+      ) : null}
+
       <div className={styles.instruction}>
         <p>Instructions:</p>
         <ol>

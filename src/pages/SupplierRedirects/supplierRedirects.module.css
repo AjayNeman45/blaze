@@ -21,14 +21,14 @@
   margin: 20px 0px;
 }
 
-table {
+.supplier_redirects_table {
   width: 90%;
   text-align: center;
   border-collapse: collapse;
 }
 
-table td,
-tr {
+.supplier_redirects_table td,
+.supplier_redirects_table tr {
   /* border: 1px solid black; */
   padding: 3px;
 }

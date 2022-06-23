@@ -432,6 +432,7 @@ const BlazeContextProvider = ({ children }) => {
         }
       });
     }
+    console.log(flag);
 
     if (flag) {
       let completedSessionsCnt = 0;
@@ -464,10 +465,12 @@ const BlazeContextProvider = ({ children }) => {
         }
       }
     } else {
-      setErrCode(127);
-      setErrMsg(
+      setErrCodeAndMsg(
+        127,
         "Respondent enter from the particular supplier that is not live or the supplier not found"
       );
+      // setErrCode(127);
+      // setErrMsg();
     }
   };
 

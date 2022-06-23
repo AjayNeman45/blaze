@@ -1,106 +1,124 @@
 .preRedirectPage {
-	/* border: 1px solid red; */
-	width: 70%;
-	margin: 0 auto;
+  /* border: 1px solid red; */
+  width: 70%;
+  margin: 0 auto;
 }
 
 .logo {
-	width: fit-content;
-	margin: 3rem 0;
+  width: fit-content;
+  margin: 3rem 0;
 }
 .pre_screener_session {
-	display: grid;
-	grid-template-columns: 50% 50%;
+  display: grid;
+  grid-template-columns: 50% 50%;
 }
 .pre_screener_session div:nth-child(even) {
-	text-align: right;
+  text-align: right;
 }
 .pre_screener_session div {
-	margin: 0.5rem 0;
-	/* border: 1px solid red; */
+  margin: 0.5rem 0;
+  /* border: 1px solid red; */
 }
 .pre_screener_session span {
-	font-size: 18px;
+  font-size: 18px;
 }
 .pre_screener_session span:last-child {
-	color: gray;
-	margin-left: 5px;
+  color: gray;
+  margin-left: 5px;
 }
 .response_ans {
-	margin-left: 5px;
+  margin-left: 5px;
 }
 .response_ans span {
-	columns: gray;
+  columns: gray;
 }
 
 .legend {
-	font-size: 18px;
-	text-align: center;
-	width: 40%;
-	padding: 1rem;
-	margin: 2rem auto;
-	border-bottom: 3px dotted gray;
+  font-size: 18px;
+  text-align: center;
+  width: 40%;
+  padding: 1rem;
+  margin: 2rem auto;
+  border-bottom: 3px dotted gray;
 }
 
 /* questionnaire_attempts  */
-.questionnaire_attempts {
-	display: grid;
-	grid-template-columns: repeat(2, 1fr);
+/* .questionnaire_attempts {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
 }
 .questionnaire_attempt {
-	display: flex;
-	align-items: center;
+  display: flex;
+  align-items: center;
 }
 .questionnaire_attempt:nth-child(even) {
-	display: flex;
-	justify-content: flex-end;
+  display: flex;
+  justify-content: flex-end;
 }
 .questionnaire_attempt {
-	margin: 0.5rem 0;
-	/* border: 1px solid red; */
-}
+  margin: 0.5rem 0;
+  border: 1px solid red;
+} */
 .response_question,
 .response_ans {
-	font-size: 18px;
+  font-size: 18px;
 }
 .response_ans {
-	color: gray;
-	padding-left: 10px;
+  color: gray;
+  padding-left: 10px;
 }
 
 /* techincal details  */
 .technical_details {
-	display: grid;
-	grid-template-columns: 50% 50%;
+  display: grid;
+  grid-template-columns: 50% 50%;
 }
 .technical_details div:nth-child(even) {
-	text-align: right;
+  text-align: right;
 }
 .technical_details div {
-	margin: 0.5rem 0;
-	/* border: 1px solid red; */
+  margin: 0.5rem 0;
+  /* border: 1px solid red; */
 }
 .technical_details div span {
-	font-size: 18px;
+  font-size: 18px;
 }
 .technical_details div span:last-child {
-	margin-left: 5px;
-	color: gray;
+  margin-left: 5px;
+  color: gray;
 }
 
 .continue_btn {
-	background-color: rgb(86, 86, 241);
-	color: white;
-	border: none;
-	border-radius: 3px;
-	width: 7rem;
-	height: 2.8rem;
-	font-size: 18px;
-	letter-spacing: 0.4px;
-	float: right;
-	margin: 2rem 0;
-	cursor: pointer;
+  background-color: rgb(86, 86, 241);
+  color: white;
+  border: none;
+  border-radius: 3px;
+  width: 7rem;
+  height: 2.8rem;
+  font-size: 18px;
+  letter-spacing: 0.4px;
+  float: right;
+  margin: 2rem 0;
+  cursor: pointer;
 }
 .continue_btn:hover {
-	background-color: rgb(117, 117, 248);
+  background-color: rgb(117, 117, 248);
+}
+.questionnaire_attempts_table {
+  width: 100%;
+}
+.questionnaire_attempts_table tr,
+.questionnaire_attempts_table td {
+  border: 1px solid gray;
+}
+.questionnaire_attempts_table thead {
+  background-color: rgb(198, 198, 198);
+}
+.questionnaire_attempts_table thead tr th {
+  padding: 10px;
+  text-transform: capitalize;
+}
+.questionnaire_attempts_table tbody tr td {
+  text-align: center;
+  padding: 5px;
 }

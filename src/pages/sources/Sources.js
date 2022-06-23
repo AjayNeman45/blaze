@@ -44,47 +44,63 @@ function Sources() {
       <SurveyInfo />
       <div className={styles.container}>
         <h1 className={styles.title}>Panel Sources And Traffic Channels</h1>
-        <h2 style={{ textAlign: "left", marginTop: "20px" }}>
-          External Suppliers
-        </h2>
-        <div className={styles.cards_container}>
-          {surveydata?.external_suppliers?.map((data, index) => {
-            return (
-              <div className={styles.single_card} key={uuid()}>
-                <Card
-                  data={data}
-                  title={data?.supplier_account}
-                  supplier_id={hashids.encode([data?.supplier_account_id])}
-                  surveyid={surveyID}
-                  index={index}
-                  surveydata={surveydata}
-                  setSurveydata={setSurveydata}
-                  setOpenSnackbar={setOpenSnackbar}
-                  supplier_type={"external_suppliers"}
-                />
-              </div>
-            );
-          })}
+        <div className={styles.legend}>
+          <div className={styles.big_circle}></div>
+          <h2 className={styles.legend_title}>External Suppliers</h2>
         </div>
-        <h2 style={{ textAlign: "left", marginTop: "20px" }}>
-          Internal Suppliers
-        </h2>
-        <div className={styles.cards_container}>
-          {surveydata?.internal_suppliers?.map((data, index) => {
-            return (
-              <div className={styles.single_card}>
-                <Card
-                  data={data}
-                  supplier_id={hashids.encode([data?.supplier_account_id])}
-                  index={index}
-                  title={data?.supplier_account}
-                  surveyid={surveyID}
-                  surveydata={surveydata}
-                />
-              </div>
-            );
-          })}
+
+        {!surveydata?.external_suppliers?.length ? (
+          <span className={styles.not_found_supplier_txt}>
+            No external suppliers found
+          </span>
+        ) : (
+          <div className={styles.cards_container}>
+            {surveydata?.external_suppliers?.map((data, index) => {
+              return (
+                <div className={styles.single_card} key={uuid()}>
+                  <Card
+                    data={data}
+                    title={data?.supplier_account}
+                    supplier_id={hashids.encode([data?.supplier_account_id])}
+                    surveyid={surveyID}
+                    index={index}
+                    surveydata={surveydata}
+                    setSurveydata={setSurveydata}
+                    setOpenSnackbar={setOpenSnackbar}
+                    supplier_type={"external_suppliers"}
+                  />
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        <div className={styles.legend}>
+          <div className={styles.big_circle}></div>
+          <h2 className={styles.legend_title}>Internal Suppliers</h2>
         </div>
+        {!surveydata?.internal_suppliers?.length ? (
+          <span className={styles.not_found_supplier_txt}>
+            No internal suppliers found
+          </span>
+        ) : (
+          <div className={styles.cards_container}>
+            {surveydata?.internal_suppliers?.map((data, index) => {
+              return (
+                <div className={styles.single_card}>
+                  <Card
+                    data={data}
+                    supplier_id={hashids.encode([data?.supplier_account_id])}
+                    index={index}
+                    title={data?.supplier_account}
+                    surveyid={surveyID}
+                    surveydata={surveydata}
+                  />
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </>
   );

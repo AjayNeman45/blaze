@@ -40,6 +40,7 @@ const AllocationContextProvider = ({ children }) => {
   const [supplierData, setSupplierData] = useState({
     unreserved_completes: false,
     global_redirect: true,
+    vendor_status: "active",
   });
 
   const handleInternalSupplierModal = () => {

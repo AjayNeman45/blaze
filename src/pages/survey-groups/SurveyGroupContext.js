@@ -135,13 +135,7 @@ const SurveyGroupContextProvider = ({ children }) => {
       .catch((err) => console.log(err.message));
   };
 
-  const handleDeleteSurveyGrps = (
-    surveyGrpsNos,
-    setSelectedGrpsCnt,
-    setSelectedSurveyGrps
-  ) => {
-    setSelectedGrpsCnt(0);
-    setSelectedSurveyGrps([]);
+  const handleDeleteSurveyGrps = (surveyGrpsNos, setCheckRows) => {
     surveyGrpsNos?.map((grpNum) => {
       deleteSurveyGroup(grpNum)
         .then(() => {
@@ -153,19 +147,20 @@ const SurveyGroupContextProvider = ({ children }) => {
           });
           setSurveyGrps((prevData) => {
             return prevData?.filter((data) => {
-              return data?.survey_group_number !== grpNum;
+              return data?.survey_group_number !== parseInt(grpNum);
             });
           });
         })
         .catch((err) => {
           setSnackbarData({
             msg: "Oops! something went wrong try again",
-            severity: "success",
+            severity: "error",
             show: true,
             handleClose: handleCloseSnackbar,
           });
         });
     });
+    setCheckRows([]);
   };
 
   useEffect(() => {

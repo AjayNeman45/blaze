@@ -296,7 +296,7 @@ const BasicSurveyInfo = () => {
                 </label>
                 <input
                   type="number"
-                  placeholder="1102003"
+                  placeholder="eg. 1102003"
                   onChange={(e) => {
                     setSurveyData((prevData) => {
                       return {

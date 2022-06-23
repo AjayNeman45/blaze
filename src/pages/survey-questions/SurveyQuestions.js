@@ -72,6 +72,7 @@ const SurveyQuestions = () => {
       question_id: String(questionNumber),
       user_response: parseInt(response),
     };
+    setResponse(null);
 
     let cntCompleted = 0;
     sessions.forEach((session) => {
@@ -105,8 +106,10 @@ const SurveyQuestions = () => {
         console.log("Cangrats You are qualify for the survey");
       } else history.push(nextQuestionUrl);
     } else {
-      if (gamma === "alpha") history.push(predirectUrl);
-      else {
+      if (gamma === "alpha") {
+        addQualificationResponseInSessions(body, mirats_status);
+        history.push(predirectUrl);
+      } else {
         setErrCode(mirats_status);
         setErrMsg(
           `Respondent failed on a ${
@@ -133,7 +136,7 @@ const SurveyQuestions = () => {
       question_id: String(questionNumber),
       user_response: multiPunchResp,
     };
-    question?.is_core_demographic ? (mirats_status = 23) : (mirats_status = 24);
+    setMultiPunchRes([]);
 
     let cntCompleted = {};
     for (let i = 0; i < multiPunchResp?.length; i++) {
@@ -150,7 +153,10 @@ const SurveyQuestions = () => {
       });
     });
 
+    question?.is_core_demographic ? (mirats_status = 23) : (mirats_status = 24);
     // conditions for right answer
+    addQualificationResponseInSessions(body, mirats_status);
+
     if (multiPunchResp.length < question?.conditions?.how_many?.min) {
       if (gamma === "alpha") history.push(predirectUrl);
       else
@@ -164,7 +170,6 @@ const SurveyQuestions = () => {
           `Select maximum ${question?.conditions?.how_many?.max} options`
         );
     } else if (!flag) {
-      addQualificationResponseInSessions(body, mirats_status);
       if (gamma === "alpha") history.push(predirectUrl);
       else {
         setErrCode(mirats_status);
@@ -175,12 +180,9 @@ const SurveyQuestions = () => {
         );
       }
     } else {
-      // setMultiPunchRes("")
-      // setError("")
-      isFinalQuestion ? (mirats_status = 3) : (mirats_status = 1);
-
-      addQualificationResponseInSessions(body, mirats_status);
       if (isFinalQuestion) {
+        isFinalQuestion ? (mirats_status = 3) : (mirats_status = 1);
+        addQualificationResponseInSessions(body, mirats_status);
         if (gamma === "alpha") history.push(predirectUrl);
         else history.push(refereneUrl);
         console.log("Cangrats You are qualify for the survey");
@@ -252,8 +254,10 @@ const SurveyQuestions = () => {
         console.log("Cangrats You are qualify for the survey");
       } else history.push(nextQuestionUrl);
     } else {
-      if (gamma === "alpha") history.push(predirectUrl);
-      else {
+      if (gamma === "alpha") {
+        addQualificationResponseInSessions(body, mirats_status);
+        history.push(predirectUrl);
+      } else {
         setErrCode(mirats_status);
         setErrMsg(
           `Respondent failed on a ${

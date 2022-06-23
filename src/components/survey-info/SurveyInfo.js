@@ -20,6 +20,7 @@ import {
   statusOptions,
 } from "../../utils/commonData";
 import ChangeInternalStatusModal from "./ChangeInternalStatusModal";
+import { useBaseContext } from "../../context/BaseContext";
 
 const style = {
   position: "absolute",
@@ -36,14 +37,13 @@ const style = {
 };
 
 function SurveyInfo() {
+  const { userData } = useBaseContext();
   const history = useHistory();
   const [surveyNameEditModal, setSurveyNameEditModal] = useState(false);
   const [newSurveyName, setNewSurveyName] = useState();
   const [changedSurveyName, setChangeSurveyName] = useState("");
   const [externalSurveyName, setExternalSurveyName] = useState("");
   const [surveyStatus, setSurveyStatus] = useState("");
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [snackbarMsg, setSnackbarMsg] = useState("");
   const [surveyCloneModal, setSurveyCloneModal] = useState(false);
   const [surveyExterNameModal, setSurveyExterNameModal] = useState(false);
   const [snackbar, setSnackbar] = useState(false);
@@ -92,8 +92,22 @@ function SurveyInfo() {
   const handleChangeSurveyNameBtn = (e) => {
     e.preventDefault();
     setSurveyNameEditModal(false);
+    let changes = survey?.changes;
+    changes.push({
+      changed_by: {
+        email: userData?.email,
+        name:
+          userData?.basicinfo?.firstname + " " + userData?.basicinfo?.lastname,
+        updated_at: new Date(),
+      },
+      "survey name": {
+        changed_to: changedSurveyName,
+        previous_change: survey?.survey_name,
+      },
+    });
     const body = {
       survey_name: changedSurveyName,
+      changes,
     };
     updateSurvey(surveyID, body)
       .then(() => {
@@ -113,8 +127,22 @@ function SurveyInfo() {
   const handleSetExternalSurveyNameBtn = (e) => {
     e.preventDefault();
     setSurveyExterNameModal(false);
+    let changes = survey?.changes;
+    changes.push({
+      changed_by: {
+        email: userData?.email,
+        name:
+          userData?.basicinfo?.firstname + " " + userData?.basicinfo?.lastname,
+        updated_at: new Date(),
+      },
+      "survey external name": {
+        changed_to: externalSurveyName,
+        previous_change: survey?.external_survey_name,
+      },
+    });
     const body = {
       external_survey_name: externalSurveyName,
+      changes,
     };
     updateSurvey(surveyID, body)
       .then(() => {
@@ -125,7 +153,9 @@ function SurveyInfo() {
         });
         setExternalSurveyName("");
       })
-      .catch((err) => console.log(err.message));
+      .catch((err) => {
+        console.log(err.message);
+      });
   };
 
   const handleSurveyClone = () => {
@@ -368,7 +398,10 @@ function SurveyInfo() {
               <button onClick={() => setSurveyCloneModal(false)}>Close</button>
               <p
                 className={styles.go_to_settings_btn}
-                onClick={() => history.push(`/surveys/settings/${newSurveyID}`)}
+                onClick={() => {
+                  setSurveyCloneModal(false);
+                  history.push(`/surveys/settings/${newSurveyID}`);
+                }}
               >
                 Go to Settings
               </p>
@@ -407,8 +440,8 @@ export const NameModal = ({
   handleSaveBtn,
   openModal,
   setOpenModal,
+  prevName,
 }) => {
-  const [prevName, setPrevName] = useState(changeName);
   const [disabledSaveBtn, setDisabledSaveBtn] = useState(true);
 
   const handleChange = (e) => {

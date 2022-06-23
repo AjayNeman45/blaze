@@ -25,23 +25,53 @@ const SurveyGroups = () => {
   const [selectedGrpsCnt, setSelectedGrpsCnt] = useState(0);
   const [selectedSurveyGrps, setSelectedSurveyGrps] = useState([]);
   const [deleteSurveyGrpModal, setDeleteSureveyGrpModal] = useState(false);
+  const [checkRows, setCheckRows] = useState([]);
+
   const history = useHistory();
 
+  const handleSelect = (e) => {
+    if (e.target.checked) {
+      // setCountCheckProjects(countCheckedProjects + 1);
+      setCheckRows([...checkRows, e.target.name]);
+    } else {
+      // setCountCheckProjects(countCheckedProjects - 1);
+      setCheckRows((checkRows) => {
+        return checkRows.filter((row) => row != e.target.name);
+      });
+    }
+  };
+
+  useEffect(() => {
+    document.querySelectorAll("tr").forEach((tr) => {
+      const first_cell = tr.querySelector("td");
+      if (
+        checkRows?.includes(
+          first_cell?.querySelector("input").getAttribute("name")
+        )
+      ) {
+        tr.style.backgroundColor = "rgb(222, 222, 230)";
+      } else {
+        tr.style.backgroundColor = "";
+      }
+    });
+  }, [checkRows]);
   return (
     <>
-      <SnackbarMsg
-        open={snackbarData?.show}
-        msg={snackbarData?.msg}
-        severity={snackbarData?.severity}
-        handleClose={handleCloseSnackbar}
-      />
+      {snackbarData?.show ? (
+        <SnackbarMsg
+          open={snackbarData?.show}
+          msg={snackbarData?.msg}
+          severity={snackbarData?.severity}
+          handleClose={handleCloseSnackbar}
+        />
+      ) : null}
 
       {/* add survey group modal  */}
       {addSurveyGrpModal ? (
         <CreateSurveyGroupModal
           openModal={addSurveyGrpModal}
           setOpenModal={setAddSurveyGroupModal}
-          surveyGrpNumber={selectedSurveyGrps}
+          surveyGrpNumber={checkRows}
           setSelectedGrpsCnt={setSelectedGrpsCnt}
           setSelectedSurveyGrps={setSelectedSurveyGrps}
         />
@@ -89,25 +119,32 @@ const SurveyGroups = () => {
                     <td className={styles.first_column}>
                       <input
                         type="checkbox"
-                        checked={selectedSurveyGrps.includes(
-                          sg?.survey_group_number
+                        // checked={selectedSurveyGrps.includes(
+                        //   sg?.survey_group_number
+                        // )}
+                        checked={checkRows?.includes(
+                          String(sg?.survey_group_number)
                         )}
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            setSelectedGrpsCnt((preNum) => preNum + 1);
-                            setSelectedSurveyGrps((prevData) => [
-                              ...prevData,
-                              sg?.survey_group_number,
-                            ]);
-                          } else {
-                            setSelectedGrpsCnt((preNum) => preNum - 1);
-                            setSelectedSurveyGrps((prevData) => {
-                              return prevData?.filter((num) => {
-                                return num !== sg?.survey_group_number;
-                              });
-                            });
-                          }
-                        }}
+                        name={sg?.survey_group_number}
+                        onChange={
+                          handleSelect
+                          // (e) => {
+                          //   if (e.target.checked) {
+                          //     setSelectedGrpsCnt((preNum) => preNum + 1);
+                          //     setSelectedSurveyGrps((prevData) => [
+                          //       ...prevData,
+                          //       sg?.survey_group_number,
+                          //     ]);
+                          //   } else {
+                          //     setSelectedGrpsCnt((preNum) => preNum - 1);
+                          //     setSelectedSurveyGrps((prevData) => {
+                          //       return prevData?.filter((num) => {
+                          //         return num !== sg?.survey_group_number;
+                          //       });
+                          //     });
+                          //   }
+                          // }
+                        }
                       />
                       <div className={styles.first_col_container}>
                         <Tooltip content={<p>{sg?.survey_group_name}</p>}>
@@ -166,17 +203,16 @@ const SurveyGroups = () => {
       <DeleteConfirmModal
         open={deleteSurveyGrpModal}
         handleCloseDeleteModal={() => setDeleteSureveyGrpModal(false)}
-        data={selectedSurveyGrps}
-        setSelectedGrpsCnt={setSelectedGrpsCnt}
-        setSelectedSurveyGrps={setSelectedSurveyGrps}
+        data={checkRows}
+        setCheckRows={setCheckRows}
       />
 
       {/* edit / delete footer popup  */}
-      {selectedGrpsCnt ? (
+      {checkRows?.length ? (
         <div className={styles.delete_edit_popup}>
-          <p className={styles.selected_grps_cnt}>{selectedGrpsCnt}</p>
+          <p className={styles.selected_grps_cnt}>{checkRows?.length}</p>
           <button onClick={() => setDeleteSureveyGrpModal(true)}>Delete</button>
-          {selectedGrpsCnt > 1 ? null : (
+          {checkRows?.length > 1 ? null : (
             <button onClick={() => setAddSurveyGroupModal(true)}>Edit</button>
           )}
         </div>
@@ -199,8 +235,7 @@ const DeleteConfirmModal = ({
   open,
   handleCloseDeleteModal,
   data,
-  setSelectedGrpsCnt,
-  setSelectedSurveyGrps,
+  setCheckRows,
 }) => {
   const style = {
     position: "absolute",
@@ -243,11 +278,7 @@ const DeleteConfirmModal = ({
               className={styles.btn_active}
               onClick={() => {
                 handleCloseDeleteModal();
-                handleDeleteSurveyGrps(
-                  data,
-                  setSelectedGrpsCnt,
-                  setSelectedSurveyGrps
-                );
+                handleDeleteSurveyGrps(data, setCheckRows);
               }}
             >
               Confirm

@@ -1,69 +1,75 @@
 .change_log {
-	margin: 0 1rem;
-	/* border: 1px solid red; */
-	padding: 2rem;
+  margin: 0 1rem;
+  /* border: 1px solid red; */
+  padding: 2rem;
 }
 .change_log > .change_log_title {
-	font-size: 30px;
-	font-weight: bold;
-	margin-bottom: 1rem;
+  font-size: 30px;
+  font-weight: bold;
+  margin-bottom: 1rem;
 }
 
 .change_log_table {
-	margin-top: 1rem;
-	width: 100%;
-	border-collapse: collapse;
+  margin-top: 1rem;
+  width: 100%;
+  border-collapse: collapse;
 }
 .change_log_table tr th,
 .change_log_table tr td {
-	padding: 10px;
-	text-align: center;
-	/* border: 1px solid red; */
+  padding: 10px;
+  text-align: center;
 }
 
 .change_log_table thead {
-	border: transparent;
+  border: transparent;
 }
 .change_log_table tbody {
-	border: 1px solid rgb(184, 184, 184);
+  border: 1px solid rgb(184, 184, 184);
+  border-radius: 20px;
 }
 .change_log_table thead tr th {
-	text-align: center;
-	padding: 30px 15px;
-	/* width: 70%; */
+  text-align: center;
+  padding: 30px 15px;
+  /* width: 70%; */
 }
 
 .change_log_table thead th span {
-	background-color: rgba(238, 238, 238, 0.75);
-	color: black;
-	border-radius: 34px;
-	padding: 10px 50px;
-	width: 100%;
-	/* border: 1px solid red; */
-	/* / text-align: center; / */
+  background-color: rgba(238, 238, 238, 0.75);
+  color: black;
+  border-radius: 34px;
+  padding: 10px 50px;
+  width: 100%;
+  /* border: 1px solid red; */
+  /* / text-align: center; / */
 }
 
 .change_log_table thead th:nth-child(2) span {
-	padding: 10px 15px;
+  padding: 10px 15px;
 }
-.change_log_table .innertable {
-	border: transparent;
-	width: 100%;
-}
-.change_log_table .innertable tr {
-	border: none;
+.innertable {
+  border: transparent;
+  width: 100%;
+  border-spacing: 30px;
 }
 .innertable tr td {
-	border: 1px solid black;
-	width: 33%;
+  border: 1px solid black;
+  width: 33%;
 }
 .innertable tbody {
-	border: none;
+  border: none;
 }
-.innertable tbody tr {
-	border: none;
+.innertable tr td {
+  border: none;
 }
-.innertable tbody tr td {
-	border: none;
-	border-top: 1px solid gray;
+
+.removed_value_field p {
+  background-color: rgb(254, 224, 224);
+  border-radius: 20px;
+  width: 100%;
+  padding: 5px 0;
+}
+.new_value_field p {
+  background-color: rgb(222, 252, 222);
+  border-radius: 20px;
+  padding: 5px 0;
 }

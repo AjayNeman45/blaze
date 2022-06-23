@@ -521,12 +521,15 @@ const AddQuotaModal = ({
 
   return (
     <>
-      <SnackbarMsg
-        msg={snackbarData?.msg}
-        severity={snackbarData?.severity}
-        open={showSnackbar}
-        handleClose={handleSnackbar}
-      />
+      {showSnackbar ? (
+        <SnackbarMsg
+          msg={snackbarData?.msg}
+          severity={snackbarData?.severity}
+          open={showSnackbar}
+          handleClose={handleSnackbar}
+        />
+      ) : null}
+
       <Modal
         open={showQuotaAddModal}
         onClose={() => setShowQuotaAddModal(false)}

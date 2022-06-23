@@ -154,11 +154,11 @@ const SurveyDashboardContextProvider = ({ children }) => {
     updateSurvey(surveyID, body)
       .then(() => {
         console.log("survey name updated");
+        setSnackbar(true);
         setSnackbarData({
           msg: "survey name is updated",
           severity: "success",
         });
-        setSnackbar(true);
         setNewSurveyName(changedSurveyName);
       })
       .catch((err) =>

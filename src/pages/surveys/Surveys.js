@@ -70,7 +70,7 @@ const Surveys = () => {
   const view = new URLSearchParams(location.search).get("view");
   const [statusesCnt, setStatusesCnt] = useState({});
   const [currentSurveys, setCurrentSurveys] = useState([]);
-  const { surveys, clients } = useSurveyContext();
+  const { surveys, clients, teams } = useSurveyContext();
   const { currentProjects, filters, setFilters } = useProjectContext();
   const countries = useMemo(() => countryList().getData(), []);
   const [openDelConfirmationModal, setOpenDelConfirmationModal] =
@@ -166,19 +166,30 @@ const Surveys = () => {
   const filterSurveys = () => {
     Object.keys(filters).forEach((key) => {
       if (key === "study_type" || key === "survey_type") {
+        let value;
+        if (key === "study_type") {
+          studyTypesData?.map((type) => {
+            if (type?.label === filters[key]) value = type?.value;
+          });
+        } else {
+          surveyTypesData?.map((type) => {
+            if (type?.label === filters[key]) value = type?.value;
+          });
+        }
         setCurrentSurveys((prevData) => {
           return prevData.filter((survey) => {
-            if (survey?.[key] === filters[key]) return survey;
+            console.log(survey?.[key]);
+            if (survey?.[key] === value) return survey;
           });
         });
       } else if (key === "lead_pm") {
+        let pmID;
+        teams?.project_managers?.map((pm) => {
+          if (pm?.label === filters[key]) pmID = pm?.value;
+        });
         setCurrentSurveys((prevData) => {
           return prevData.filter((survey) => {
-            if (
-              survey?.mirats_insights_team?.project_managers.includes(
-                filters[key]
-              )
-            )
+            if (survey?.mirats_insights_team?.project_managers.includes(pmID))
               return survey;
           });
         });
@@ -256,14 +267,6 @@ const Surveys = () => {
     });
   };
 
-  const [teams, setTeams] = useState({});
-
-  useEffect(() => {
-    getMiratsInsightsTeam().then((data) => {
-      setTeams(data);
-    });
-  }, []);
-
   return (
     <>
       <Header />
@@ -315,9 +318,9 @@ const Surveys = () => {
                     });
                   }}
                 >
-                  {projectManagersData?.map((pm) => (
-                    <MenuItem value={pm} key={uuid()}>
-                      {pm}
+                  {teams?.project_managers?.map((pm) => (
+                    <MenuItem value={pm?.label} key={uuid()}>
+                      {pm?.label}
                     </MenuItem>
                   ))}
                 </Muiselect>
@@ -1024,9 +1027,15 @@ const SurveyTable = ({
                           </Tooltip>
 
                           <span
-                            className={`survey_status_${project.internal_status} survey_status`}
+                            className={`survey_status_${
+                              project.internal_status
+                                ? project.internal_status.replace(" ", "")
+                                : project.status
+                            } survey_status`}
                           >
-                            {project.internal_status}
+                            {project?.internal_status
+                              ? project?.internal_status
+                              : project?.status}
                           </span>
                         </div>
 
@@ -1124,9 +1133,15 @@ const SurveyTable = ({
                       <span>{project?.client_info?.client_cost_currency} </span>
                     </td>
                     <td>
-                      <p className="tableValue study_type">
-                        {project?.study_type}
-                      </p>
+                      {studyTypesData?.map((type) => {
+                        if (type?.value === project?.study_type) {
+                          return (
+                            <p className="tableValue study_type" key={uuid()}>
+                              {type?.label}
+                            </p>
+                          );
+                        }
+                      })}
                       <br />
                       <p className="survey_type">{project?.survey_type}</p>
                     </td>
@@ -1164,16 +1179,6 @@ const TooltipForSurveyName = ({ name }) => {
   return (
     <>
       <p>{name}</p>
-    </>
-  );
-};
-
-const OtherPMsTooltip = ({ pms }) => {
-  return (
-    <>
-      {pms.map((pm, index) => {
-        if (index !== 0) return <p key={uuid()}>{pm}</p>;
-      })}
     </>
   );
 };

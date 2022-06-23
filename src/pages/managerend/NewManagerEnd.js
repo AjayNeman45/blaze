@@ -109,12 +109,15 @@ const NewManagerEnd = () => {
 
   return (
     <>
-      <SnackbarMsg
-        msg="Qualification added successfully...!"
-        severity="success"
-        open={openSnackbar}
-        handleClose={handleSnackbar}
-      />
+      {openSnackbar ? (
+        <SnackbarMsg
+          msg="Qualification added successfully...!"
+          severity="success"
+          open={openSnackbar}
+          handleClose={handleSnackbar}
+        />
+      ) : null}
+
       <Header />
       <Subheader />
       <div className={styles.add_qualification_page}>

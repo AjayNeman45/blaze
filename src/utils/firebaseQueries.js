@@ -514,7 +514,7 @@ export const deleteSurveyGroup = async (surveyGrpNum) => {
   return getDocs(
     query(
       collection(db, "miratsinsights", "blaze", "survey_groups"),
-      where("survey_group_number", "==", surveyGrpNum)
+      where("survey_group_number", "==", parseInt(surveyGrpNum))
     )
   ).then(async (surveyGrpDoc) => {
     return await deleteDoc(

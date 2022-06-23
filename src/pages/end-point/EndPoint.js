@@ -22,10 +22,13 @@ function msToTime(duration) {
 const EndPoint = () => {
   const history = useHistory();
   const [staticRedirectUrl, setStaticRedirectUrl] = useState();
+  // const [wrongIdMSg]
   const { id, status } = useParams();
 
   const decodedID = hashids.decode(id.includes("Test") ? id.split("-")[1] : id);
   useEffect(() => {
+    if (!decodedID.length) {
+    }
     let gamma = ""; // flag = true means the id does not contain Test word
     if (id.includes("Test")) {
       gamma = "alpha";
@@ -36,6 +39,7 @@ const EndPoint = () => {
       .then((sessions) => {
         sessions.forEach((session) => {
           const sd = session.data(); // session data
+          console.log(sd);
           if (
             sd?.supplier_account_id === decodedID[1] &&
             sd?.tid === decodedID[2]
@@ -85,12 +89,15 @@ const EndPoint = () => {
             // 		}
             // 	})
             // })
+          } else {
+            console.log("tid not found");
           }
         });
       })
       .catch((err) => console.log(err.message));
   }, [decodedID]);
 
+  console.log(!decodedID?.length ? "ID Dosen't exist in the database" : null);
   return (
     <>
       <div className={styles.header}>
@@ -154,6 +161,9 @@ const EndPoint = () => {
               }
             })()}
           </h1>
+          {/* <p className={styles.id_dosent_exist_msg}>
+            {!decodedID?.length ? "ID Dosen't exist" : null}
+          </p> */}
           <p className={styles.desc}>
             Thank you very much for your participation. Your points will credit
             in your account. We appreciate you inputs. In case of any issue

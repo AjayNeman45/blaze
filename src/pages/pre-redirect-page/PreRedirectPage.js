@@ -2,7 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { decryptText } from "../../utils/enc-dec.utils";
 import {
+  getAllQuestionLibraryQuestions,
   getQuestion,
+  getQuestions,
   getSessionBasedOnType,
   getSurvey,
   updateSession,
@@ -18,6 +20,7 @@ const PreRedirectPage = () => {
   const [testSession, setTestSession] = useState(null);
   const [question, setQuestion] = useState(null);
   const { encryptedID, questionNumber } = useParams();
+  const [questionLibraryQues, setQuestionLibraryQues] = useState([]);
   const [survey, setSurvey] = useState({});
   const surveyID = decryptText(
     encryptedID?.split("-")[0] ? encryptedID?.split("-")[0] : ""
@@ -52,9 +55,17 @@ const PreRedirectPage = () => {
 
   useEffect(() => {
     const func = async () => {
+      console.log(questionNumber);
       await getQuestion(questionNumber)
         .then((res) => setQuestion(res.data()))
         .catch((err) => console.log(err));
+      await getAllQuestionLibraryQuestions().then((res) => {
+        let tmp = [];
+        res.forEach((r) => {
+          tmp.push(r.data());
+        });
+        setQuestionLibraryQues(tmp);
+      });
     };
     questionNumber && func();
   }, [questionNumber]);
@@ -66,6 +77,14 @@ const PreRedirectPage = () => {
     updateSession(surveyID, sessionID, gamma, body)
       .then(() => {
         console.log("survey start time updated");
+        const x = survey?.test_url?.split("[%rid%]")?.[0]
+          ? survey?.test_url?.split("[%rid%]")?.[0]
+          : "";
+        const y = survey?.test_url?.split("[%rid%]")?.[1]
+          ? survey?.test_url?.split("[%rid%]")?.[1]
+          : "";
+        let url = x + testSession?.ref_id + y;
+        window.location.href = url;
       })
       .catch((err) => console.log(err.message));
   };
@@ -73,6 +92,8 @@ const PreRedirectPage = () => {
   window.addEventListener("popstate", () => {
     history.go(1);
   });
+
+  console.log(questionLibraryQues);
 
   return (
     <div className={styles.preRedirectPage}>
@@ -145,36 +166,62 @@ const PreRedirectPage = () => {
 
         <div className={styles.client_redirect_url}>
           <span>Client Redirect URL:</span>
-          <span>
-            http://localhost:3000/blaze/53616c7465645f5f56307e1a0891dcea206f60f
-          </span>
+          <span>{window.location.href}</span>
         </div>
       </div>
 
       <p className={styles.legend}>Questionnaire Attempts</p>
       <div className={styles.questionnaire_attempts}>
-        {testSession?.responses?.map((res) => {
-          return (
-            <div className={styles.questionnaire_attempt} key={uuid()}>
-              <span className={styles.response_question}>
-                {res?.question_name}:
-              </span>
-
-              <div className={styles.response_ans}>
-                {Array.isArray(res?.user_response) ? (
-                  res?.user_response?.map((ans, i) => (
-                    <span key={uuid()}>
-                      {ans}
-                      {i + 1 != res?.user_response.length && ", "}
-                    </span>
-                  ))
+        <div className={styles.pre_redirect_table_container}>
+          <table className={styles.questionnaire_attempts_table}>
+            <thead>
+              <tr>
+                <th>question name</th>
+                <th className={styles.user_ans_col}>user answer</th>
+                <th>answer description</th>
+              </tr>
+            </thead>
+            <tbody>
+              {testSession?.responses?.map((resp) => {
+                return Array.isArray(resp?.user_response) ? (
+                  resp?.user_response?.map((ans) => {
+                    return (
+                      <tr className={styles.question_main}>
+                        <td>{resp?.question_name}</td>
+                        <td>{ans}</td>
+                        <td>
+                          {questionLibraryQues?.map((que) => {
+                            if (
+                              que?.question_id === parseInt(resp?.question_id)
+                            ) {
+                              return que?.lang[survey?.country?.code]?.options[
+                                ans
+                              ];
+                            }
+                          })}
+                        </td>
+                      </tr>
+                    );
+                  })
                 ) : (
-                  <span>{res?.user_response}</span>
-                )}
-              </div>
-            </div>
-          );
-        })}
+                  <tr className={styles.question_main}>
+                    <td>{resp?.question_name}</td>
+                    <td>{resp?.user_response}</td>
+                    <td>
+                      {questionLibraryQues?.map((que) => {
+                        if (que?.question_id === parseInt(resp?.question_id)) {
+                          return que?.lang[survey?.country?.code]?.options[
+                            resp?.user_response
+                          ];
+                        }
+                      })}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
 
         {/* <div>
 					<span>GENDER:</span>

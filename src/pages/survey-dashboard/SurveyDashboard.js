@@ -175,12 +175,20 @@ function SurveyDashboard() {
         mainStatus={surveyStatus}
         handleConfirmButton={handleConfirmButton}
       />
-      <SnackbarMsg
-        msg={snackbarData?.msg}
-        open={snackbar}
-        setSnackbar={setSnackbar}
-        severity={snackbarData.severity}
-      />
+
+      {snackbar ? (
+        <SnackbarMsg
+          msg={snackbarData?.msg}
+          open={snackbar}
+          severity={snackbarData.severity}
+          handleClose={(event, reason) => {
+            if (reason === "clickaway") {
+              return;
+            }
+            setSnackbar(false);
+          }}
+        />
+      ) : null}
 
       <Header />
       <Subheader />
@@ -408,11 +416,15 @@ function SurveyDashboard() {
               </button>
             </div>
             <div className={styles.big_card_container}>
-              {survey?.suppliers?.slice(0, 3).map((supp) => (
-                <div key={uuid()}>
-                  <SupplyOverViewBigCard supp={supp} />
-                </div>
-              ))}
+              {!survey?.suppliers?.length ? (
+                <span>No Suppliers found</span>
+              ) : (
+                survey?.suppliers?.slice(0, 3).map((supp) => (
+                  <div key={uuid()}>
+                    <SupplyOverViewBigCard supp={supp} />
+                  </div>
+                ))
+              )}
             </div>
             <div className={styles.small_card_container}>
               {/* <div>
@@ -566,7 +578,10 @@ function SurveyDashboard() {
               <div className={styles.right_small_cards}>
                 <p className={styles.title}>Qualification</p>
                 <p className={styles.count}>
-                  {survey?.qualifications?.questions?.length} Ques
+                  {survey?.qualifications?.questions?.length
+                    ? survey?.qualifications?.questions?.length
+                    : 0}{" "}
+                  Ques
                 </p>
               </div>
               <div className={styles.right_small_cards}>
@@ -598,22 +613,18 @@ function SurveyDashboard() {
       </div>
 
       {/* changed survey name edit modal  */}
-      <NameModal
-        title="Change Survey Name"
-        changeName={changedSurveyName}
-        setChangeName={setChangeSurveyName}
-        handleSaveBtn={handleChangeSurveyNameBtn}
-        openModal={surveyNameEditModal}
-        setOpenModal={setSurveyNameEditModal}
-      />
 
-      {/* snackar  */}
-      <SnackbarMsg
-        msg={snackbarData.msg}
-        severity={snackbarData?.severity}
-        open={snackbar}
-        setSnackbar={setSnackbar}
-      />
+      {surveyNameEditModal ? (
+        <NameModal
+          title="Change Survey Name"
+          changeName={changedSurveyName}
+          prevName={survey?.survey_name}
+          setChangeName={setChangeSurveyName}
+          handleSaveBtn={handleChangeSurveyNameBtn}
+          openModal={surveyNameEditModal}
+          setOpenModal={setSurveyNameEditModal}
+        />
+      ) : null}
     </>
   );
 }

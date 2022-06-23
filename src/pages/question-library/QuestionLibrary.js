@@ -148,12 +148,14 @@ const QuestionLibrary = () => {
 
   return (
     <>
-      <SnackbarMsg
-        msg={snackbarData?.msg}
-        severity={snackbarData?.severity}
-        open={snackbarData?.show}
-        handleClose={handleCloseSnackbar}
-      />
+      {snackbarData?.show ? (
+        <SnackbarMsg
+          msg={snackbarData?.msg}
+          severity={snackbarData?.severity}
+          open={snackbarData?.show}
+          handleClose={handleCloseSnackbar}
+        />
+      ) : null}
 
       {/* for creating qualification  */}
       <CreateQualifications

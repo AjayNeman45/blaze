@@ -172,21 +172,22 @@ const ConditionsColumn = ({ data }) => {
       {data?.conditions ? (
         <td className={styles.conditions_col}>
           {data?.conditions?.how_many && (
-            <>
+            <p>
               min :&nbsp; {data?.conditions?.how_many?.min} &nbsp; max :&nbsp;{" "}
               {data?.conditions?.how_many?.max}
               <br />
-            </>
+            </p>
           )}
-
-          {data?.conditions?.valid_options?.map((option, i) => {
-            return (
-              <div key={uuid()}>
-                {i === 0 && <label>one or more from: &nbsp;</label>}
-                <span>{data?.options[parseInt(option)]}</span>
-              </div>
-            );
-          })}
+          <div key={uuid()} className={styles.one_more_options}>
+            {data?.conditions?.valid_options?.map((option, i) => {
+              return (
+                <div key={uuid()}>
+                  {i === 0 && <label>one or more from: &nbsp;</label>}
+                  <span>{data?.options[parseInt(option)]}</span>
+                </div>
+              );
+            })}
+          </div>
 
           {data?.conditions?.valid_responses &&
             data?.conditions?.valid_responses.map((resp, i) => {

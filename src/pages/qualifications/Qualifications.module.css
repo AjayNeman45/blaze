@@ -117,10 +117,10 @@
 }
 .conditions_col {
   /* width: 60%; */
-  /* border: 1px solid red; */
-  display: flex;
-  align-items: center;
   flex-wrap: wrap;
+}
+.one_more_options {
+  display: flex;
 }
 .conditions_col span,
 .any_condition_pass {

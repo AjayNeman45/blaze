@@ -151,6 +151,7 @@ const NewProjectSettings = () => {
           msg: "Oops! somethig went wrong try again later",
           severity: "error",
         });
+        setChanges({});
       });
     setShowChangesBtn(false);
   };
@@ -228,46 +229,7 @@ const NewProjectSettings = () => {
                 selectedData={sData?.industry}
                 handleInputChange={handleInputChange}
               />
-              <div className={styles.input_component}>
-                <span>CPI</span>
-                <div style={{ marginTop: ".5rem" }}>
-                  <input
-                    type="number"
-                    step="any"
-                    value={sData?.client_info?.client_cpi}
-                    onChange={(e) => {
-                      if (
-                        parseFloat(e.target.value) !==
-                        surveyData?.client_info?.client_cpi
-                      ) {
-                        setChanges((prevData) => {
-                          return {
-                            ...prevData,
-                            cpi: {
-                              changed_to: e.target.value,
-                              previous_change:
-                                surveyData?.client_info?.client_cpi,
-                            },
-                          };
-                        });
 
-                        setShowChangesBtn(true);
-                      } else setShowChangesBtn(false);
-                      setSData((prevData) => {
-                        return {
-                          ...prevData,
-                          client_info: {
-                            ...prevData?.client_info,
-                            client_cpi: isNaN(e.target.value)
-                              ? null
-                              : parseFloat(e.target.value),
-                          },
-                        };
-                      });
-                    }}
-                  />
-                </div>
-              </div>
               <div className={styles.input_component}>
                 <span>Country</span>
                 <div style={{ marginTop: ".5rem" }}>
@@ -345,6 +307,46 @@ const NewProjectSettings = () => {
                 selectedData={sData?.internal_status}
                 handleInputChange={handleInputChange}
               />
+              <div className={styles.input_component}>
+                <span>CPI</span>
+                <div style={{ marginTop: ".5rem" }}>
+                  <input
+                    type="number"
+                    step="any"
+                    value={sData?.client_info?.client_cpi}
+                    onChange={(e) => {
+                      if (
+                        parseFloat(e.target.value) !==
+                        surveyData?.client_info?.client_cpi
+                      ) {
+                        setChanges((prevData) => {
+                          return {
+                            ...prevData,
+                            cpi: {
+                              changed_to: e.target.value,
+                              previous_change:
+                                surveyData?.client_info?.client_cpi,
+                            },
+                          };
+                        });
+
+                        setShowChangesBtn(true);
+                      } else setShowChangesBtn(false);
+                      setSData((prevData) => {
+                        return {
+                          ...prevData,
+                          client_info: {
+                            ...prevData?.client_info,
+                            client_cpi: isNaN(e.target.value)
+                              ? null
+                              : parseFloat(e.target.value),
+                          },
+                        };
+                      });
+                    }}
+                  />
+                </div>
+              </div>
               <div className={styles.input_component}>
                 <label>currency</label>
                 <select
@@ -691,12 +693,14 @@ const NewProjectSettings = () => {
       <ChangeLogComponent />
 
       {/* snackbar  */}
-      <SnackbarMsg
-        msg={snackbarData?.msg}
-        severity={snackbarData?.severity}
-        open={snackbar}
-        handleClose={() => setSnackbar(false)}
-      />
+      {snackbar ? (
+        <SnackbarMsg
+          msg={snackbarData?.msg}
+          severity={snackbarData?.severity}
+          open={snackbar}
+          handleClose={() => setSnackbar(false)}
+        />
+      ) : null}
     </>
   );
 };

@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import {
   addDoc,
   collection,
@@ -13,8 +13,10 @@ import {
   getAllSessions,
   getAllSurveys,
   getClients,
+  getMiratsInsightsTeam,
 } from "../../utils/firebaseQueries";
 import { useParams } from "react-router-dom";
+import { useBaseContext } from "../../context/BaseContext";
 
 const SurveyContext = createContext();
 
@@ -26,11 +28,12 @@ const SurveyContextProvider = ({ children }) => {
   const [surveys, setSurveys] = useState([]);
   const [clients, setClients] = useState([]);
   const [completedSessions, setCompletedSessions] = useState([]);
+  const [teams, setTeams] = useState({});
   useEffect(() => {
     const func = async () => {
-      const querySnapshot = await getAllSurveys();
+      const allSurveys = await getAllSurveys();
       // ------>>>>  storing the status cnts (live, awarded, paused,.....) of the surveys
-      querySnapshot?.forEach(async (doc) => {
+      allSurveys?.forEach(async (doc) => {
         let completes = 0,
           inClients = 0;
         let survey = doc.data();
@@ -61,6 +64,13 @@ const SurveyContextProvider = ({ children }) => {
         clientsTmp.push(client.data());
       });
       setClients(clientsTmp);
+
+      // fectch all the pms, sms, ams
+      getMiratsInsightsTeam()
+        .then((data) => {
+          setTeams(data);
+        })
+        .catch((err) => console.log(err.message));
     };
     func();
   }, []);
@@ -81,6 +91,7 @@ const SurveyContextProvider = ({ children }) => {
     clients,
     getCompletedSessions,
     completedSessions,
+    teams,
   };
   return (
     <SurveyContext.Provider value={value}>{children}</SurveyContext.Provider>

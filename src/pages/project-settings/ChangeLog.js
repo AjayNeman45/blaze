@@ -57,9 +57,11 @@ const ChangeLogComponent = () => {
                     </td>
                     <td>
                       <table className="innertable">
-                        <th>Changed Elements/Fields</th>
-                        <th>Removed</th>
-                        <th>Changed to</th>
+                        <thead>
+                          <th>Changed Elements/Fields</th>
+                          <th>Removed</th>
+                          <th>Changed to</th>
+                        </thead>
                         <tbody>
                           {Object.keys(change).map((oneKey, i) => {
                             if (oneKey !== "changed_by") {
@@ -69,12 +71,16 @@ const ChangeLogComponent = () => {
 
                                   <tr>
                                     <td>{oneKey}</td>
-                                    <td>
-                                      {change[oneKey]?.previous_change
-                                        ? change[oneKey]?.previous_change
-                                        : "-"}
+                                    <td className="removed_value_field">
+                                      <p>
+                                        {change[oneKey]?.previous_change
+                                          ? change[oneKey]?.previous_change
+                                          : "-"}
+                                      </p>
                                     </td>
-                                    <td>{change[oneKey]?.changed_to}</td>
+                                    <td className="new_value_field">
+                                      <p>{change[oneKey]?.changed_to}</p>
+                                    </td>
                                   </tr>
                                   {/* {/ </table> /} */}
                                 </>

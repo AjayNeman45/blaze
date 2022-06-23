@@ -26,7 +26,7 @@ function ViewRedirectsEndpoints() {
               <td>
                 <a>
                   {projectBaseURL}
-                  /7e08091a73b14e034889265e41ba796f91c766ad/I%RID%]/10{" "}
+                  /7e08091a73b14e034889265e41ba796f91c766ad/[%RID%]/10{" "}
                 </a>{" "}
               </td>
             </tr>
@@ -35,7 +35,7 @@ function ViewRedirectsEndpoints() {
               <td>
                 <a>
                   {projectBaseURL}
-                  /7e08091a73b14e034889265e41ba796f91c766ad/I%RID%]/20{" "}
+                  /7e08091a73b14e034889265e41ba796f91c766ad/[%RID%]/20{" "}
                 </a>{" "}
               </td>
             </tr>
@@ -44,7 +44,7 @@ function ViewRedirectsEndpoints() {
               <td>
                 <a>
                   {projectBaseURL}
-                  /7e08091a73b14e034889265e41ba796f91c766ad/I%RID%]/30{" "}
+                  /7e08091a73b14e034889265e41ba796f91c766ad/[%RID%]/30{" "}
                 </a>{" "}
               </td>
             </tr>
@@ -53,7 +53,7 @@ function ViewRedirectsEndpoints() {
               <td>
                 <a>
                   {projectBaseURL}
-                  /7e08091a73b14e034889265e41ba796f91c766ad/I%RID%]/40{" "}
+                  /7e08091a73b14e034889265e41ba796f91c766ad/[%RID%]/40{" "}
                 </a>{" "}
               </td>
             </tr>
@@ -61,12 +61,12 @@ function ViewRedirectsEndpoints() {
           <div className={styles.viewRedirects_container_note}>
             <p>
               Please ensure that you have to pass the respondent variable in
-              place of xxxx. For example your passing variable is $PID$ then you
-              need to enter the redirects like this for complete
+              place of [%RID%]. For example your passing variable is $PID$ then
+              you need to enter the redirects like this for complete
               <span className={styles.yellow_highlighter}>
                 {" "}
                 {projectBaseURL}
-                /7e0809la73b14e034889265e4lba796f91c766ad/SPID$/10
+                /7e0809la73b14e034889265e4lba796f91c766ad/$PID$/10
               </span>
             </p>
             <p>

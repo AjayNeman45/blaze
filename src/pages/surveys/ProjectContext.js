@@ -100,6 +100,7 @@ const ProjectContextProvider = ({ children }) => {
           });
         });
       } else if (key === "lead_pm") {
+        console.log("filtering pms");
         setCurrentProjects((prevData) => {
           return prevData.filter((survey) => {
             if (survey?.pm?.includes(filters[key])) return survey;

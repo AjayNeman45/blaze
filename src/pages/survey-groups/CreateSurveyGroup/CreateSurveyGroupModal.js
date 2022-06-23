@@ -156,8 +156,9 @@ function CreateSurveyGroupModal({
   const [btnDisabled, setBtnDisabled] = useState(true);
 
   useEffect(() => {
+    console.log(surveyGrpNumber);
     surveyGrpNumber.length &&
-      getSurveyGrpData(surveyGrpNumber[0])
+      getSurveyGrpData(parseInt(surveyGrpNumber[0]))
         .then((res) => {
           setSurveyGrpData(res.docs[0].data());
         })

@@ -147,9 +147,9 @@
   font-weight: 200;
   font-size: 10px;
   font-weight: "lighter";
-  color: white;
   padding: 2px 5px;
   font-weight: bold;
+  text-transform: uppercase;
   /* width: 6rem; */
 }
 .survey_status_ongoing {
@@ -168,11 +168,12 @@
   background-color: rgb(193, 190, 190);
   color: grey;
 }
-.survey_status_soft {
+.survey_status_softlaunch {
   background-color: skyblue;
   color: rgb(16, 98, 130);
 }
-.survey_status_full {
+
+.survey_status_fulllaunch {
   background-color: rgb(138, 138, 223);
   color: rgb(77, 77, 109);
 }
@@ -180,8 +181,24 @@
   color: rgb(162, 38, 38);
   background-color: rgb(249, 181, 181);
 }
-.survey_status_not {
+.survey_status_nottested {
   background-color: rgb(255, 158, 129);
+}
+.survey_status_reconciled {
+  background-color: rgb(189, 252, 189);
+  color: green;
+}
+.survey_status_notreconciled {
+  background-color: rgb(189, 252, 189);
+  color: green;
+}
+.survey_status_paused {
+  background-color: rgb(250, 164, 164);
+  color: rgb(230, 39, 39);
+}
+.survey_status_billed {
+  background-color: gray;
+  color: white;
 }
 .project_manager_container {
   display: flex;

@@ -235,7 +235,7 @@ const Allocations = () => {
                     Conversion <BiChevronDown />
                   </th>
                   <th>
-                    Block Optimzer <BiChevronDown />
+                    status <BiChevronDown />
                   </th>
                   <th>Actions</th>
                 </tr>
@@ -267,7 +267,7 @@ const Allocations = () => {
                       <td>
                         {CountConversion(supplier?.supplier_account_id)} %
                       </td>
-                      <td>0</td>
+                      <td>{supplier?.vendor_status}</td>
                       <td>
                         {!CalculateCompletes(supplier?.supplier_account_id) ? (
                           <a>
@@ -350,7 +350,7 @@ const Allocations = () => {
                     Conversion <BiChevronDown />
                   </th>
                   <th>
-                    Block Optimzer <BiChevronDown />
+                    Status <BiChevronDown />
                   </th>
                   <th></th>
                 </tr>
@@ -384,7 +384,7 @@ const Allocations = () => {
                       <td>
                         {CountConversion(supplier?.supplier_account_id)} %
                       </td>
-                      <td>0%</td>
+                      <td>{supplier?.vendor_status}</td>
                       <td>
                         {!CalculateCompletes(supplier?.supplier_account_id) ? (
                           <a>
@@ -441,12 +441,14 @@ const Allocations = () => {
       />
 
       {/* snackbar  */}
-      <SnackbarMsg
-        msg={snackbarData?.msg}
-        severity={snackbarData?.severity}
-        open={openSnackbar}
-        handleClose={handleSnackbar}
-      />
+      {openSnackbar ? (
+        <SnackbarMsg
+          msg={snackbarData?.msg}
+          severity={snackbarData?.severity}
+          open={openSnackbar}
+          handleClose={handleSnackbar}
+        />
+      ) : null}
 
       <DeleteConfirmationModal
         open={deletSupplierModal}

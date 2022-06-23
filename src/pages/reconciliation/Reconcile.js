@@ -53,14 +53,14 @@ const Reconcile = () => {
   };
   return (
     <>
-      {openSnackbar && (
+      {openSnackbar ? (
         <SnackbarMsg
           msg="Reconciliation updated successfully"
           severity="success"
           open={openSnackbar}
           handleClose={handleCloseSnackbar}
         />
-      )}
+      ) : null}
       <p className={styles.setup_reconciliation}>
         Step 1 of 2: Setup Reconciliation
       </p>

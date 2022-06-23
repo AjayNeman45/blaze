@@ -228,12 +228,14 @@ const Documents = () => {
         </div>
       </div>
 
-      <SnackbarMsg
-        msg={snackbarData.msg}
-        severity={snackbarData.severity}
-        open={openSnackbar}
-        handleClose={handleSnackbar}
-      />
+      {openSnackbar ? (
+        <SnackbarMsg
+          msg={snackbarData.msg}
+          severity={snackbarData.severity}
+          open={openSnackbar}
+          handleClose={handleSnackbar}
+        />
+      ) : null}
     </>
   );
 };

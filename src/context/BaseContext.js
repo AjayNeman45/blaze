@@ -4,7 +4,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { auth, db, miratsFulDb } from "../firebase";
 import { data } from "../tmp";
-import { getAllSurveyGroups, getUserData } from "../utils/firebaseQueries";
+import { getUserData } from "../utils/firebaseQueries";
 const BaseContext = createContext();
 
 export const useBaseContext = () => {
@@ -19,12 +19,10 @@ const BaseContextProvider = ({ children }) => {
   useEffect(() => {
     if (!loading) {
       if (user) {
-        console.log("user found");
+        console.log("user found", user);
         getUserData(user?.uid).then((res) => {
           setUserData(res.data());
         });
-      } else {
-        history.push("/login");
       }
     }
   }, [user, loading]);
