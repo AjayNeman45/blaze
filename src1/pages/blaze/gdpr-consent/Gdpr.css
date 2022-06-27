@@ -1,0 +1,24 @@
+.gdpr_aggrement_title {
+  font-weight: bold;
+  font-style: italic;
+  display: block;
+  margin: 30px 0;
+  font-size: 25px;
+}
+.gdpr_aggrement_points {
+  margin-left: 3rem;
+  line-height: 24px;
+  margin-top: 1rem;
+}
+.gdpr_aggrement_points a {
+  color: black;
+}
+.gdpr_aggrement_last_note {
+  margin-bottom: 1rem;
+}
+.data_rights_link {
+  color: black;
+}
+.mail_link {
+  color: rgb(57, 136, 226);
+}

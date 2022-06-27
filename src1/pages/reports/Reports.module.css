@@ -1,0 +1,322 @@
+.reports_page .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid red;
+  margin: 0 2rem;
+}
+.reports_page .container .right {
+  display: flex;
+  align-items: center;
+}
+
+.reports_page .container .right .avg_cpi_epc {
+  display: flex;
+}
+.reports_page .container .right .first_complete,
+.last_complete {
+  border-right: 1px solid gray;
+  padding: 0 30px;
+}
+.avg_cpi_epc > span {
+  background-color: black;
+  color: white;
+  font-size: 12px;
+  padding: 8px;
+  margin: 0 0.5rem;
+  border-radius: 5px;
+}
+.avg_cpi_epc > span:last-child {
+  background-color: white;
+  color: black;
+  border: 1px solid black;
+}
+.reports_page .container .left button,
+.reports_page .container .left input {
+  padding: 8px 15px;
+  border: 1px solid gray;
+  border-radius: 2px;
+  background-color: white;
+  cursor: pointer;
+  margin: 0 0.5rem;
+}
+.reports_page .container .left button {
+  padding: 10px 17px;
+}
+.reports_page .main {
+  display: flex;
+  justify-content: space-between;
+  padding: 2rem;
+  /* border: 1px solid red; */
+}
+
+.main > .left,
+.main > .right {
+  /* border: 1px solid black; */
+  margin: 0 0.5rem;
+}
+
+/* respondant activity  */
+.respondant_activity {
+  height: 27rem;
+  width: 60vw;
+  border: 1px solid #696969;
+  border-radius: 12px;
+}
+.respondant_activity .head {
+  display: flex;
+  align-items: center;
+  border-radius: 20px;
+}
+.respondant_activity .head > div {
+  display: flex;
+  /* border: 1px solid red; */
+  border-right: 1px solid lightgray;
+  border-bottom: 1px solid lightgray;
+  cursor: pointer;
+  align-items: center;
+  justify-content: space-between;
+  width: 20vw;
+  padding: 10px;
+}
+.respondant_activity .head > div:last-child {
+  border-right: none;
+}
+.respondant_activity .head .title {
+  /* border: 1px solid red; */
+  display: flex;
+  align-items: center;
+}
+.respondant_activity .head .title span {
+  text-transform: uppercase;
+  font-size: 16px;
+  margin-left: 10px;
+  font-weight: 600;
+}
+.respondant_activity .head .value {
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.respondant_activity .legend {
+  background: #f1f1f1;
+  margin: 0;
+  padding: 10px;
+  border-radius: 12px 12px 0 0;
+  font-weight: 600;
+  font-size: 20px;
+}
+.reports_page .main .left .container2 {
+  display: flex;
+  align-items: center;
+  margin-left: -1rem;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.reports_page .main .left .container2 div {
+  width: 100%;
+}
+
+/******************* alert card **************/
+.alert_card {
+  border: 1px solid #696969;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.09);
+  border-radius: 12px;
+  margin-top: 1rem;
+}
+.alert_card .legend {
+  background: #f1f1f1;
+  border-radius: 12px 12px 0px 0px;
+  padding: 10px 13px;
+  font-size: 18px;
+  font-weight: bold;
+}
+.alert_card .main_boby {
+  padding: 10px 13px;
+}
+.alert_card .subtitle {
+  font-size: 20px;
+  text-transform: uppercase;
+  margin-bottom: 13px;
+}
+.alert_card .cnt_and_alert_container {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 13px;
+}
+.alert_card .count_and_unit {
+  font-size: 20px;
+  color: red;
+  font-weight: bold;
+}
+.alert_card .expected_count {
+  margin-top: 10px;
+  text-transform: uppercase;
+  color: #787575;
+  font-weight: 500;
+}
+
+/* data analysis card  */
+.data_analysis_card {
+  border: 1px solid rgb(212, 210, 210);
+  border-radius: 5px;
+  width: 30vw;
+  height: 110vh;
+  overflow: auto;
+  overflow-x: hidden;
+}
+.data_analysis_card .legend {
+  margin: 0;
+  padding: 10px;
+  color: rgb(54, 54, 54);
+  background-color: lightgray;
+}
+.data_analysis_card .select_field {
+  width: 27.5vw !important;
+  height: 2.5rem;
+  margin: 1rem;
+}
+.client_codes,
+.marketplace_codes {
+  margin: 1rem;
+}
+
+.accordion {
+  box-shadow: none !important;
+}
+.accordion_name {
+  text-transform: uppercase;
+  font-weight: 800;
+  font-size: 15px;
+}
+.accordion_summary {
+  border-bottom: 2px solid rgb(228, 228, 228) !important;
+  padding: 0;
+}
+.css-yw020d-MuiAccordionSummary-expandIconWrapper {
+  font-size: 37px !important;
+}
+.accordion_details {
+  padding: 10px 0;
+}
+.accordion_details .name {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 500;
+}
+.accordion_details .name span:last-child {
+  font-weight: bold;
+  font-size: 25px;
+  padding-right: 10px;
+}
+.accordion_details .tag {
+  background-color: lightgray;
+  border-radius: 20px;
+  padding: 2px 7px;
+  font-size: 12px;
+  font-weight: bold;
+}
+.accordion_details .total {
+  background-color: rgb(219, 218, 218);
+  padding: 6px;
+  padding-right: 20px;
+  text-align: end;
+  margin-top: 0.5rem;
+}
+.accordion_details .total span {
+  font-weight: bold;
+}
+
+/************** status card *************/
+.clientStatus_conatiner {
+  width: 456px;
+  /* height: 425px; */
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  box-sizing: border-box;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 32px;
+  padding: 20px;
+}
+.clientStatus_div {
+  width: 188px;
+  height: 36px;
+  background: #1e6fdd;
+  border-radius: 21px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+}
+.clientStatus_conatiner h4 {
+  font-size: 26px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.clientStatus_title {
+  display: flex;
+  align-items: center;
+  margin-top: 5px;
+}
+
+.clientStatus_title h3 {
+  font-size: 14px;
+}
+.clientStatus_title p {
+  background: #abcfff;
+  border-radius: 21px;
+  padding: 4px 16px;
+  margin-left: 5px;
+}
+
+.clientStatus_progressDiv {
+  color: #4b4a4a;
+  font-size: 16px;
+  margin-top: 5px;
+}
+
+.clientStatus_progressDiv span {
+  font-size: 20px;
+  color: #000000;
+  margin-left: 10px;
+}
+
+.clientStatus_progressBar {
+  margin-bottom: 10px;
+}
+.mirats_internal_statuses_card {
+  margin-top: 2rem;
+}
+
+.total_survey_cost_card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #828282;
+  box-sizing: border-box;
+  border-radius: 21px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  padding: 1rem;
+  margin-top: 2rem;
+}
+.total_survey_cost_card .legend {
+  font-weight: 500;
+  font-size: 23px;
+  line-height: 34px;
+}
+.total_survey_cost_card .value {
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 42px;
+}
+.externalsuppliercontainer {
+  padding: 0px 40px;
+  margin-bottom: 30px;
+}
+.externalsuppliercontainer div {
+  margin-bottom: 30px;
+}

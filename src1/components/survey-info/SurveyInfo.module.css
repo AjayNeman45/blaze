@@ -1,0 +1,264 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+
+.survey_info_container {
+  width: 100%;
+  border: 1px;
+  background: rgba(229, 229, 229, 0.29);
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 40px;
+  padding: 2rem 4rem;
+  font-family: "Poppins", sans-serif;
+}
+.survey_info_container h1 {
+  color: black;
+  font-size: 32px;
+  font-weight: 600;
+}
+.survey_info_name {
+  display: flex;
+  align-items: flex-end;
+  /* border: 1px solid red; */
+}
+.survey_info_name h1 {
+  text-transform: uppercase;
+  cursor: pointer;
+  white-space: nowrap;
+  width: 40rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.survey_info_name h1:hover {
+  text-decoration: underline;
+}
+.survey_info_container .edit_btn {
+  font-size: 13px;
+  color: gray;
+  margin-left: 10px;
+  cursor: pointer;
+  margin-bottom: 6px;
+}
+
+.survey_info_container .survey_name_and_btns {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  /* border: 1px solid red; */
+}
+.survey_info_container .survey_name_and_btns .btns {
+  display: flex;
+  align-items: center;
+  margin: 0;
+}
+.survey_info_container .survey_name_and_btns .btns .get_resports_btn {
+  border: 1px solid #1e70da;
+  background: #1e70da;
+  color: white;
+  width: 181.12px;
+  height: 40px;
+  border-radius: 6px;
+}
+.project_name,
+.survey_number {
+  display: flex;
+}
+.survey_number {
+  margin-top: 1rem;
+}
+.project_name span:last-child,
+.survey_number span:last-child {
+  margin-left: 10px;
+}
+
+.title {
+  font-size: 14px;
+  font-weight: 400;
+  padding: 2px 5px 2px 5px;
+  color: #6c6c6c;
+  border: 1px solid #6b6b6b;
+  border-radius: 4px;
+  line-height: 21px;
+}
+.value {
+  color: #404040;
+  font-size: 18px;
+  line-height: 27px;
+  transform: translate;
+  display: block;
+}
+
+.live {
+  display: flex;
+  align-items: center;
+  color: #1bc64b;
+  font-size: 16px;
+  line-height: 24px;
+}
+.survey_numbers_and_status {
+  /* border: 1px solid red; */
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.status_select_field {
+  width: 10rem !important;
+  height: 2.5rem !important;
+  outline: none !important;
+  border-radius: 6px !important;
+  text-align: start !important;
+}
+.status_select_field span {
+  display: flex !important;
+  align-items: center !important;
+  text-transform: uppercase;
+}
+.action_select_field {
+  width: 10rem;
+  height: 2.5rem;
+  border-radius: 6px;
+  margin-left: 10px;
+  padding: 0 10px;
+  font-size: 18px;
+}
+.survey_numbers_and_status .status ul {
+  list-style: none;
+  display: flex;
+  margin-left: 10rem;
+}
+.survey_numbers_and_status .status ul li {
+  margin-left: 1rem;
+  text-transform: uppercase;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  color: gray;
+  letter-spacing: 0.1px;
+}
+.survey_numbers_and_status .status ul .active {
+  color: #1bc64b;
+  font-weight: bold;
+  letter-spacing: 0.1px;
+}
+
+/* change survey name modal */
+.modal_title {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-align: start;
+  color: rgb(108, 108, 108);
+  width: fit-content;
+  border-bottom: 2px solid rgb(121, 119, 119);
+  /* padding: 0.5rem; */
+}
+.change_survey_name_input {
+  width: 100%;
+  height: 4rem;
+  font-size: 20px;
+  padding-left: 20px;
+  outline: none;
+  border: 1px solid gray;
+  border-radius: 10px;
+  margin-top: 1.5rem;
+}
+.btns {
+  text-align: center;
+  margin-top: 3rem;
+}
+.btns button {
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  width: 8rem;
+  height: 3rem;
+  font-size: 17px;
+  letter-spacing: 1px;
+  font-weight: 500;
+}
+.btns .change_btn {
+  background: rgb(58, 135, 250);
+  color: white;
+}
+.btns .deactivate_btn {
+  background-color: rgb(170, 204, 255);
+  color: white;
+  cursor: not-allowed;
+}
+.btns .change_btn:hover {
+  background-color: rgb(39, 117, 235);
+}
+.btns .cancel_btn {
+  margin-left: 10px;
+  color: rgb(70, 69, 69);
+  cursor: pointer;
+  background-color: rgb(223, 221, 221);
+}
+.btns .cancel_btn:hover {
+  transition: all 0.2s linear;
+  border-radius: 3px;
+  background-color: rgb(194, 194, 194);
+}
+
+/* survey clone msg modal  */
+
+.clonedMsgModalStyle {
+  width: 500px;
+  border-radius: 30px;
+  background-color: white;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 2rem;
+  text-align: center;
+  -webkit-box-shadow: 0px 0px 59px -21px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 0px 0px 59px -21px rgba(0, 0, 0, 0.75);
+  box-shadow: 0px 0px 59px -21px rgba(0, 0, 0, 0.75);
+  position: relative;
+}
+.clonedMsgModalStyle p {
+  margin-top: 1rem;
+  letter-spacing: 0.5px;
+  font-size: 25px;
+  color: gray;
+}
+
+.clonedMsgModalStyle .btns {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.clonedMsgModalStyle .go_to_settings_btn {
+  color: rgb(0, 0, 0);
+  font-size: 17px;
+  margin-left: 10px;
+  width: 9rem;
+  height: 2.5rem;
+  padding: 0.5rem 0;
+  text-decoration: none;
+  background-color: rgb(214, 214, 214);
+  border-radius: 5px;
+  text-align: center;
+  cursor: pointer;
+}
+.clonedMsgModalStyle .go_to_settings_btn:hover {
+  background-color: rgb(194, 194, 194);
+}
+
+.clonedMsgModalStyle button {
+  width: 5rem;
+  height: 2.5rem;
+  background-color: rgb(58, 135, 250);
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  border: none;
+  font-size: 15px;
+  letter-spacing: 1px;
+}
+.clonedMsgModalStyle button:hover {
+  background-color: rgb(39, 117, 235);
+}

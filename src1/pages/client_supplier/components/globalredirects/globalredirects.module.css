@@ -1,0 +1,35 @@
+.globalredirectContainer {
+  /* width: 38%; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #a1a1a1;
+  border-radius: 56px;
+  padding: 3vmax 2vmax;
+  flex-direction: column;
+  margin-top: 2em;
+  background: #fffdfd;
+}
+.globalContent {
+  margin-top: 1vmax;
+}
+.globalContent h2 {
+  font-weight: 400;
+  font-style: 1.2vmax;
+  margin-bottom: 0.3vmax;
+}
+
+.globalBox {
+  border: 1px solid #959595;
+  padding: 2vmax 1.2vmax;
+  width: 484px;
+  border-radius: 10px;
+  margin-bottom: 0.5em;
+}
+.globalBox a {
+  text-decoration: none;
+  width: 100px !important;
+  word-wrap: break-word;
+  color: black;
+  font-weight: 500;
+}

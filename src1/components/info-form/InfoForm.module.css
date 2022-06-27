@@ -1,0 +1,50 @@
+.info_form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.infoFormData form {
+  margin-bottom: 5px;
+  padding: 5px;
+  font-size: 15px;
+  width: 24vw;
+  border-bottom: 1px solid #c4c4c4;
+  display: flex;
+  align-items: center;
+  margin-right: 5px;
+}
+
+.labelContainer {
+  width: 40%;
+}
+
+.infoFormData form label {
+  width: 50vw;
+  color: #5a5a5a;
+  font-size: 15px;
+  /* border: 1px solid red; */
+}
+
+.infoFormData form input {
+  border: none;
+  font-weight: 500;
+  width: 40%;
+  height: 32px;
+  margin-left: 10px;
+  margin-right: 15px;
+  font-size: 15px;
+}
+
+.infoFormData form input::placeholder {
+  color: black;
+}
+
+.infoFormData form span {
+  color: #959393;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.infoFormData form span:hover {
+  color: #2b9ff3;
+}

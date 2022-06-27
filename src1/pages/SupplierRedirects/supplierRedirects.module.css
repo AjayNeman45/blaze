@@ -1,0 +1,51 @@
+.supplierRedirects_container {
+  padding: 10px 15px;
+}
+
+.supplierRedirects_logo img {
+  height: 80px;
+}
+.supplierRedirects h1 {
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  font-size: 30px;
+  padding-left: 20px;
+  margin: 40px 0px;
+}
+.supplierRedirects_text {
+  padding-left: 20px;
+  font-size: 14px;
+}
+
+.supplierRedirects_text p {
+  margin: 20px 0px;
+}
+
+.supplier_redirects_table {
+  width: 90%;
+  text-align: center;
+  border-collapse: collapse;
+}
+
+.supplier_redirects_table td,
+.supplier_redirects_table tr {
+  /* border: 1px solid black; */
+  padding: 3px;
+}
+
+.table2 {
+  width: 60%;
+}
+
+.italic_text {
+  font-style: italic;
+}
+
+.highlight_text {
+  background-color: antiquewhite;
+}
+
+.black_cell {
+  background-color: rgb(26, 26, 26);
+  color: #fff;
+}

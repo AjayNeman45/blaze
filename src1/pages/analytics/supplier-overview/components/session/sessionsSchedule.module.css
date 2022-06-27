@@ -1,0 +1,38 @@
+.sessionsSchedule_container {
+  width: auto;
+  height: fit-content;
+  padding: 20px 0px;
+  background: #ffffff;
+  border: 1px solid #eaeaea;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 23px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  font-family: "Poppins";
+  margin-top: 2rem;
+}
+.sessionsSchedule_div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sessionsSchedule_div h3 {
+  color: #484848;
+  font-weight: 500;
+  font-size: 22px;
+}
+
+.sessionsSchedule_div p {
+  padding: 10px 30px;
+  font-size: 16px;
+  font-weight: 700;
+  background: #f8f8f8;
+  border: 1px solid #f8f8f8;
+  box-sizing: border-box;
+  border-radius: 21px;
+  color: #484848;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  margin: 10px 0px;
+}

@@ -198,4 +198,4 @@ export const industryData = [
   },
 ];
 
-export const projectBaseURL = "https://mirats-blaze.netlify.com";
+export const projectBaseURL = "https://moonknight.miratsinsights.com";

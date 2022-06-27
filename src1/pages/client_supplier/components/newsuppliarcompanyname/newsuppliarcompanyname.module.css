@@ -1,0 +1,59 @@
+.parentCompanyContainer {
+  border-radius: 56px;
+  border: 1px solid #a1a1a1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: auto;
+  background: #fffdfd;
+}
+
+.companyContent {
+  padding: 3vmax 2vmax;
+}
+.companyContent h1 {
+  font-weight: 500;
+  font-size: 2vmax;
+  padding: 0.4vmax 0;
+  margin-left: 1.2vmax;
+}
+.companyContent .adminmail {
+  font-size: 1.3vmax;
+  margin-left: 1.2vmax;
+  font-weight: 300;
+
+  /* padding: .4vmax 0; */
+}
+.companyContent .managers {
+  font-size: 2vmax;
+  font-weight: 500;
+  margin-top: 3vmax;
+  margin-left: 1.2vmax;
+  margin-bottom: 0.8vmax;
+}
+
+.comapnyCard {
+  box-shadow: 0px 4px 4px 0px #00000040;
+  border: 1px solid #f1f1f1;
+  background-color: #fff;
+  border-radius: 23px;
+  width: 485px;
+  padding: 1vmax 2vmax;
+  margin-top: 1vmax;
+}
+.comapnyCard h2 {
+  font-weight: 500;
+  font-size: 1.3vmax;
+  padding-bottom: 0.4vmax;
+}
+.comapnyCard a {
+  text-decoration: none;
+  font-weight: 400;
+  color: #438eff;
+  font-size: 1.2vmax;
+}
+.comapnyCard h3 {
+  line-height: 30px;
+  font-weight: 500;
+  font-size: 1.1vmax;
+}

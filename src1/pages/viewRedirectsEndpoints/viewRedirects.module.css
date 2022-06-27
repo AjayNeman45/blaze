@@ -1,0 +1,58 @@
+.viewRedirects_section {
+  margin: 40px;
+}
+
+.viewRedirects_section h1 {
+  font-weight: 600;
+  font-size: 36px;
+  font-family: "Poppins";
+}
+.viewRedirects_container {
+  width: 1319.14px;
+  height: 396.03px;
+  font-weight: 400;
+  font-size: 14px;
+  /* border: 1px solid black; */
+  padding: 5px;
+}
+
+.viewRedirects_container .first_table {
+  width: 70%;
+  border-collapse: collapse;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.viewRedirects_container .first_table tr,
+.viewRedirects_container .first_table td {
+  border: 1px solid black;
+  padding: 2px;
+}
+.viewRedirects_container_note p {
+  margin-top: 20px;
+  font-style: italic;
+}
+
+.viewRedirects_container .second_table {
+  border-collapse: collapse;
+  text-align: center;
+  width: 60%;
+  margin-bottom: 30px;
+  margin-top: 20px;
+}
+.viewRedirects_container .second_table tr td {
+  border: 1px solid black;
+  padding: 2px;
+}
+.viewRedirects_container .second_table tr td:first-child {
+  background-color: rgb(54, 54, 54);
+  color: white;
+}
+
+.yellow_highlighter {
+  background-color: rgb(248, 230, 206);
+}
+
+.gray_highlighter {
+  background-color: rgb(218, 210, 210);
+}

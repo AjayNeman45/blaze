@@ -13,7 +13,6 @@ import {
   getSurvey,
 } from "../../utils/firebaseQueries";
 import Question from "../../components/question/Question";
-import { useLocation } from "react-router-dom";
 
 const SurveyQuestions = () => {
   let { encryptedID, questionNumber } = useParams();
@@ -65,15 +64,15 @@ const SurveyQuestions = () => {
     question?.conditions?.valid_options?.map((option, i) => {
       if (option === user_res) index = i;
     });
-    question?.is_core_demographic ? (mirats_status = 23) : (mirats_status = 24);
 
     const body = {
       question_name: question?.question_name,
       question_id: String(questionNumber),
       user_response: parseInt(response),
     };
-    setResponse(null);
+    setResponse();
 
+    //--->> traverse over all the sessions and check its response for the current question is matching with the current user response or not if got matched then increase cntCompletd
     let cntCompleted = 0;
     sessions.forEach((session) => {
       let response;
@@ -89,6 +88,7 @@ const SurveyQuestions = () => {
     if (flag) {
       setError("");
       isFinalQuestion ? (mirats_status = 3) : (mirats_status = 1);
+      // if quotas is set and it is zero means quota is full and the user can't proceed
       if (question?.conditions?.quotas?.hasOwnProperty(index)) {
         if (!(question?.conditions?.quotas?.[index] - cntCompleted)) {
           mirats_status = 40;
@@ -99,15 +99,17 @@ const SurveyQuestions = () => {
         }
       }
       addQualificationResponseInSessions(body, mirats_status);
-
       if (isFinalQuestion) {
         if (gamma === "alpha") history.push(predirectUrl);
         else history.push(refereneUrl);
         console.log("Cangrats You are qualify for the survey");
       } else history.push(nextQuestionUrl);
     } else {
+      question?.is_core_demographic
+        ? (mirats_status = 23)
+        : (mirats_status = 24);
+      addQualificationResponseInSessions(body, mirats_status);
       if (gamma === "alpha") {
-        addQualificationResponseInSessions(body, mirats_status);
         history.push(predirectUrl);
       } else {
         setErrCode(mirats_status);
@@ -118,7 +120,6 @@ const SurveyQuestions = () => {
         );
       }
     }
-    setResponse("");
   };
 
   const handleMultiPunch = () => {
@@ -138,6 +139,7 @@ const SurveyQuestions = () => {
     };
     setMultiPunchRes([]);
 
+    //--->> traverse over all the sessions and check its response for the current question is matching with the current user response or not if got matched then increase cntCompletd
     let cntCompleted = {};
     for (let i = 0; i < multiPunchResp?.length; i++) {
       cntCompleted[multiPunchResp[i]] = 0;
@@ -152,24 +154,25 @@ const SurveyQuestions = () => {
         if (ans?.indexOf(parseInt(key)) !== -1) cntCompleted[key]++;
       });
     });
-
     question?.is_core_demographic ? (mirats_status = 23) : (mirats_status = 24);
-    // conditions for right answer
-    addQualificationResponseInSessions(body, mirats_status);
 
+    // conditions for right answer
     if (multiPunchResp.length < question?.conditions?.how_many?.min) {
+      addQualificationResponseInSessions(body, mirats_status);
       if (gamma === "alpha") history.push(predirectUrl);
       else
         setError(
           `Select Minimum ${question?.conditions?.how_many?.min} options`
         );
     } else if (multiPunchResp.length > question?.conditions?.how_many?.max) {
+      addQualificationResponseInSessions(body, mirats_status);
       if (gamma === "alpha") history.push(predirectUrl);
       else
         setError(
           `Select maximum ${question?.conditions?.how_many?.max} options`
         );
     } else if (!flag) {
+      addQualificationResponseInSessions(body, mirats_status);
       if (gamma === "alpha") history.push(predirectUrl);
       else {
         setErrCode(mirats_status);
@@ -180,9 +183,9 @@ const SurveyQuestions = () => {
         );
       }
     } else {
+      isFinalQuestion ? (mirats_status = 3) : (mirats_status = 1);
+      addQualificationResponseInSessions(body, mirats_status);
       if (isFinalQuestion) {
-        isFinalQuestion ? (mirats_status = 3) : (mirats_status = 1);
-        addQualificationResponseInSessions(body, mirats_status);
         if (gamma === "alpha") history.push(predirectUrl);
         else history.push(refereneUrl);
         console.log("Cangrats You are qualify for the survey");
@@ -200,7 +203,6 @@ const SurveyQuestions = () => {
       user_response: response,
     };
     const user_res = parseInt(response);
-    question?.is_core_demographic ? (mirats_status = 23) : (mirats_status = 24);
 
     let flag = false,
       optIndexForUserAns,
@@ -212,7 +214,7 @@ const SurveyQuestions = () => {
         flag = true;
       }
     });
-
+    //--->> traverse over all the sessions and check its response for the current question is matching with the current user response or not if got matched then increase cntCompletd
     let cntCompleted = 0;
     sessions.forEach((session) => {
       if (session?.mirats_status === 3) {
@@ -254,8 +256,11 @@ const SurveyQuestions = () => {
         console.log("Cangrats You are qualify for the survey");
       } else history.push(nextQuestionUrl);
     } else {
+      question?.is_core_demographic
+        ? (mirats_status = 23)
+        : (mirats_status = 24);
+      addQualificationResponseInSessions(body, mirats_status);
       if (gamma === "alpha") {
-        addQualificationResponseInSessions(body, mirats_status);
         history.push(predirectUrl);
       } else {
         setErrCode(mirats_status);

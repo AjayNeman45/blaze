@@ -26,7 +26,7 @@ const TeamCards = ({ title, teams, allPeoples }) => {
                 })}
             </div>
 
-            {teams?.account_managers && <h2>Accoount Managers</h2>}
+            {teams?.account_managers && <h2>Account Managers</h2>}
             <div className={styles.names}>
               {teams?.account_managers &&
                 teams?.account_managers?.map((chooseAm) => {

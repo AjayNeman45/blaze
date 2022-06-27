@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import styles from "./login.module.css";
 import { useLoginContext } from "./LoginContext";
 import { Loading } from "@nextui-org/react";
+import { MdOutlineVisibilityOff, MdOutlineVisibility } from "react-icons/md";
+
 const Login = () => {
   const { handleLogin, setLoginCred, errMsg, loading } = useLoginContext();
-
+  const [pwdShow, setPwdShow] = useState(false);
+  const pwdInputRef = useRef();
   const handleInputChange = (e) => {
     setLoginCred((prevData) => {
       return {
@@ -40,13 +43,37 @@ const Login = () => {
                 onChange={handleInputChange}
               />
               <label htmlFor="password">Password for your account.</label>
-              <input
-                required
-                type="password"
-                placeholder="Enter Password"
-                name="password"
-                onChange={handleInputChange}
-              />
+              <div className={styles.password_field}>
+                <input
+                  required
+                  type="password"
+                  placeholder="Enter Password"
+                  name="password"
+                  onChange={handleInputChange}
+                  ref={pwdInputRef}
+                />
+                {!pwdShow ? (
+                  <div
+                    className={styles.show_hide_text}
+                    onClick={() => {
+                      pwdInputRef.current.type = "text";
+                      setPwdShow(true);
+                    }}
+                  >
+                    <MdOutlineVisibilityOff size={24} />
+                  </div>
+                ) : (
+                  <div
+                    className={styles.show_hide_text}
+                    onClick={() => {
+                      pwdInputRef.current.type = "password";
+                      setPwdShow(false);
+                    }}
+                  >
+                    <MdOutlineVisibility size={24} />
+                  </div>
+                )}
+              </div>
 
               {loading ? (
                 <div className={styles.spinner}>

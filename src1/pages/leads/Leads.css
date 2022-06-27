@@ -1,0 +1,30 @@
+.leads_page {
+	margin: 2rem 4rem;
+}
+.leads_page_title {
+	font-size: 35px;
+	font-weight: bold;
+}
+.leads_table tr {
+	border: 1px solid rgb(216, 216, 216);
+}
+.leads_table th {
+	text-align: center;
+	padding: 20px 10px;
+}
+.leads_table td {
+	padding: 20px 10px;
+	font-size: 14px;
+	text-align: center;
+}
+.leads_table tr:hover {
+	background-color: rgb(241, 241, 250);
+}
+.leads_table td:nth-child(2) {
+	cursor: pointer;
+	font-weight: bold;
+}
+.leads_table td:nth-child(2):hover {
+	color: blue;
+	text-decoration: underline;
+}

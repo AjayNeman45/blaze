@@ -97,3 +97,15 @@
   font-weight: 500;
   font-size: 15px;
 }
+.password_field {
+  display: flex;
+  align-items: center;
+}
+.show_hide_text {
+  position: relative;
+  right: 50px;
+  top: 4px;
+  cursor: pointer;
+  width: 40px;
+  /* border: 1px solid red; */
+}

@@ -1,0 +1,44 @@
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+.Teamcard {
+  width: 100%;
+  margin-bottom: 1.5vmax;
+  border: 1px solid #e0e0e0;
+  border-radius: 35px;
+  padding: 1.5vmax 1.6vmax;
+  box-shadow: 0px 4px 4px 0px #00000040;
+}
+.Teamcard h1 {
+  font-weight: 600;
+  font-size: 30px;
+  line-height: 45px;
+}
+.Teamcard h2 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #484848;
+  line-height: 24px;
+}
+.subMenuBtn {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+.subMenuBtn h3 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 149px;
+  height: 38px;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 400;
+  background-color: #f8f8f8;
+  border: 1px solid #f8f8f8;
+  border-radius: 21px;
+  margin: 0.6vmax 0 1vmax 0;
+  box-shadow: 0px 4px 4px 0px #00000040;
+}

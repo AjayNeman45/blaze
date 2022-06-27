@@ -1,0 +1,53 @@
+.container {
+  height: 290px;
+  width: auto;
+  background-color: white;
+  border: 1px solid lightgray;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  border-radius: 21px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 0px;
+}
+.container .title {
+  color: #484848;
+  font-weight: 500;
+  font-size: 36px;
+}
+.container .count {
+  color: #3f3f3f;
+  margin-bottom: 8px;
+  font-weight: 700;
+  font-size: 36px;
+}
+.conversion p {
+  background-color: #f8f8f8;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  border-radius: 21px;
+  padding: 10px 20px;
+  width: 185px;
+  color: #484848;
+}
+.ctqf {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  margin-top: 10px;
+  gap: 10px;
+}
+.ctqf p {
+  background-color: #f8f8f8;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  border-radius: 21px;
+  border: 1px solid lightgray;
+  padding: 5px 15px;
+}
+.hits {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  margin-top: 20px;
+  gap: 20px;
+}
+.hits p {
+  font-size: 20px;
+}

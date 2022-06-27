@@ -19,7 +19,7 @@ const BaseContextProvider = ({ children }) => {
   useEffect(() => {
     if (!loading) {
       if (user) {
-        console.log("user found", user);
+        console.log("user found");
         getUserData(user?.uid).then((res) => {
           setUserData(res.data());
         });

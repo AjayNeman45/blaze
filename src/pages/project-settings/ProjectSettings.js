@@ -11,6 +11,7 @@ import Select from "react-select";
 import countryList from "react-select-country-list";
 import { useParams } from "react-router-dom/cjs/react-router-dom.min";
 import {
+  getAllSurveyGroups,
   getMiratsInsightsTeam,
   updateSurveyData,
 } from "../../utils/firebaseQueries";
@@ -36,26 +37,6 @@ const businessUnitData = [
 ];
 
 const surveyStatusData = statusOptions;
-const currencyData = [
-  {
-    label: "USD",
-    value: "USD",
-  },
-  {
-    label: "EURO",
-    value: "EURO",
-  },
-  {
-    label: "INR",
-    value: "INR",
-  },
-];
-const projectCoordinatorsData = [
-  "Mahmood Alam",
-  "Shruit s",
-  "abc abc",
-  "xyz xyx",
-];
 
 const NewProjectSettings = () => {
   const history = useHistory();
@@ -77,11 +58,21 @@ const NewProjectSettings = () => {
   const [snackbar, setSnackbar] = useState(false);
   const [buildUrlModal, setBuildUrlModal] = useState(false);
   const [peoples, setPeoples] = useState({});
-
+  const [surveyGrps, setAllSurveyGrps] = useState();
   useEffect(() => {
     window.scrollTo(0, 0);
     getMiratsInsightsTeam().then((data) => {
       setPeoples(data);
+    });
+    getAllSurveyGroups().then((sGrps) => {
+      let surveyGrpsTmp = [];
+      sGrps.forEach((group) => {
+        surveyGrpsTmp.push({
+          label: group.data()?.survey_group_number,
+          value: group.data()?.survey_group_number,
+        });
+      });
+      setAllSurveyGrps(surveyGrpsTmp);
     });
   }, []);
 
@@ -184,6 +175,10 @@ const NewProjectSettings = () => {
       <BuildUrlModal
         openModal={buildUrlModal}
         setOpenModal={setBuildUrlModal}
+        sData={sData}
+        setSData={setSData}
+        changedBy={changes}
+        setChanges={setChanges}
       />
 
       <Header />
@@ -200,7 +195,7 @@ const NewProjectSettings = () => {
                 value="study_type"
                 inputType="select"
                 dropDownData={studyTypesData}
-                selectedData={sData?.study_type}
+                selectedData={sData?.study_type ? sData?.study_type : ""}
                 handleInputChange={handleInputChange}
               />
               <InputFieldCard
@@ -208,7 +203,7 @@ const NewProjectSettings = () => {
                 value="survey_type"
                 inputType="select"
                 dropDownData={surveyTypesData}
-                selectedData={sData?.survey_type}
+                selectedData={sData?.survey_type ? sData?.survey_type : ""}
                 handleInputChange={handleInputChange}
               />
 
@@ -217,7 +212,7 @@ const NewProjectSettings = () => {
                 value="business_unit"
                 inputType="select"
                 dropDownData={businessUnitData}
-                selectedData={sData?.business_unit}
+                selectedData={sData?.business_unit ? sData?.business_unit : ""}
                 handleInputChange={handleInputChange}
               />
 
@@ -226,7 +221,7 @@ const NewProjectSettings = () => {
                 value="industry"
                 inputType="select"
                 dropDownData={industryData}
-                selectedData={sData?.industry}
+                selectedData={sData?.industry ? sData?.industry : ""}
                 handleInputChange={handleInputChange}
               />
 
@@ -296,7 +291,7 @@ const NewProjectSettings = () => {
                 value="status"
                 inputType="select"
                 dropDownData={surveyStatusData}
-                selectedData={sData?.status}
+                selectedData={sData?.status ? sData?.status : ""}
                 handleInputChange={handleInputChange}
               />
               <InputFieldCard
@@ -304,7 +299,9 @@ const NewProjectSettings = () => {
                 value="internal_status"
                 inputType="select"
                 dropDownData={mainStatusWithInternalStatuses?.[sData?.status]}
-                selectedData={sData?.internal_status}
+                selectedData={
+                  sData?.internal_status ? sData?.internal_status : ""
+                }
                 handleInputChange={handleInputChange}
               />
               <div className={styles.input_component}>
@@ -456,6 +453,7 @@ const NewProjectSettings = () => {
                 inputType="input"
                 handleInputChange={handleInputChange}
                 defaultVal={sData?.live_url}
+                disabled={true}
               />
               <InputFieldCard
                 title="Test URL"
@@ -463,6 +461,7 @@ const NewProjectSettings = () => {
                 handleInputChange={handleInputChange}
                 inputType="input"
                 defaultVal={sData?.test_url}
+                disabled={true}
               />
             </div>
           </div>
@@ -534,8 +533,11 @@ const NewProjectSettings = () => {
               />
               <InputFieldCard
                 title="survey group number"
-                inputType="input"
-                defaultVal={sData?.survey_group}
+                value="survey_group"
+                inputType="select"
+                dropDownData={surveyGrps}
+                selectedData={sData?.survey_group ? sData?.survey_group : ""}
+                handleInputChange={handleInputChange}
               />
               <InputFieldCard
                 title="PO number"

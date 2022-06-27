@@ -88,6 +88,8 @@ const BlazeContextProvider = ({ children }) => {
     getAllSurveys().then((surveys) => {
       let surveysData = [];
       surveys.forEach((survey) => {
+        if (survey.data()?.survey_id === parseInt(surveyID))
+          setSurvey(survey.data());
         surveysData.push(survey.data());
       });
       setAllSurveys(surveysData);
@@ -135,17 +137,7 @@ const BlazeContextProvider = ({ children }) => {
       );
     } else {
       setBaseLoading(true);
-      getSurvey(surveyID)
-        .then((res) => {
-          setSurvey(res);
-          if (res?.status === "live") fetchBackgroundDetails();
-          else
-            setErrCodeAndMsg(
-              42,
-              "Respondent attempted to enter a survey that was not Live or Pending status"
-            );
-        })
-        .catch((err) => console.log(err.message));
+      fetchBackgroundDetails();
     }
   }, [srcID, rID, encryptedID]);
 
@@ -285,19 +277,86 @@ const BlazeContextProvider = ({ children }) => {
           setErrMsg("Encryption Failure");
           setBaseLoading(false);
         }
-        const ref = doc(db, "miratsinsights", "blaze", "surveys", surveyID);
-        const docSnap = await getDoc(ref);
-
         // survey exist
-        if (docSnap.exists()) {
-          if (gamma === "alpha") setFinalverification(true);
-          else verifyTechnicalDetails();
+        if (survey) {
+          if (gamma === "alpha") createTestSession();
+          else if (survey?.status !== "live") {
+            createSession(42);
+            setErrCodeAndMsg(
+              42,
+              "Respondent attempted to enter a survey that was not Live or Pending status"
+            );
+          } else verifyTechnicalDetails();
         }
       };
 
       checkSurveyExistance();
     }
   }, [sessionTechnicalDetails, geoData, ip]);
+
+  const createSessionBody = (errorCode) => {
+    let tid = 2000001,
+      flag = false; // flag to indicade whether atleast one tid is present or not.
+
+    allSessions?.map((session) => {
+      if (session?.tid >= tid) {
+        tid = parseInt(session?.tid);
+        flag = true;
+      }
+    });
+    if (flag) tid += 1;
+
+    // creating ref id for sending it to the client by using surveyID, supplieriID, and tid.
+    let ref_id = hashids.encode([parseInt(surveyID), supplier_account_id, tid]);
+
+    const body = {
+      session_technical_details: sessionTechnicalDetails,
+      geo_data: geoData,
+      srcid: srcID,
+      rid: rID,
+      tid,
+      date: new Date(),
+      fingerprint: fingerPrint,
+      mirats_status: parseInt(errorCode),
+      client_status: -1,
+      ref_id: ref_id,
+      supplier_account_id: supplier_account_id,
+      client_cpi: survey?.client_info?.client_cpi,
+      vendor_cpi: getVendorCpi(supplier_account_id),
+    };
+    return body;
+  };
+
+  const createSession = (errorCode) => {
+    let body = createSessionBody(errorCode);
+    addSession(body, surveyID)
+      .then((res) => {
+        localStorage.setItem("session_id", res.id);
+        console.log("session inserted in database with error code ", errorCode);
+        setBaseLoading(false);
+      })
+      .catch((err) => {
+        setVerificationDone(false);
+        setBaseLoading(true);
+        console.log(err.message);
+      });
+  };
+
+  const createTestSession = () => {
+    let body = createSessionBody(0);
+    addTestSession(body, surveyID)
+      .then((res) => {
+        localStorage.setItem("session_id", res.id);
+        console.log("test session inserted in database");
+        setBaseLoading(false);
+        history.push(`/blaze/${encryptedID}/gdpr-consent`);
+      })
+      .catch((err) => {
+        setVerificationDone(false);
+        setBaseLoading(true);
+        console.log("error in creating test session");
+      });
+  };
 
   //  verify ip, rid , fingerprint for uniqueness
   const verifyTechnicalDetails = async () => {
@@ -320,11 +379,13 @@ const BlazeContextProvider = ({ children }) => {
       }
       // verifying ip
       else if (securityChecks?.unique_ip && geoData?.ip === ip) {
+        createSession(30);
         setErrCodeAndMsg(30, "Respodant did not have unique IP");
         techincalDetailsVerification = false;
       }
       // verifying respondant id
       else if (securityChecks?.unique_rid && doc?.rid === rID) {
+        createSession(35);
         setErrCodeAndMsg(
           35,
           "Respondent did not have a unique rid for that supplier"
@@ -334,6 +395,7 @@ const BlazeContextProvider = ({ children }) => {
         securityChecks?.unique_fingerprint &&
         fingerPrint === doc?.fingerPrint
       ) {
+        createSession(235);
         setErrCodeAndMsg(
           232,
           "TrueSample Fingerprint Risk Level exceeds acceptable threshold"
@@ -349,6 +411,7 @@ const BlazeContextProvider = ({ children }) => {
     console.log("verifying blocked data");
     if ("blocked_ips" in survey) {
       if (survey?.blocked_ips?.includes(ip)) {
+        createSession(133);
         setErrCodeAndMsg(
           133,
           "Respondent attempted to enter on an IP blocked from the survey"
@@ -357,6 +420,7 @@ const BlazeContextProvider = ({ children }) => {
     }
     if ("blocked_rids" in survey) {
       if (survey?.blocked_rids.includes(projectID)) {
+        createSession(132);
         setErrCodeAndMsg(
           132,
           "Respondent attempted to enter on a PID blocked from the survey"
@@ -364,12 +428,13 @@ const BlazeContextProvider = ({ children }) => {
       }
     }
     if ("blocked_countries" in survey) {
-      if (survey?.blocked_countries.includes(countryID))
+      if (survey?.blocked_countries.includes(countryID)) {
+        createSession(234);
         setErrCodeAndMsg(
           234,
           "Respondent's IP address coming from a country subject to US economic sactions "
         );
-      else {
+      } else {
         otherVerification();
       }
     }
@@ -383,21 +448,25 @@ const BlazeContextProvider = ({ children }) => {
       survey?.device_suitability?.[device_type] === undefined ||
       !survey?.device_suitability?.[device_type]
     ) {
+      createSession(101);
       setErrCodeAndMsg(
         101,
         "device type " + device_type + " dosent allowed to attend the survey"
       );
     } else if (check_cookie_name("blaze")) {
+      createSession(36);
       setErrCodeAndMsg(
         36,
         "Respondant cookie indicated they had taken a survey"
       );
     } else if (!survey?.device_suitability?.[`${device_type}`]) {
+      createSession(101);
       setErrCodeAndMsg(
         101,
         "device type " + device_type + " dosent allowed to attend the survey"
       );
     } else if (survey?.country?.country !== geoData?.country_code) {
+      createSession(37);
       setErrCodeAndMsg(37, "Respondent is not in the country of the survey");
     } else verifySrcId();
   };
@@ -415,7 +484,6 @@ const BlazeContextProvider = ({ children }) => {
       ) {
         flag = true;
         supplier = d;
-        setErrCodeAndMsg();
       }
     });
 
@@ -428,11 +496,9 @@ const BlazeContextProvider = ({ children }) => {
         ) {
           flag = true;
           supplier = d;
-          setErrCodeAndMsg();
         }
       });
     }
-    console.log(flag);
 
     if (flag) {
       let completedSessionsCnt = 0;
@@ -450,11 +516,17 @@ const BlazeContextProvider = ({ children }) => {
         console.log(
           "survey has completed the no of completes hence terminated"
         );
+        createSession(43);
+        setErrCodeAndMsg(
+          43,
+          "Respondent attempted to enter a survey whose allocation is completed"
+        );
       } else {
         if (srcSpecificCompletedSessionsCnt >= supplier?.allocation?.number) {
           console.log(
             "allocation for the supplier has completed hence terminated"
           );
+          createSession(41);
           setErrCode(41);
           setErrMsg(
             "Respondent went over their supplier’s allocation in Marketplace survey"
@@ -465,53 +537,54 @@ const BlazeContextProvider = ({ children }) => {
         }
       }
     } else {
+      createSession(127);
       setErrCodeAndMsg(
         127,
         "Respondent enter from the particular supplier that is not live or the supplier not found"
       );
-      // setErrCode(127);
-      // setErrMsg();
     }
   };
 
   //  verify the data according to survey group
   const verifySurveyGroupData = async () => {
     console.log("verifying data according to survey grp number");
-    const allSurveys = await getAllSurveys();
-
+    let verified = true;
     allSurveys?.forEach(async (doc) => {
       //  condition to find the survey with same group
       if (
-        doc.data()?.survey_group == survey?.survey_group &&
-        doc.data().survey_id !== parseInt(surveyID)
+        doc?.survey_group === survey?.survey_group &&
+        doc?.survey_id !== parseInt(surveyID)
       ) {
         //  Get the all the sessions for that particular survey to matched ip and all other things
-        const allSessions = await getAllSessions(doc.data()?.survey_id, gamma);
+        const allSessions = await getAllSessions(doc?.survey_id, gamma);
 
         // traverse over all the sessions of that survey
-        allSessions.forEach(async (session) => {
-          if (session.data()?.geo_data?.ip === ip) {
+        for (let i = 0; i < allSessions.docs.length; i++) {
+          let sessionData = allSessions.docs[i].data();
+          if (sessionData?.geo_data?.ip === ip) {
+            createSession(230);
             setErrCodeAndMsg(
               230,
               "Respondent did not have a unique IP across the survey group"
             );
-            setFinalverification(0);
-            return;
-          } else if (session.data()?.rid === parseInt(rID)) {
+            verified = false;
+            break;
+          } else if (sessionData?.rid === parseInt(rID)) {
+            createSession(139);
             setErrCodeAndMsg(
               139,
               "Respondent did not have a unique PID for that supplier across the survey group"
             );
-            setFinalverification(0);
-            return;
-          } else {
-            setFinalverification(1);
+            verified = false;
+            break;
           }
-        });
-      } else {
-        setFinalverification(1);
+        }
       }
     });
+    if (verified) {
+      createSession(0);
+      history.push(`/blaze/${encryptedID}/gdpr-consent`);
+    }
   };
 
   // when finalVerification is true, add all the bakcground verified details in database

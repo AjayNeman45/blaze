@@ -1,0 +1,90 @@
+/* add supplier modal  */
+.supplier_account_field {
+  width: 100% !important;
+  margin-top: 0.7rem;
+}
+.allocations {
+  margin-top: 1rem;
+}
+.allocation_inputs {
+  margin-top: 0.7rem;
+}
+.allocation_inputs .allocation_input {
+  width: 9rem;
+  border-radius: 4px;
+  /* padding: 0 10px; */
+  border: none !important;
+  outline: none !important;
+}
+.allocation_inputs .allocation_input:last-child {
+  margin-left: 0.8rem;
+}
+.cpi {
+  display: flex;
+  flex-direction: column;
+}
+.cpi_and_unreserved_container {
+  display: flex;
+  align-items: center;
+  margin-top: 1rem;
+}
+.unreserved_completes {
+  margin-left: 1rem;
+}
+.supply_manager,
+.project_manager {
+  margin-top: 1rem;
+}
+
+.cpi_field {
+  display: flex;
+  flex-direction: column;
+  height: 3.4rem;
+  width: 100%;
+  border: 1px solid rgb(192, 192, 192);
+  border-radius: 4px;
+  margin-top: 0.7rem;
+  padding: 0 10px;
+}
+.cpi_field {
+  width: 9rem;
+}
+.modal_footer {
+  margin-top: 0.4rem;
+  padding-top: 1rem;
+  display: flex;
+  justify-content: end;
+}
+.modal_footer .next_btn,
+.cancel_btn {
+  width: 4rem;
+  height: 2.4rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.next_btn {
+  background-color: rgb(30, 112, 221);
+  color: white;
+  margin-right: 1rem;
+}
+.next_btn:hover {
+  background-color: rgb(53, 125, 219);
+}
+.cancel_btn {
+  background-color: white;
+  border: 1px solid #ccc;
+}
+.cancel_btn:hover {
+  background-color: #ccc;
+}
+.required_field {
+  color: red;
+}
+.header {
+  text-align: center;
+  margin-bottom: 1rem;
+  border-radius: 5px;
+  font-size: 30px;
+  font-weight: bold;
+}

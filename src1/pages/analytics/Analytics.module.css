@@ -1,0 +1,219 @@
+.analytics_page {
+  padding: 3rem;
+}
+
+.navigation_tabs {
+  display: flex;
+}
+.navigation_tabs .tab {
+  margin-right: 5rem;
+  font-size: 19px;
+  display: block;
+  display: flex;
+  flex-direction: column;
+}
+
+.navigation_tab_link {
+  text-decoration: none;
+  color: #4f4f4f;
+  font-weight: 500;
+  font-size: 20px;
+}
+.navigation_active_tab {
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+}
+.navigation_active_tab span:first-child {
+  font-weight: bold;
+  color: #1765dc;
+}
+.navigation_active_tab .border_bottom {
+  border: 1.5px solid #1765dc;
+  margin: 10px;
+  border-radius: 20px;
+  background-color: #1765dc;
+}
+
+/* audience page  */
+.audience_page {
+  /* border: 1px solid red; */
+  margin-top: 1.5rem;
+}
+.audience_page .container1 {
+  display: flex;
+}
+.audience_page .container2 {
+  display: flex;
+}
+.audience_page .right {
+  margin-left: 2rem;
+}
+
+/* graph1  */
+
+.graph1,
+.graph2 {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  box-sizing: border-box;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 38px;
+  padding: 2.5rem 4rem;
+  width: 930px;
+}
+.graph2 {
+  margin: 2rem 0;
+}
+.graph1_stats,
+.graph2_stats {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin-bottom: 1rem;
+  /* border: 1px solid red; */
+}
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 5rem;
+  cursor: default;
+  /* border: 1px solid red; */
+  padding: 1rem 1rem;
+}
+.stat:hover {
+  background-color: rgb(243, 243, 243);
+  transition: all 0.2s ease-in-out;
+  border-radius: 20px;
+}
+.stat_label {
+  font-weight: 600;
+  font-size: 16px;
+  padding: 4px 8px;
+}
+.active_stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 5rem;
+  cursor: default;
+  background-color: rgb(243, 243, 243);
+  border-radius: 20px;
+  padding: 1rem 1rem;
+}
+.active_stat .stat_label {
+  color: #1765dc;
+  font-weight: 600;
+  font-size: 16px;
+  padding: 4px 8px;
+  border-top: 4px solid #1765dc;
+}
+.stat_number {
+  font-weight: 600;
+  font-size: 35px;
+}
+
+/* audience response page  */
+.audience_response_page {
+  display: flex;
+  padding: 2rem 0;
+}
+.audience_response_page .right {
+  margin-left: 2rem;
+}
+/* audience response graph  */
+.audience_response_graph {
+  width: 949px;
+  /* height: 656px; */
+  border: 1px solid #e0e0e0;
+  box-sizing: border-box;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 38px;
+  margin-bottom: 2rem;
+}
+
+/* realtime overview page  */
+.realtime_overview_page {
+  display: flex;
+  padding: 2rem 0;
+}
+.realtime_doughnut_chart {
+  margin-bottom: 2rem;
+}
+.drops_by_suppliers_card {
+  height: 30%;
+}
+.realtime_overview_page .left {
+  /* border: 1px solid red; */
+  width: 35%;
+}
+.realtime_overview_page .right {
+  margin-left: 2rem;
+  width: 100%;
+  /* border: 1px solid red; */
+}
+
+/* users by browsers card  */
+.users_by_browsers_card {
+  width: 35%;
+  margin-right: 2.5em;
+}
+
+/* supplier by completes card  */
+.supplier_by_completes_card {
+  width: 60%;
+  height: 370px;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 32px;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 1.5rem;
+}
+.supplier_by_completes_card .title {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.supplier_by_completes_table {
+  height: 100%;
+  overflow: auto;
+  margin-top: 1.2rem;
+  height: 500px;
+  overflow: auto;
+  /* border: 1px solid red; */
+}
+.supplier_by_completes_table table {
+  border-collapse: collapse;
+  width: 100%;
+  height: 20px;
+}
+.supplier_by_completes_table table th {
+  padding: 0.5rem;
+  text-align: left;
+  text-transform: uppercase;
+}
+.supplier_by_completes_table table td {
+  padding: 0.5rem;
+}
+.supplier_by_completes_table table tr {
+  border-bottom: 1px solid #a6a6a6;
+  text-align: left;
+}
+.gender_by_complets_and_completes_by_suppliers {
+  display: flex;
+  align-items: center;
+}
+.gender_by_complete_card {
+  width: 50%;
+}
+.completes_by_suppliers {
+  width: 50%;
+  margin-left: 2rem;
+}
+.timeChooseSelect {
+  width: 10rem;
+  padding: 10px;
+}

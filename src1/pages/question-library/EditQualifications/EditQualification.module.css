@@ -1,0 +1,135 @@
+.modal_container {
+  height: 100%;
+  overflow-y: scroll;
+  padding: 10px;
+}
+
+.createQualifications_title {
+  font-size: 36px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.createQualifications_mainContainer {
+  display: flex;
+  flex-direction: row;
+}
+.inputFild_container {
+  display: flex;
+  flex-direction: column;
+}
+
+.inputFild_container p {
+  font-weight: 400;
+  font-size: 14px;
+}
+.inputFild_container input {
+  margin: 10px 0px;
+  border: 1px solid #959595;
+  border-radius: 43px;
+  padding: 15px 10px;
+  outline: none;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.inputFild_container select {
+  appearance: none;
+  outline: 0;
+  background: #ffffff;
+  background-image: none;
+  border: 1px solid #959595;
+  padding: 15px 20px;
+  cursor: pointer;
+  border-radius: 3px;
+  font-size: 18px;
+  font-weight: 500;
+  border-radius: 43px;
+  margin: 10px 0px;
+}
+
+.inputFild_container textarea {
+  border: 1px solid #959595;
+  border-radius: 10px;
+  padding: 15px 10px;
+  margin-top: 10px;
+  margin-bottom: 22px;
+}
+
+.createQualifications_leftSide,
+.createQualifications_rightSide {
+  width: 50%;
+  padding: 10px;
+}
+
+.subtitle {
+  text-align: right;
+  font-weight: 700;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.addSurvery_btn {
+  background: #313131;
+  border: 1px solid #313131;
+  border-radius: 34px;
+  width: 287px;
+  height: 50px;
+  font-weight: 400;
+  font-size: 20px;
+  color: #ffffff;
+  margin-top: 50px;
+  cursor: pointer;
+}
+
+.questinType_autocom {
+  margin-bottom: 10px;
+}
+
+.questinType_autocom p {
+  font-weight: 400;
+  font-size: 14px;
+}
+
+.autocomplete {
+  border-radius: 50px;
+}
+.is_core_demographic_container {
+  display: flex;
+  align-items: center;
+}
+.is_core_demographic_container div {
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
+}
+.is_core_demographic_container div label {
+  font-size: 18px;
+  margin-left: 10px;
+}
+.is_core_demographic_container div input {
+  width: 20px;
+  height: 20px;
+}
+
+/* scrollbar Bar --- Optional*/
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey;
+  border-radius: 5px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #959595;
+  border-radius: 10px;
+}
+
+Handle on hover ::-webkit-scrollbar-thumb:hover {
+  background: #b30000;
+}

@@ -3,7 +3,12 @@ import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { hashids } from "../../index";
-import { getAllSessions, updateSession } from "../../utils/firebaseQueries";
+import {
+  getAllSessions,
+  getSuppier,
+  getSurvey,
+  updateSession,
+} from "../../utils/firebaseQueries";
 import Logo from "../../assets/images/insights.png";
 
 function msToTime(duration) {
@@ -28,6 +33,7 @@ const EndPoint = () => {
   const decodedID = hashids.decode(id.includes("Test") ? id.split("-")[1] : id);
   useEffect(() => {
     if (!decodedID.length) {
+      return;
     }
     let gamma = ""; // flag = true means the id does not contain Test word
     if (id.includes("Test")) {
@@ -39,7 +45,6 @@ const EndPoint = () => {
       .then((sessions) => {
         sessions.forEach((session) => {
           const sd = session.data(); // session data
-          console.log(sd);
           if (
             sd?.supplier_account_id === decodedID[1] &&
             sd?.tid === decodedID[2]
@@ -59,45 +64,43 @@ const EndPoint = () => {
               })
               .catch((err) => console.log(err.message));
 
-            // getSurvey(decodedID[0]).then(res => {
-            // 	res?.external_suppliers.map(supp => {
-            // 		if (
-            // 			supp?.supplier_account_id === decodedID[1]
-            // 		) {
-            // 			console.log("supplier found..!")
-
-            // 			// if global redirects is false then redirect with static_redirect
-            // 			if (!supp?.global_redirect) {
-            // 				console.log("static redirects", supp)
-            // 				RedirectFunction(
-            // 					status,
-            // 					supp?.static_redirects,
-            // 					sd?.rid,
-            // 					decodedID[0]
-            // 				)
-            // 			} else {
-            // 				console.log("global redirects")
-            // 				getSuppier(decodedID[1]).then(data => {
-            // 					RedirectFunction(
-            // 						status,
-            // 						data?.global_redirects,
-            // 						sd?.rid,
-            // 						decodedID[0]
-            // 					)
-            // 				})
-            // 			}
-            // 		}
-            // 	})
-            // })
-          } else {
-            console.log("tid not found");
+            getSurvey(decodedID[0]).then((res) => {
+              res?.external_suppliers.map((supp) => {
+                if (supp?.supplier_account_id === decodedID[1]) {
+                  // if global redirects is false then redirect with static_redirect
+                  if (!supp?.global_redirect) {
+                    console.log("redirecting with static redirects");
+                    RedirectFunction(
+                      status,
+                      supp?.static_redirects,
+                      sd?.rid,
+                      decodedID[0]
+                    );
+                  } else {
+                    console.log("redirecting with global redirects");
+                    getSuppier(decodedID[1]).then((data) => {
+                      RedirectFunction(
+                        status,
+                        data?.global_redirects,
+                        sd?.rid,
+                        decodedID[0]
+                      );
+                    });
+                  }
+                }
+              });
+            });
           }
         });
       })
       .catch((err) => console.log(err.message));
   }, [decodedID]);
 
-  console.log(!decodedID?.length ? "ID Dosen't exist in the database" : null);
+  console.log(
+    !decodedID?.length
+      ? "ID Dosen't exist in the database"
+      : "tid exist in the db"
+  );
   return (
     <>
       <div className={styles.header}>
@@ -224,8 +227,8 @@ const RedirectFunction = (status, redirects, rid, surveyID) => {
       break;
     case "20":
       x = redirects?.terminate;
-      if (redirects?.complete.includes("surveyNumber")) {
-        x = redirects?.complete.split("[%surveyNumber%]")[0] + surveyID;
+      if (redirects?.terminate.includes("surveyNumber")) {
+        x = redirects?.terminate.split("[%surveyNumber%]")[0] + surveyID;
       }
 
       y = x.split("[%rid%]")[0] + rid + x.split("[%rid%]")[1];
@@ -257,4 +260,5 @@ const RedirectFunction = (status, redirects, rid, surveyID) => {
     default:
       return;
   }
+  // window.location.href = y;
 };

@@ -7,7 +7,7 @@ import {
 let DashboardContext = createContext();
 function DashboardContextProvider({ children }) {
   let [allSurveys, setAllSurveys] = useState([]);
-  const [basicStats, setBasicStats] = useState({});
+  const [basicStats, setBasicStats] = useState({ last30MinutesSessionsCnt: 0 });
   const [financialOverview, setFinancialOverview] = useState({
     total_rev: 0,
     supply_cost: 0,
@@ -90,16 +90,7 @@ function DashboardContextProvider({ children }) {
       allSessions?.forEach((session) => {
         let sd = session.data();
         let surveyEndDate = sd?.survey_end_time?.toDate()?.toDateString();
-
-        // graphData[surveyEndDate] = {
-        //   hits:
-        //     (graphData[surveyEndDate]?.hits
-        //       ? graphData[surveyEndDate].hits
-        //       : 0) + 1,
-        // };
-
         handleGraphData(surveyEndDate, "hits");
-
         if (surveyEndDate === new Date().toDateString()) {
           dailyHitsSession++;
         }
@@ -108,14 +99,22 @@ function DashboardContextProvider({ children }) {
         }
         if (sd?.client_status === 10) {
           handleGraphData(surveyEndDate, "completes");
-          //   graphData[surveyEndDate] = {
-          //     ...graphData[surveyEndDate],
-          //     completes:
-          //       (graphData[surveyEndDate]?.completes
-          //         ? graphData[surveyEndDate].completes
-          //         : 0) + 1,
-          //   };
+          let ms =
+            new Date()?.getTime() - sd?.survey_end_time?.toDate()?.getTime();
 
+          let timeDiff = new Date(ms).toISOString().slice(11, 19);
+          if (
+            parseInt(timeDiff.split(":")[0]) === 0 &&
+            parseInt(timeDiff.split(":")[1]) <= 30
+          ) {
+            setBasicStats((prevData) => {
+              return {
+                ...prevData,
+                last30MinutesSessionsCnt:
+                  prevData?.last30MinutesSessionsCnt + 1,
+              };
+            });
+          }
           if (surveyEndDate === new Date().toDateString()) {
             dailyCompletedSession++;
           }

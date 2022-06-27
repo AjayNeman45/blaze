@@ -277,7 +277,9 @@ const Dashboard = () => {
             <p className={styles.completes_text}>
               Completes in last <strong>30 minutes</strong>
             </p>
-            <p className={styles.completes_num}>144</p>
+            <p className={styles.completes_num}>
+              {basicStats?.last30MinutesSessionsCnt}
+            </p>
           </div>
           <ProjectServiceCard />
           {/* survey client stats */}
